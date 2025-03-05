@@ -8,8 +8,8 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getMessaging, provideMessaging } from '@angular/fire/messaging';
-import { firebaseConfig } from './firebase.config';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { firebaseConfig } from '../firebase.config';
 
 export const appConfig: ApplicationConfig = {
   providers: [

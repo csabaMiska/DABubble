@@ -1,1 +1,22 @@
-<p>create-channel works!</p>
+<mat-card>
+  <mat-card-title>Channel erstellen</mat-card-title>
+  <mat-card-content>
+    <p>
+      Channels dienen deinem Team zur Kommunikation. Am besten sollten sie
+      themenbezogen sein, z. B. #marketing.
+    </p>
+    <!-- FormGroup hinzufügen -->
+    <div class="input-structure">
+      <mat-label>Channel-Name</mat-label>
+      <input matInput placeholder="# z.B. Koorperationsprojekte" />
+
+      <mat-label
+        >Beschreibung <span class="optional-text">(optional)</span></mat-label
+      >
+      <input matInput placeholder="Dein Text hier" />
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <button (click)="submit()" mat-button>Erstellen</button>
+  </mat-card-actions>
+</mat-card>

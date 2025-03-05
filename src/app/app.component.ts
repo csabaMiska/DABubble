@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CreateChannelComponent } from "./features/create-channel/create-channel.component";
+
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, CreateChannelComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

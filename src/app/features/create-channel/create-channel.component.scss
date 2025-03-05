@@ -1,0 +1,89 @@
+mat-card {
+    font-family: 'Nunito', sans-serif;
+    color: black;
+    background-color: white;
+    min-height: 539px;
+    padding: 40px;
+    gap: 20px;
+    border-radius: 30px;
+    max-width: 872px;
+
+    p {
+        font-size: 18px;
+        font-weight: 400;
+        min-height: 50px;
+        margin-bottom: 0;
+    }
+
+    mat-label .optional-text {
+        color: #686868;
+        font-weight: 400;
+    }
+
+    mat-card-content {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        flex-grow: 1; // placeholder
+        gap: 20px;
+    }
+
+    mat-card-actions {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    mat-card-title {
+        font-weight: 700;
+        font-size: 24px;
+    }
+    
+    mat-label {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    input {
+        height: 60px;
+        padding: 18px 20px;
+        border-radius: 40px;
+        max-width: 792px;
+        border: solid 1px #686868;
+    
+        &:hover {
+            cursor: pointer;
+            border: solid 1px #ADB0D9;
+        }
+    
+        &::placeholder {
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 24px;
+        }
+    }
+    
+    .input-structure {
+        display: flex;
+        flex-direction: column;
+        max-height: 105px;
+        gap: 20px;
+    }
+    
+    button[mat-button] {
+        font-family: 'Nunito', sans-serif;
+        font-size: 18px;
+        font-weight: 400;
+        line-height: 24px;
+        cursor: pointer;
+        color: white !important;
+        border: none;
+        background-color: #444DF2;
+        width: 120px;
+        height: 49px;
+        border-radius: 25px;
+        padding: 12px 25px;
+    }
+}
+
+
+

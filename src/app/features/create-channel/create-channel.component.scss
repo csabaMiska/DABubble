@@ -1,3 +1,5 @@
+/* @import '../styles/styles';
+ */
 mat-card {
     font-family: 'Nunito', sans-serif;
     color: black;
@@ -16,7 +18,7 @@ mat-card {
     }
 
     mat-label .optional-text {
-        color: #686868;
+        color: rgba(104, 104, 104, 1);
         font-weight: 400;
     }
 
@@ -24,7 +26,6 @@ mat-card {
         display: flex;
         flex-direction: column;
         padding: 0;
-        flex-grow: 1; // placeholder
         gap: 20px;
     }
 
@@ -44,15 +45,20 @@ mat-card {
     }
 
     input {
+        font-size: 18px;
         height: 60px;
-        padding: 18px 20px;
+        padding: 0px 20px;
         border-radius: 40px;
-        max-width: 792px;
-        border: solid 1px #686868;
+        border: solid 1px rgba(104, 104, 104, 1);
     
         &:hover {
             cursor: pointer;
-            border: solid 1px #ADB0D9;
+            border: solid 1px rgba(173, 176, 217, 1);
+        }
+
+        &:focus {
+            outline: none;
+            border: solid 1px rgba(68, 77, 242, 1);
         }
     
         &::placeholder {
@@ -65,7 +71,6 @@ mat-card {
     .input-structure {
         display: flex;
         flex-direction: column;
-        max-height: 105px;
         gap: 20px;
     }
     
@@ -77,13 +82,55 @@ mat-card {
         cursor: pointer;
         color: white !important;
         border: none;
-        background-color: #444DF2;
+        background-color: rgba(68, 77, 242, 1);
         width: 120px;
         height: 49px;
         border-radius: 25px;
         padding: 12px 25px;
     }
+
+    .input-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        max-width: 792px;
+
+        input {
+            padding: 0px 40px;
+        }
+    
+        .prefix {
+            position: absolute;
+            left: 20px;
+            color: rgba(104, 104, 104, 1);
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        input.prefix-structure {
+            max-width: 792px !important;
+            width: 100%;
+        }
+    }
 }
 
+@media (max-width: 430px) {
+    .input-container {
+        .prefix {
+            left: 15px
+        }
+        input {
+            padding: 0px 0px 0px 40px !important;
+        }
+    }
 
+    input {
+        font-size: 16px !important;
+        padding: 0px 15px !important;
+
+        &::placeholder {
+            font-size: 16px !important;
+        }
+    }
+}
 

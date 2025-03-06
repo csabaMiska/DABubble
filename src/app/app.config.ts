@@ -9,22 +9,23 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { firebaseConfig } from '../firebase.config';
+
+const mockFirebaseConfig = {
+  apiKey: 'dummy-api-key',
+  authDomain: 'dummy-auth-domain',
+  projectId: 'dummy-project-id',
+  storageBucket: 'dummy-storage-bucket',
+  messagingSenderId: 'dummy-messaging-sender-id',
+  appId: 'dummy-app-id',
+  measurementId: 'dummy-measurement-id'
+};
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideFirebaseApp(() => initializeApp({
-      projectId: firebaseConfig.projectId,
-      appId: firebaseConfig.appId,
-      storageBucket: firebaseConfig.storageBucket,
-      apiKey: firebaseConfig.apiKey,
-      authDomain: firebaseConfig.authDomain,
-      messagingSenderId: firebaseConfig.messagingSenderId,
-      measurementId: firebaseConfig.measurementId
-    })),
+    provideFirebaseApp(() => initializeApp(mockFirebaseConfig)), // Verwende das Mock-Objekt hier
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideMessaging(() => getMessaging()),

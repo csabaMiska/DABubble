@@ -1,11 +1,28 @@
-html,
-body {
-    height: 100%;
+@use 'fonts.scss' as font;
+@use '@angular/material' as mat;
+@include mat.core();
+
+:root {
+    $vh: 100%
+}
+
+.full_height {
+    height: calc(var(--vh, 1vh) * 100);
+}
+
+$theme: mat.define-theme((color: (theme-type: light,
+                primary: mat.$magenta-palette,
+            )));
+
+html {
+    @include mat.core-theme($theme);
+    @include mat.all-component-themes($theme);
 }
 
 body {
+    height: 100%;
     margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-family: 'Nunito';
 }
 
 //Colors

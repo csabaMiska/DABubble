@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-impressum',
-  imports: [],
+  imports: [MatCardModule],
   templateUrl: './impressum.component.html',
   styleUrl: './impressum.component.scss'
 })

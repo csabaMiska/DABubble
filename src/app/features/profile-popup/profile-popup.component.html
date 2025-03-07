@@ -93,13 +93,25 @@
     </div>
     <div class="profile-popup-info-box">
       <div class="profile-popup-name-box">
-        <span>Elise Roth</span>
+        <span>{{ user.name }}</span>
       </div>
       <div class="profile-popup-status-box">
         <span
-          class="profile-popup-status-indicator profile-popup-offline-indicator"
+          [ngClass]="
+            user.status === 'online'
+              ? 'profile-popup-online-indicator'
+              : 'profile-popup-offline-indicator'
+          "
         ></span>
-        <span class="profile-popup-offline-text">Abwesend</span>
+        <span
+          class="profile-popup-offline-text"
+          [ngClass]="
+            user.status === 'online'
+              ? 'profile-popup-online-text'
+              : 'profile-popup-offline-text'
+          "
+          >{{ user.status === "online" ? "Online" : "Abwesend" }}</span
+        >
       </div>
     </div>
     <div class="profile-popup-contact-info">
@@ -118,7 +130,7 @@
         </svg>
         <span>E-Mail-Adresse</span>
       </div>
-      <a href="mailto:testmail&#64;mailmail.com">testmail&#64;mailmail.com</a>
+      <a href="mailto:{{ user.email }}">{{ user.email }}</a>
     </div>
     <button class="profile-popup-contact-send-button">
       <svg

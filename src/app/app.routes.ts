@@ -6,12 +6,14 @@ import { ImpressumComponent } from './features/impressum/impressum.component';
 import { PrivacyPolicyComponent } from './features/privacy-policy/privacy-policy.component';
 import { HomeComponent } from './features/home/home.component';
 import { PasswordResetComponent } from './features/password-reset/password-reset.component';
+import { PasswordNewComponent } from './features/password-new/password-new.component';
 
 export const routes: Routes = [
     // Componenten welche ohne Registration sehbar sind
     { path: 'login', component: LogInComponent },
     { path: 'signup', component: SignUpComponent},
-    { path: 'reset', component: PasswordResetComponent },
+    { path: 'pass-reset', component: PasswordResetComponent },
+    { path: 'pass-new', component: PasswordNewComponent },
     { path: 'impressum', component: ImpressumComponent},
     { path: 'privacy-policy', component: PrivacyPolicyComponent},
 

@@ -1,0 +1,12 @@
+.test-container {
+    width: 100%;
+    max-width: 366px;
+}
+
+.test {
+    display: none;
+
+    @media (max-width: 1140px) {
+        display: block;
+    }
+}

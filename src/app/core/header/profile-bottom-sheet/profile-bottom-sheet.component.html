@@ -1,0 +1,14 @@
+<section class="profile-bottom-sheet">
+    <div class="profile-bottom-sheet-handle-container">
+        <div class="profile-bottom-sheet-handle" (click)="openLink($event)"></div>
+    </div>
+
+    <button (click)="openProfileDialog()">
+        <mat-icon>account_circle</mat-icon>
+        Profile
+    </button>
+    <button (click)="logOut()">
+        <mat-icon>logout</mat-icon>
+        Log out
+    </button>
+</section>

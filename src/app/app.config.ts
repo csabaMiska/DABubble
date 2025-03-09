@@ -2,7 +2,8 @@ import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } fr
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideClientHydration, withEventReplay} from '@angular/platform-browser';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
@@ -17,17 +18,20 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideFirebaseApp(() => initializeApp({
-      projectId: firebaseConfig.projectId,
-      appId: firebaseConfig.appId,
-      storageBucket: firebaseConfig.storageBucket,
-      apiKey: firebaseConfig.apiKey,
-      authDomain: firebaseConfig.authDomain,
-      messagingSenderId: firebaseConfig.messagingSenderId,
-      measurementId: firebaseConfig.measurementId
-    })),
+    provideFirebaseApp(() =>
+      initializeApp({
+        projectId: firebaseConfig.projectId,
+        appId: firebaseConfig.appId,
+        storageBucket: firebaseConfig.storageBucket,
+        apiKey: firebaseConfig.apiKey,
+        authDomain: firebaseConfig.authDomain,
+        messagingSenderId: firebaseConfig.messagingSenderId,
+        measurementId: firebaseConfig.measurementId,
+      })
+    ),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
+    provideDatabase(() => getDatabase()),
     provideMessaging(() => getMessaging()),
     provideAnimationsAsync(),
     importProvidersFrom(LayoutModule),

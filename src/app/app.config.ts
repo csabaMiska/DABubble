@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -10,6 +10,8 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { firebaseConfig } from './firebase.config';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { LayoutModule } from '@angular/cdk/layout';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -32,5 +34,6 @@ export const appConfig: ApplicationConfig = {
     provideDatabase(() => getDatabase()),
     provideMessaging(() => getMessaging()),
     provideAnimationsAsync(),
-  ],
+    importProvidersFrom(LayoutModule),
+  ]
 };

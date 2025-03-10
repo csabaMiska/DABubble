@@ -1,25 +1,32 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ValidationErrors } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ValidationErrors,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
+import { FirebaseAuthService } from '../../shared/services/firebase-auth/firebase-auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-log-in',
-  standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './log-in.component.html',
-  styleUrl: './log-in.component.scss'
+  styleUrls: ['./log-in.component.scss'],
+  imports: [CommonModule, ReactiveFormsModule],
 })
 export class LogInComponent {
   loginForm: FormGroup;
-  passwordError: string | null = null; 
+  passwordError: string | null = null;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private firebaseAuthService: FirebaseAuthService
+  ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]], 
-      password: ['', [Validators.required, Validators.minLength(6)]] 
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 
@@ -34,43 +41,32 @@ export class LogInComponent {
   get emailErrors(): ValidationErrors | null {
     return this.email?.errors ?? null;
   }
-  
+
   get passwordErrors(): ValidationErrors | null {
     return this.password?.errors ?? null;
   }
-  
-  // onSubmit() {
-  //   if (this.loginForm.invalid) {
-  //     return; 
-  //   }
-  //   const enteredPassword = this.loginForm.value.password;
-  //   const correctPassword = 'richtigesPasswort';
 
-  //   if (enteredPassword !== correctPassword) {
-  //     this.passwordError = 'Falsches Passwort. Bitte versuche es erneut.';
-  //   } else {
-  //     this.passwordError = null; 
-  //   }
-  // }
-  onSubmit() {
+  async onSubmit() {
     if (this.loginForm.invalid) {
-      // Markiere alle Felder als "touched", um Fehler anzuzeigen
-      Object.keys(this.loginForm.controls).forEach(key => {
-        const control = this.loginForm.get(key);
-        if (control) {
-          control.markAsTouched();
-        }
+      Object.keys(this.loginForm.controls).forEach((key) => {
+        this.loginForm.get(key)?.markAsTouched();
       });
-      return; // Formular ist ungültig, abbrechen
+      return;
     }
-  
-    const enteredPassword = this.loginForm.value.password;
-    const correctPassword = 'richtigesPasswort';
-  
-    if (enteredPassword !== correctPassword) {
-      this.passwordError = 'Falsches Passwort. Bitte versuche es erneut.';
-    } else {
-      this.passwordError = null;
+
+    const { email, password } = this.loginForm.value;
+
+    try {
+      await this.firebaseAuthService.signInWithEmailAndPassword(
+        email,
+        password
+      );
+      console.log('Login erfolgreich!');
+      this.passwordError = null; // Setze den Fehler zurück
+      // Hier kannst du den Nutzer zur Dashboard-Seite weiterleiten, z. B. mit Router.navigate(['/dashboard'])
+    } catch (error) {
+      console.error('Login fehlgeschlagen:', error);
+      this.passwordError = 'Falsche E-Mail oder falsches Passwort.';
     }
   }
 }

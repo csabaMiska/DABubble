@@ -12,7 +12,6 @@ import { MatPassResetSharedModule } from './../../shared/material-module/mat-pas
 
 @Component({
   selector: 'app-password-reset',
-  standalone: true,
   templateUrl: './password-reset.component.html',
   styleUrls: ['./password-reset.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

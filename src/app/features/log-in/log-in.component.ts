@@ -15,7 +15,7 @@ import { ValidationErrors } from '@angular/forms';
 export class LogInComponent {
   loginForm: FormGroup;
   passwordError: string | null = null; 
-  
+
   constructor(private fb: FormBuilder) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]], 
@@ -39,17 +39,38 @@ export class LogInComponent {
     return this.password?.errors ?? null;
   }
   
+  // onSubmit() {
+  //   if (this.loginForm.invalid) {
+  //     return; 
+  //   }
+  //   const enteredPassword = this.loginForm.value.password;
+  //   const correctPassword = 'richtigesPasswort';
+
+  //   if (enteredPassword !== correctPassword) {
+  //     this.passwordError = 'Falsches Passwort. Bitte versuche es erneut.';
+  //   } else {
+  //     this.passwordError = null; 
+  //   }
+  // }
   onSubmit() {
     if (this.loginForm.invalid) {
-      return; 
+      // Markiere alle Felder als "touched", um Fehler anzuzeigen
+      Object.keys(this.loginForm.controls).forEach(key => {
+        const control = this.loginForm.get(key);
+        if (control) {
+          control.markAsTouched();
+        }
+      });
+      return; // Formular ist ungültig, abbrechen
     }
+  
     const enteredPassword = this.loginForm.value.password;
     const correctPassword = 'richtigesPasswort';
-
+  
     if (enteredPassword !== correctPassword) {
       this.passwordError = 'Falsches Passwort. Bitte versuche es erneut.';
     } else {
-      this.passwordError = null; 
+      this.passwordError = null;
     }
   }
 }

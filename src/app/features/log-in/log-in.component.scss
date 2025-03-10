@@ -58,6 +58,11 @@ form {
 button {
     all: unset;
 }
+.new-password-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
 
 .login-new-password {
     color: $purple-2;
@@ -153,7 +158,6 @@ button {
 .error-message {
     color: red;
     font-size: 14px;
-    margin-top: 8px;
   }
   
   .login-input-container {

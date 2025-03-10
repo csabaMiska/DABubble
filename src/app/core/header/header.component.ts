@@ -1,12 +1,14 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ProfileMenuComponent } from './profile-menu/profile-menu.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatBottomSheet, MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import { MatBottomSheet, MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { ProfileBottomSheetComponent } from './profile-bottom-sheet/profile-bottom-sheet.component';
 import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
 import { HeaderSearchBarComponent } from './header-search-bar/header-search-bar.component';
 import { CommonModule } from '@angular/common';
+import { DashboardService } from '../../shared/services/dashboard/dashboard.service';
+
 
 
 @Component({
@@ -18,21 +20,35 @@ import { CommonModule } from '@angular/common';
     MatBottomSheetModule,
     HeaderSearchBarComponent,
   ],
-  providers: [WindowWidthDirective], 
+  providers: [WindowWidthDirective],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
 
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   readonly bottomSheet = inject(MatBottomSheet);
   private windowWidthDirective = inject(WindowWidthDirective);
+  private dashboardService = inject(DashboardService);
 
   menuIsOpen: boolean = false;
   menuIcon: 'keyboard_arrow_down' | 'keyboard_arrow_up' = 'keyboard_arrow_down';
   userStatus: 'online' | 'offline' | 'busy' = 'offline';
+  workSpaceLogoIsVisible: boolean = false;
 
   constructor() { this.userStatus = 'online'; }
+
+  ngOnInit() {
+    this.dashboardService.channelIsOpen$.subscribe(() => this.updateWorkSpaceLogoVisibility());
+    this.dashboardService.threadIsOpen$.subscribe(() => this.updateWorkSpaceLogoVisibility());
+    this.dashboardService.newMessageIsOpen$.subscribe(() => this.updateWorkSpaceLogoVisibility());
+  }
+
+  updateWorkSpaceLogoVisibility() {
+    if (this.windowWidthDirective.mobilViewOn) {
+      this.workSpaceLogoIsVisible = this.dashboardService.isAnyOpen();
+    }
+  }
 
   toogleMenus() {
     if (this.windowWidthDirective.mobilViewOn) {

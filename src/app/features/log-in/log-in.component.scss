@@ -9,6 +9,7 @@ section {
     background-color: #FFFFFF;
     padding: 40px;
     width: 606px;
+    height: 769px;
 }
 
 h1 {
@@ -16,6 +17,8 @@ h1 {
     font-family: 'Nunito';
     font-weight: bold;
     font-size: 46px;
+    margin-block-start: 0;
+    margin-block-end: 0;
 }
 
 p {
@@ -38,15 +41,16 @@ form {
 
 .login-input-container {
     background-color: #ECEEFE;
-    margin-bottom: 32px;
     border-radius: 30px;
-    padding: 32px;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 12px;
+    padding-bottom: 12px;
     display: flex;
     align-items: center;
-
     img {
-        width: 24px;
-        height: 24px;
+        width: 20px;
+        height: 16px;
         padding-right: 32px;
     }
 }
@@ -57,6 +61,11 @@ button {
 
 .login-new-password {
     color: $purple-2;
+    transition: transform ease-out 0.3s;
+    &:hover {
+        cursor: pointer;
+        transform: scale(1.05)
+    }
 }
 
 .login-other-contain {
@@ -67,19 +76,41 @@ button {
 
 .login-seperator {
     width: 100%;
-    height: 1px;
     border: 1px solid $light-purple-lines;
     margin: 16px;
 }
 
-.google-button{
+.google-button-containter-login {
+    width: 100%;
+    box-sizing: border-box;
+
+}
+
+.google-button {
     background-color: #ECEEFE;
     margin-bottom: 32px;
     border-radius: 30px;
-    padding: 32px;
+    font-size: 18px;
+    padding-left: 25px;
+    padding-right: 25px;
     display: flex;
     align-items: center;
+    justify-content: center;
     width: 100%;
+    color: $purple-1;
+    box-sizing: border-box;
+    height: 60px;
+    transition: transform 0.3s ease-out;
+    img {
+        margin-right: 16px;
+        width: 38px;
+        height: 38px;
+    }
+
+    &:hover {
+        cursor: pointer;
+        transform: scale(1.05)
+    }
 }
 
 .background-login {
@@ -89,3 +120,46 @@ button {
     justify-content: center;
     align-items: center;
 }
+
+.login-button-bottom {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    button {
+        margin: 16px;
+        padding-left: 25px;
+        padding-right: 25px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        border: 1px solid $purple-1;
+        border-radius: 30px;
+        color: $purple-1;
+        cursor: pointer;
+        transition: transform 0.3s ease-out;
+
+        &:hover {
+            background-color: $purple-1;
+            color: #FFFFFF;
+            transform: scale(1.05)
+        }
+    }
+}
+
+.margin-btm {
+    margin-bottom: 32px;
+}
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  
+  .login-input-container {
+    margin-bottom: 32px;
+  
+    &.margin-btm {
+      margin-bottom: 32px;
+    }
+  }

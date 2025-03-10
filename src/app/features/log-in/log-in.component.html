@@ -1,29 +1,57 @@
 <div class="background-login">
     <section>
-        <h1>Anmeldung</h1>
-        <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
-        <form action="">
-            <div class="login-input-container">
-                <img src="/assets/login-img/mail.png" alt="">
-                <input id="email" type="email" formControlName="email" placeholder="Gib deine E-Mail ein" />
-            </div>
-            <div class="login-input-container">
-                <img src="/assets/login-img/lock.png" alt="">
-                <input id="password" type="password" formControlName="password" placeholder="Gib dein Passwort ein" />
-            </div>
-        </form>
-        <button class="login-new-password">
-            Passwort vergessen?
-        </button>
-        <div class="login-other-contain">
-            <div class="login-seperator"></div>
-            <p>ODER</p>
-            <div class="login-seperator"></div>
+      <h1>Anmeldung</h1>
+      <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="login-input-container margin-btm">
+          <img src="/assets/login-img/mail.png" alt="">
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="Gib deine E-Mail ein"
+          />
+          <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="error-message">
+            <span *ngIf="emailErrors?.['required']">E-Mail ist erforderlich.</span>
+            <span *ngIf="emailErrors?.['email']">Bitte gib eine gültige E-Mail-Adresse ein.</span>
+          </div>
+          
         </div>
-        <button class="google-button"><img src="/assets/login-img/Google.png" alt="">Anmelden mit Google</button>
         <div class="login-input-container">
-            <button>Anmelden</button>
-            <button>Gäste Login</button>
+          <img src="/assets/login-img/lock.png" alt="">
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            placeholder="Gib dein Passwort ein"
+          />
+          <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="error-message">
+            <span *ngIf="passwordErrors?.['required']">Passwort ist erforderlich.</span>
+            <span *ngIf="passwordErrors?.['minlength']">
+              Passwort muss mindestens 6 Zeichen lang sein.
+            </span>
+          </div>
+          <div *ngIf="passwordError" class="error-message">
+            {{ passwordError }}
+          </div>
         </div>
+        <button type="submit" [disabled]="loginForm.invalid">Anmelden</button>
+      </form>
+  
+      <button class="login-new-password">
+        Passwort vergessen?
+      </button>
+      <div class="login-other-contain">
+        <div class="login-seperator"></div>
+        <p>ODER</p>
+        <div class="login-seperator"></div>
+      </div>
+      <div class="google-button-containter-login">
+        <button class="google-button"><img src="/assets/login-img/Google.png" alt="">Anmelden mit Google</button>
+      </div>
+      <div class="login-button-bottom">
+        <button>Anmelden</button>
+        <button>Gäste Login</button>
+      </div>
     </section>
-</div>
+  </div>

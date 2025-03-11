@@ -2,18 +2,19 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-profile-popup',
+  selector: 'app-my-profile-popup',
   imports: [CommonModule],
-  templateUrl: './profile-popup.component.html',
-  styleUrls: ['./profile-popup.component.scss'],
+  templateUrl: './my-profile-popup.component.html',
+  styleUrl: './my-profile-popup.component.scss',
 })
-export class ProfilePopupComponent implements OnInit {
-  // Kann später entfernt werden wenn Daten direkt von firebase übergeben werden
+export class MyProfilePopupComponent implements OnInit {
   user = {
     name: 'Max Mustermann',
     email: 'max@example.com',
     status: 'offline',
   };
+
+  editingName = false;
 
   constructor() {}
 
@@ -25,5 +26,16 @@ export class ProfilePopupComponent implements OnInit {
         status: 'online',
       };
     }, 1000);
+  }
+
+  enableEditing() {
+    this.editingName = true;
+  }
+
+  saveName(newName: string) {
+    if (newName.trim()) {
+      this.user.name = newName.trim();
+    }
+    this.editingName = false;
   }
 }

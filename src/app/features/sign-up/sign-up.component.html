@@ -1,1 +1,66 @@
-<p>sign-up works!</p>
+<div class="password-reset-wrapper">
+    <mat-card class="password-reset-card" appearance="outlined">
+      <mat-card-actions class="top-actions-desktop">
+        <button class="arrow-back-btn" mat-icon-button>
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+      </mat-card-actions>
+  
+      <mat-card-actions class="top-actions-mobile">
+        <button class="arrow-back-btn" mat-icon-button>
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+      </mat-card-actions>
+  
+      <mat-card-header>
+        <mat-card-title>
+          <h1 class="card-title-mobile">Konto<br />erstellen</h1>
+        </mat-card-title>
+  
+        <mat-card-title>
+          <h1 class="card-title-desktop">Konto erstellen</h1>
+        </mat-card-title>
+      </mat-card-header>
+  
+      <mat-card-content>
+        <form [formGroup]="signUpFormCard">
+          <!-- FORMFIELD NAME LASTNAME -->
+          <mat-form-field style="width: 100%" floatLabel="always">
+            <mat-label style="display: none"></mat-label>
+            <mat-icon matPrefix>perm_identity</mat-icon>
+            <input class="mat-input" type="text" matInput formControlName="confirmName" placeholder="Name und Nachname">
+            @if (nameError() ) {
+              <mat-error>{{ nameError }}</mat-error>
+            }
+          </mat-form-field>
+  
+          <!-- FORMFIELD EMAIL -->
+          <mat-form-field style="width: 100%" floatLabel="always">
+            <mat-label style="display: none"></mat-label>
+            <mat-icon matPrefix>email</mat-icon>
+            <input class="mat-input" type="email" matInput formControlName="email" placeholder="beispielname@email.de">
+            @if (emailError()  ) {
+              <mat-error>{{ emailError }}</mat-error>
+            }
+          </mat-form-field>
+  
+          <!-- FORMFIELD PASSWORD -->
+          <mat-form-field style="width: 100%" floatLabel="always">
+            <mat-label style="display: none"></mat-label>
+            <mat-icon matPrefix>lock_outline</mat-icon>
+            <input class="mat-input" type="password" matInput formControlName="password" placeholder="Neues Passwort">
+            @if (passwordError() ) {
+              <mat-error>{{ passwordError }}</mat-error>
+            }
+          </mat-form-field>
+        </form>
+      </mat-card-content>
+  
+      <mat-card-actions class="bottom-actions">
+        <button class="confirm-password-btn" mat-button [disabled]="signUpFormCard.invalid || !passwordsMatch()">
+          Weiter
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  

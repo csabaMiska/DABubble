@@ -1,0 +1,25 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.profile-menu {
+    @include dFlex($fd: column);
+    width: 282px;
+    height: 181px;
+    gap: 15px;
+
+    button {
+        border: none;
+        background: transparent;
+        width: 222px;
+        height: 53px;
+        color: $black;
+        font-size: 24px;
+
+        &:hover {
+            cursor: pointer;
+            color: $purple-3;
+            background-color: $bgcolor;
+            border-radius: 100px;
+        }
+    }
+}

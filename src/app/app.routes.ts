@@ -58,4 +58,4 @@ export const routes: Routes = [
 ];
 
 // Später müssen wir noch die [AuthGuard] einrichten, dass ohne login die Home keine erreichen kann.
-// Developer Mode lassen wir erst so einfach zu zwiechen die Seiten zu naviegieren muss mann nicht immer anmelden.
+// Developer Mode lassen wir erst so einfach zu zwischen die Seiten zu naviegieren muss mann nicht immer anmelden.

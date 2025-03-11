@@ -1,33 +1,38 @@
-@use 'fonts.scss' as font;
-@use '@angular/material' as mat;
+@use "fonts.scss" as font;
+@use "@angular/material" as mat;
 @include mat.core();
 
 :root {
-    $vh: 100%
+  $vh: 100%;
 }
 
 .full_height {
-    height: calc(var(--vh, 1vh) * 100);
+  height: calc(var(--vh, 1vh) * 100);
 }
 
-$theme: mat.define-theme((color: (theme-type: light,
-                primary: mat.$magenta-palette,
-            )));
+$theme: mat.define-theme(
+  (
+    color: (
+      theme-type: light,
+      primary: mat.$magenta-palette,
+    ),
+  )
+);
 
 html {
-    @include mat.core-theme($theme);
-    @include mat.all-component-themes($theme);
+  @include mat.core-theme($theme);
+  @include mat.all-component-themes($theme);
 }
 
 body {
-    height: 100%;
-    margin: 0;
-    font-family: 'Nunito';
+  height: 100%;
+  margin: 0;
+  font-family: "Nunito";
 }
 
 //Colors
 $white: rgba(255, 255, 255, 1);
-$bgcolor: rgba(236, 238, 254, 1);
+$bgcolor: rgb(255, 255, 255);
 $light-purple-lines: rgba(173, 176, 217, 1);
 $black: rgba(0, 0, 0, 1);
 $text-gray: rgba(104, 104, 104, 1);

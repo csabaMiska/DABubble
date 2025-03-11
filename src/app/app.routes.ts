@@ -7,6 +7,8 @@ import { PrivacyPolicyComponent } from './features/privacy-policy/privacy-policy
 import { HomeComponent } from './features/home/home.component';
 import { PasswordResetComponent } from './features/password-reset/password-reset.component';
 import { PasswordNewComponent } from './features/password-new/password-new.component';
+import { ProfilePopupComponent } from './features/profile-popup/profile-popup.component';
+import { MyProfilePopupComponent } from './features/my-profile-popup/my-profile-popup.component';
 
 export const routes: Routes = [
   // Componenten welche ohne Registration sehbar sind
@@ -16,6 +18,8 @@ export const routes: Routes = [
   { path: 'pass-new', component: PasswordNewComponent },
   { path: 'impressum', component: ImpressumComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
+  { path: 'profile-popup', component: ProfilePopupComponent },
+  { path: 'my-profile-popup', component: MyProfilePopupComponent },
 
   // Componenten welche nur nach LogIn sehbar sind
   {

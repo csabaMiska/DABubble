@@ -17,17 +17,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
     provideFirebaseApp(() => initializeApp(firebaseConfig)), 
-    // provideFirebaseApp(() =>
-    //   initializeApp({
-    //     projectId: firebaseConfig.projectId,
-    //     appId: firebaseConfig.appId,
-    //     storageBucket: firebaseConfig.storageBucket,
-    //     apiKey: firebaseConfig.apiKey,
-    //     authDomain: firebaseConfig.authDomain,
-    //     messagingSenderId: firebaseConfig.messagingSenderId,
-    //     measurementId: firebaseConfig.measurementId,
-    //   })
-    // ),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideDatabase(() => getDatabase()),

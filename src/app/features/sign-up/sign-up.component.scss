@@ -1,246 +1,273 @@
 .password-reset-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: cadetblue;
-    background-color: #f0f1fe;
-  }
-  
-  .password-reset-card {
-    position: relative !important;
-    max-width: fit-content;
-    padding: 2.5rem 0;
-    width: clamp(15rem, 80vw + 2rem, 44rem);
-    border: none !important;
-    border-radius: 1.9rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3rem;
-    background-color: white;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  ::ng-deep .mat-mdc-card-header-text {
-    gap: 2rem;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .card-title-mobile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: cadetblue;
+  background-color: #f0f1fe;
+}
+
+.password-reset-card {
+  position: relative !important;
+  max-width: fit-content;
+  padding: 2.5rem 0;
+  width: clamp(15rem, 80vw + 2rem, 44rem);
+  border: none !important;
+  border-radius: 1.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep .mat-mdc-card-header-text {
+  gap: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title-mobile {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  color: #444df2;
+  font-weight: 700;
+  font-size: 2rem;
+  font-size: clamp(1rem, 1vw + 1rem, 2.88rem);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.card-title-desktop {
+  display: none;
+}
+
+::ng-deep mat-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+// ::ng-deep .mat-mdc-card-header {
+//   padding: 0 !important;
+//   position: relative !important;
+// }
+
+::ng-deep .mat-mdc-card-content {
+  padding: 0 !important;
+  gap: 0.5rem;
+}
+
+mat-card-content {
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+}
+
+form {
+  width: 80%;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  border-radius: 2rem !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+::ng-deep .mdc-line-ripple {
+  display: none !important;
+}
+
+::ng-deep .mat-mdc-form-field-required-marker {
+  display: none !important;
+}
+
+::ng-deep .mat-mdc-form-field-infix {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0.2rem !important;
+}
+
+::ng-deep .mat-form-field {
+  position: relative;
+}
+
+::ng-deep .mat-form-field .mat-input {
+  padding-left: 30px;
+  text-align: left;
+  width: calc(100% - 30px);
+  background-color: #eceefe !important;
+}
+
+::ng-deep .mat-form-field label {
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+}
+
+// Das Input-Feld mit der Fehlermeldung.
+::ng-deep .mat-mdc-form-field {
+  margin-bottom: 0.6rem;
+}
+
+// Das Input-Feld mit seinen Icons usw.
+::ng-deep .mat-mdc-form-field-flex {
+  padding: 0 1rem;
+}
+
+::ng-deep mat-form-field:hover mat-icon {
+  color: #000000 !important;
+}
+
+::ng-deep mat-form-field:focus-within mat-icon {
+  color: #000000 !important;
+}
+
+::ng-deep input::placeholder {
+  opacity: 1 !important;
+  color: #686868 !important;
+}
+
+::ng-deep input:focus::placeholder {
+  opacity: 0 !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-text-field-wrapper {
+  outline: 0.1rem solid #000000 !important;
+  outline-offset: 1px;
+  box-shadow: 0 0 12px rgba(151, 71, 255, 0.5) !important;
+}
+
+::ng-deep .mdc-text-field {
+  background-color: #eceefe !important;
+}
+
+.top-actions-mobile {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+}
+
+.top-actions-desktop {
+  display: none;
+}
+
+.arrow-back-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.arrow-back-btn:hover {
+  background-color: #eceefe !important;
+}
+
+.arrow-back-btn mat-icon {
+  color: black !important;
+}
+
+.arrow-back-btn:hover mat-icon {
+  color: #444df2 !important;
+  font-weight: bold !important;
+}
+
+.bottom-actions {
+  width: 80%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.confirm-password-btn {
+  width: 12rem !important;
+  height: 3rem !important;
+  max-width: 200px;
+  background-color: #797ef3 !important;
+  color: white !important;
+  border-radius: 6.25rem;
+}
+
+.confirm-password-btn:disabled {
+  background-color: #686868 !important;
+  color: white !important;
+  cursor: not-allowed;
+}
+
+.confirm-password-btn:not(:disabled):hover {
+  background-color: #444df2 !important;
+  color: white !important;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/* Verstecke die gesamte CHECKBOX -> mdc-checkbox-Komponente */
+::ng-deep .mdc-checkbox {
+  display: none !important;
+}
+
+/* Stil für das CHECKBOX -> Label */
+::ng-deep .mdc-label {
+  display: flex;
+  align-items: end;
+  padding: 0 !important;
+  gap: 0.5rem !important;
+}
+
+/* Färbe die Icons (check_box_outline_blank und check_box) */
+mat-checkbox .mat-icon {
+  color: #444DF2; /* Beispiel: Farbe auf das Icon anwenden */
+}
+
+/* Hover-Effekt für das Icon */
+mat-checkbox .mat-icon:hover {
+  background-color: rgba(121, 125, 243, 0.317); /* Leichter Hintergrund */
+  border-radius: 50%; /* Damit der Hintergrund rund aussieht */
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+@media screen and (min-width: 721px) {
+  .card-title-desktop {
     display: flex;
     justify-content: center;
     text-align: center;
-    color: #444df2;
+    color: #797EF3;
     font-weight: 700;
-    font-size: 2rem;
     font-size: clamp(1rem, 1vw + 1rem, 2.88rem);
     line-height: 1.2;
     margin: 0;
   }
-  
-  .card-title-desktop {
+
+  .card-title-mobile {
+    display: none !important;
+  }
+
+  .top-actions-mobile {
     display: none;
   }
-  
-  ::ng-deep mat-error {
+
+  .top-actions-desktop {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-    padding: 0.5rem 0;
-  }
-  
-  // ::ng-deep .mat-mdc-card-header {
-  //   padding: 0 !important;
-  //   position: relative !important;
-  // }
-  
-  ::ng-deep .mat-mdc-card-content {
-    padding: 0 !important;
-    gap: 0.5rem;
-  }
-  
-  mat-card-content {
-    flex-direction: column;
-    display: flex;
-    align-items: center;
-  }
-  
-  form {
-    width: 80%;
-  }
-  
-  ::ng-deep .mat-mdc-text-field-wrapper {
-    border-radius: 2rem !important;
-    border: none !important;
-    box-shadow: none !important;
-  }
-  
-  ::ng-deep .mdc-line-ripple {
-    display: none !important;
-  }
-  
-  ::ng-deep .mat-mdc-form-field-required-marker {
-    display: none !important;
-  }
-  
-  ::ng-deep .mat-mdc-form-field-infix {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 0.2rem !important;
-  }
-  
-  ::ng-deep .mat-form-field {
-    position: relative;
-  }
-  
-  ::ng-deep .mat-form-field .mat-input {
-    padding-left: 30px;
-    text-align: left;
-    width: calc(100% - 30px);
-    background-color: #eceefe !important;
-  }
-  
-  ::ng-deep .mat-form-field label {
-    position: absolute;
-    top: 50%;
-    left: 8px;
-    transform: translateY(-50%);
-    display: flex;
-    align-items: center;
-  }
-  
-  // Das Input-Feld mit der Fehlermeldung.
-  ::ng-deep .mat-mdc-form-field {
-    margin-bottom: 0.6rem;
-  }
-  
-  // Das Input-Feld mit seinen Icons usw.
-  ::ng-deep .mat-mdc-form-field-flex {
-    padding: 0 1rem;
-  }
-  
-  ::ng-deep mat-form-field:hover mat-icon {
-    color: #000000 !important;
-  }
-  
-  ::ng-deep mat-form-field:focus-within mat-icon {
-    color: #000000 !important;
-  }
-  
-  ::ng-deep input::placeholder {
-    opacity: 1 !important;
-    color: #686868 !important;
-  }
-  
-  ::ng-deep input:focus::placeholder {
-    opacity: 0 !important;
-  }
-  
-  ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-text-field-wrapper {
-    outline: 0.1rem solid #000000 !important;
-    outline-offset: 1px;
-    box-shadow: 0 0 12px rgba(151, 71, 255, 0.5) !important;
-  }
-  
-  ::ng-deep .mdc-text-field {
-    background-color: #eceefe !important;
-  }
-  
-  .top-actions-mobile {
     position: absolute;
     top: 1rem;
     left: 1rem;
   }
-  
+}
+
+@media screen and (min-width: 1024px) {
   .top-actions-desktop {
-    display: none;
-  }
-  
-  .arrow-back-btn {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-  
-  .arrow-back-btn:hover {
-    background-color: #eceefe !important;
-  }
-  
-  .arrow-back-btn mat-icon {
-    color: black !important;
-  }
-  
-  .arrow-back-btn:hover mat-icon {
-    color: #444df2 !important;
-    font-weight: bold !important;
-  }
-  
-  .bottom-actions {
-    width: 80%;
     display: flex;
-    justify-content: flex-end;
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
   }
-  
-  .confirm-password-btn {
-    width: 12rem !important;
-    height: 3rem !important;
-    max-width: 200px;
-    background-color: #797ef3 !important;
-    color: white !important;
-    border-radius: 6.25rem;
-  }
-  
-  .confirm-password-btn:disabled {
-    background-color: #686868 !important;
-    color: white !important;
-    cursor: not-allowed;
-  }
-  
-  .confirm-password-btn:not(:disabled):hover {
-    background-color: #444df2 !important;
-    color: white !important;
-  }
-  
-  @media screen and (min-width: 721px) {
-    .card-title-desktop {
-      display: flex;
-      justify-content: center;
-      text-align: center;
-      color: #444df2;
-      font-weight: 700;
-      font-size: clamp(1rem, 1vw + 1rem, 2.88rem);
-      line-height: 1.2;
-      margin: 0;
-    }
-  
-    .card-title-mobile {
-      display: none !important;
-    }
-  
-    .top-actions-mobile {
-      display: none;
-    }
-  
-    .top-actions-desktop {
-      display: flex;
-      position: absolute;
-      top: 1rem;
-      left: 1rem;
-    }
-  }
-  
-  @media screen and (min-width: 1024px) {
-    .top-actions-desktop {
-      display: flex;
-      position: absolute;
-      top: 2rem;
-      left: 2rem;
-    }
-  }
-  
+}

@@ -6,10 +6,11 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { MatSharedModule } from '../../shared/material-module/mat-shared.module';
+import { MatPseudoCheckboxModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-sign-up',
-  imports: [ReactiveFormsModule, MatSharedModule],
+  imports: [MatSharedModule, ReactiveFormsModule, MatPseudoCheckboxModule],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss',
 })
@@ -35,44 +36,5 @@ export class SignUpComponent implements OnInit {
   clickEvent(event: MouseEvent): void {
     this.hide.set(!this.hide());
     event.stopPropagation();
-  }
-
-  // Methode zur Validierung des Namens
-  nameError(): string | null {
-    const control = this.signUpFormCard.get('confirmName');
-    if (control?.hasError('required')) {
-      return 'Name ist erforderlich';
-    }
-    return null;
-  }
-
-  // Methode zur Validierung der E-Mail
-  emailError(): string | null {
-    const control = this.signUpFormCard.get('email');
-    if (control?.hasError('required')) {
-      return 'E-Mail ist erforderlich';
-    }
-    if (control?.hasError('email')) {
-      return 'Ungültige E-Mail-Adresse';
-    }
-    return null;
-  }
-
-  // Methode zur Validierung des Passworts
-  passwordError(): string | null {
-    const control = this.signUpFormCard.get('password');
-    if (control?.hasError('required')) {
-      return 'Passwort ist erforderlich';
-    }
-    return null;
-  }
-
-  // Methode zur Validierung des Radio Buttons
-  radioError(): string | null {
-    const control = this.signUpFormCard.get('agree');
-    if (control?.hasError('requiredTrue')) {
-      return 'Sie müssen den Nutzungsbedingungen zustimmen';
-    }
-    return null;
   }
 }

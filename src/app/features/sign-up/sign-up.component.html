@@ -29,9 +29,9 @@
           <mat-label style="display: none"></mat-label>
           <mat-icon matPrefix>perm_identity</mat-icon>
           <input class="mat-input" type="text" matInput formControlName="confirmName" placeholder="Name und Nachname">
-          @if (nameError() ) {
-          <mat-error>{{ nameError }}</mat-error>
-          }
+          <mat-error *ngIf="signUpFormCard.get('confirmName')?.hasError('required')">
+            Name ist erforderlich.
+          </mat-error>
         </mat-form-field>
 
         <!-- FORMFIELD EMAIL -->
@@ -39,9 +39,9 @@
           <mat-label style="display: none"></mat-label>
           <mat-icon matPrefix>email</mat-icon>
           <input class="mat-input" type="email" matInput formControlName="email" placeholder="beispielname@email.de">
-          @if (emailError() ) {
-          <mat-error>{{ emailError }}</mat-error>
-          }
+          <mat-error *ngIf="signUpFormCard.get('email')?.hasError('required')">
+            Email ist erforderlich.
+          </mat-error>
         </mat-form-field>
 
         <!-- FORMFIELD PASSWORD -->
@@ -49,27 +49,27 @@
           <mat-label style="display: none"></mat-label>
           <mat-icon matPrefix>lock_outline</mat-icon>
           <input class="mat-input" type="password" matInput formControlName="password" placeholder="Neues Passwort">
-          @if (passwordError() ) {
-          <mat-error>{{ passwordError }}</mat-error>
-          }
+          <mat-error *ngIf="signUpFormCard.get('password')?.hasError('required')">
+            Passwort ist erforderlich.
+          </mat-error>
         </mat-form-field>
 
-        <!-- FORMFIELD RADIO BUTTON -->
-        <mat-radio-group formControlName="agree" class="mat-radio-group" aria-labelledby="radio-group-label">
-          <mat-radio-button value="agree">Ich stimme den Nutzungsbedingungen zu</mat-radio-button>
-        </mat-radio-group>
+        <!-- FORMFIELD CHECKBOX -->
+        <mat-checkbox formControlName="agree">
+          <!-- <mat-icon *ngIf="!signUpFormCard.get('agree')?.value">check_box_outline_blank</mat-icon>
+          <mat-icon *ngIf="signUpFormCard.get('agree')?.value">check_box</mat-icon> -->
+          <mat-icon *ngIf="!signUpFormCard.get('agree')?.value"
+            [ngClass]="{'checked': signUpFormCard.get('agree')?.value}">check_box_outline_blank</mat-icon>
+          <mat-icon *ngIf="signUpFormCard.get('agree')?.value"
+            [ngClass]="{'checked': signUpFormCard.get('agree')?.value}">check_box</mat-icon>
 
-        @if (radioError()) {
-        <mat-error>
-          Sie müssen den Nutzungsbedingungen zustimmen
-        </mat-error>
-        }
-
+          Ich stimme der Datenschutzerklärung zu.
+        </mat-checkbox>
       </form>
     </mat-card-content>
 
     <mat-card-actions class="bottom-actions">
-      <button class="confirm-password-btn" mat-button [disabled]="signUpFormCard.invalid">
+      <button class="confirm-password-btn" mat-button [disabled]="!signUpFormCard.valid">
         Weiter
       </button>
     </mat-card-actions>

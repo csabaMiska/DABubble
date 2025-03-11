@@ -5,10 +5,9 @@ import {
   inject,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { merge } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatPassResetSharedModule } from './../../shared/material-module/mat-pass-reset.module';
+import { MatSharedModule } from '../../shared/material-module/mat-shared.module';
 
 @Component({
   selector: 'app-password-reset',
@@ -16,7 +15,7 @@ import { MatPassResetSharedModule } from './../../shared/material-module/mat-pas
   templateUrl: './password-reset.component.html',
   styleUrls: ['./password-reset.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatPassResetSharedModule, MatFormFieldModule, ReactiveFormsModule],
+  imports: [MatSharedModule, ReactiveFormsModule],
 })
 export class PasswordResetComponent {
   private fb = inject(FormBuilder);

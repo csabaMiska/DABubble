@@ -11,11 +11,11 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatPassNewSharedModule } from './../../shared/material-module/mat-pass-new.module';
+import { MatSharedModule } from '../../shared/material-module/mat-shared.module';
 
 @Component({
   selector: 'app-password-new',
-  imports: [MatPassNewSharedModule, ReactiveFormsModule],
+  imports: [MatSharedModule, ReactiveFormsModule],
   templateUrl: './password-new.component.html',
   styleUrls: ['./password-new.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

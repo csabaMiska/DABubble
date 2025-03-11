@@ -5,11 +5,11 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatPassNewSharedModule } from './../../shared/material-module/mat-pass-new.module';
+import { MatSharedModule } from '../../shared/material-module/mat-shared.module';
 
 @Component({
   selector: 'app-sign-up',
-  imports: [MatPassNewSharedModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule, MatSharedModule],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss',
 })
@@ -22,23 +22,14 @@ export class SignUpComponent implements OnInit {
     this.initForm();
   }
 
-  // Erstelle die Form als eine FormGrout, um die Passwort übereinstimmung zu Prüfen und setzen.
   private initForm(): void {
     this.signUpFormCard = this.fb.group({
       confirmName: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]], // E-Mail-Feld ergänzt
+      email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
-      confirmPassword: ['', [Validators.required]],
+      agree: [false, [Validators.requiredTrue]],
     });
   }
-
-  // // Methode zur Überprüfung der Passwortübereinstimmung
-  // passwordsMatch(): boolean {
-  //   return (
-  //     this.signUpFormCard.get('password')?.value ===
-  //     this.signUpFormCard.get('confirmPassword')?.value
-  //   );
-  // }
 
   // Methode zum Umschalten der Passwortsichtbarkeit
   clickEvent(event: MouseEvent): void {
@@ -72,6 +63,15 @@ export class SignUpComponent implements OnInit {
     const control = this.signUpFormCard.get('password');
     if (control?.hasError('required')) {
       return 'Passwort ist erforderlich';
+    }
+    return null;
+  }
+
+  // Methode zur Validierung des Radio Buttons
+  radioError(): string | null {
+    const control = this.signUpFormCard.get('agree');
+    if (control?.hasError('requiredTrue')) {
+      return 'Sie müssen den Nutzungsbedingungen zustimmen';
     }
     return null;
   }

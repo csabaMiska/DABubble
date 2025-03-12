@@ -9,6 +9,7 @@
         height: 100%;
         @include dFlex($jc: start, $ai: start);
         gap: 20px;
+        overflow-x: hidden;
 
         .app-channel {
             height: 100%;
@@ -20,6 +21,10 @@
             height: 100%;
             max-width: 100%;
             flex-grow: 0.56;
+
+            @media (max-width: 800px) {
+                flex-grow: 1;
+            }
         }
 
         .app-new-message {

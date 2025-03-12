@@ -1,15 +1,49 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MaterialResetSharedModule } from '../../shared/material-module/password-reset/mat-reset.module';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  signal,
+  inject,
+} from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { merge } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatSharedModule } from '../../shared/material-module/mat-shared.module';
+
 @Component({
   selector: 'app-password-reset',
-  imports: [MaterialResetSharedModule],
+  standalone: true,
   templateUrl: './password-reset.component.html',
   styleUrls: ['./password-reset.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatSharedModule, ReactiveFormsModule],
 })
 export class PasswordResetComponent {
-  emailFormReset = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
+  private fb = inject(FormBuilder);
+
+  emailFormReset = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
   });
+
+  errorMessage = signal('');
+
+  constructor() {
+    merge(
+      this.emailFormReset.get('email')!.statusChanges,
+      this.emailFormReset.get('email')!.valueChanges
+    )
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.updateErrorMessage());
+  }
+
+  private updateErrorMessage() {
+    const emailControl = this.emailFormReset.get('email');
+
+    if (emailControl?.hasError('required')) {
+      this.errorMessage.set('Die E-Mail ist erforderlich.');
+    } else if (emailControl?.hasError('email')) {
+      this.errorMessage.set('Bitte geben Sie eine gültige E-Mail-Adresse ein.');
+    } else {
+      this.errorMessage.set('');
+    }
+  }
 }

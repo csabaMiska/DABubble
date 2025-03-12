@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { ProfileMenuComponent } from './profile-menu/profile-menu.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,8 +8,6 @@ import { WindowWidthDirective } from '../../shared/directives/window-width/windo
 import { HeaderSearchBarComponent } from './header-search-bar/header-search-bar.component';
 import { CommonModule } from '@angular/common';
 import { DashboardService } from '../../shared/services/dashboard/dashboard.service';
-
-
 
 @Component({
   selector: 'app-header',
@@ -35,6 +33,7 @@ export class HeaderComponent implements OnInit {
   menuIcon: 'keyboard_arrow_down' | 'keyboard_arrow_up' = 'keyboard_arrow_down';
   userStatus: 'online' | 'offline' | 'busy' = 'offline';
   workSpaceLogoIsVisible: boolean = false;
+  @Output() toogleSidenav = new EventEmitter<void>();
 
   constructor() { this.userStatus = 'online'; }
 
@@ -48,6 +47,11 @@ export class HeaderComponent implements OnInit {
     if (this.windowWidthDirective.mobilViewOn) {
       this.workSpaceLogoIsVisible = this.dashboardService.isAnyOpen();
     }
+  }
+
+  handleSidenavToggle() {
+    this.toogleSidenav.emit();
+    this.workSpaceLogoIsVisible = false;
   }
 
   toogleMenus() {

@@ -43,6 +43,7 @@ export class HomeComponent {
 
   toggleSidenav() {
     this.sideNavIsOpen = !this.sideNavIsOpen;
+    this.sidenav.toggle();
     this.updateToggleButton();
   }
 

@@ -1,6 +1,6 @@
-<app-header></app-header>
+<app-header (toogleSidenav)="toggleSidenav()"></app-header>
 <mat-sidenav-container class="sidenav_container" [hasBackdrop]="false">
-    <mat-sidenav #sidenav [mode]="'push'" [position]="'start'" [opened]="sideNavIsOpen">
+    <mat-sidenav #sidenav [mode]="'push'" [position]="'start'" [opened]="'true'">
         <div class="sidenav-content">
             <button (click)="openNewMessage()">New Message</button>
             <button (click)="openChannel()">Test Channel</button>

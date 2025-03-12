@@ -11,8 +11,41 @@ section {
     width: 606px;
 }
 
-.login-daBubble-logo{
-  
+.background-login {
+    background-color: #ECEEFE;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-teaser{
+    width:1920px;
+    margin-top: 75px;
+    margin-left: 75px;
+    margin-right: 75px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.login-teaser-left{
+  width:242px;
+  height:70px;
+}
+
+.login-teaser-right{
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    p{
+        margin-block-start: 0;
+    }
+    button{
+        color:$purple-2;
+        cursor: pointer;
+       
+    }
 }
 
 h1 {
@@ -121,13 +154,7 @@ button {
     }
 }
 
-.background-login {
-    background-color: #ECEEFE;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+
 
 .login-button-bottom {
     width: 100%;

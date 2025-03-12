@@ -6,19 +6,19 @@ import { ImpressumComponent } from './features/impressum/impressum.component';
 import { PrivacyPolicyComponent } from './features/privacy-policy/privacy-policy.component';
 import { HomeComponent } from './features/home/home.component';
 import { PasswordResetComponent } from './features/password-reset/password-reset.component';
+import { AuthGuard } from './auth.guard';
 
 export const routes: Routes = [
-    // Componenten welche ohne Registration sehbar sind
     { path: 'login', component: LogInComponent },
     { path: 'signup', component: SignUpComponent},
     { path: 'reset', component: PasswordResetComponent },
     { path: 'impressum', component: ImpressumComponent},
     { path: 'privacy-policy', component: PrivacyPolicyComponent},
 
-    // Componenten welche nur nach LogIn sehbar sind
     { 
         path: 'home', 
         component: HomeComponent,
+        canActivate: [AuthGuard],
         children: [
             {
                 path: '',

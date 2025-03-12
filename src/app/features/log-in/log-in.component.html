@@ -1,7 +1,11 @@
 <div class="background-login">
-    <!-- <section>
-        <img class="login-daBubble-logo" src="/public/assets/login-img/1. Logo animation.png" alt="">
-    </section> -->
+    <div class="login-teaser">
+        <img class="login-teaser-left" src="/assets/login-img/1. Logo animation.png" alt="">
+        <div class="login-teaser-right">
+            <p>Neu bei DABubble?</p>
+            <button>Konto erstellen</button>
+        </div>
+    </div>
     <section>
         <h1>Anmeldung</h1>
         <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
@@ -39,8 +43,9 @@
                 <div class="login-seperator"></div>
             </div>
             <div class="google-button-containter-login">
-                <button class="google-button"><img src="/assets/login-img/Google.png" alt="">Anmelden mit
-                    Google</button>
+                <button class="google-button" (click)="signInWithGoogle()">
+                    <img src="/assets/login-img/Google.png" alt="">Anmelden mit Google
+                </button>
             </div>
             <div class="login-button-bottom">
                 <button type="submit" [disabled]="loginForm.invalid">Anmelden</button>

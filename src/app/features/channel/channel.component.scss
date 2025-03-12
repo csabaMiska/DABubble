@@ -1,0 +1,14 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.channel-container {
+    height: 100%;
+
+    .channel-content {
+        background-color: $white;
+        height: 100%;
+        width: 100%;
+        border-radius: 30px;
+        @include dFlex($ai: center);
+    }
+}

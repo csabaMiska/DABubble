@@ -1,4 +1,25 @@
-<app-header></app-header>
+<app-header (toogleSidenav)="toggleSidenav()"></app-header>
+<mat-sidenav-container class="sidenav_container" [hasBackdrop]="false">
+    <mat-sidenav #sidenav [mode]="'push'" [position]="'start'" [opened]="'true'">
+        <div class="sidenav-content">
+            <p>Das ist das Test Nav!</p>
+            <p>Open Test New Message Component.</p>
+            <button (click)="openNewMessage()">New Message</button>
+            <p>Open Test Channel Component.</p>
+            <button (click)="openChannel()">Test Channel</button>
+        </div>
+    </mat-sidenav>
 
-<!-- Page Content outlet -->
-<router-outlet name="pageContentOutlet"></router-outlet>
+    <mat-sidenav-content>
+        <router-outlet name="pageContentOutlet"></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+
+<div class="toogle-sidenav-container">
+    <div class="toggle-sidenav-button" (click)="toggleSidenav()">
+        Workspace-Menü 
+        {{ toggleButtonText }}
+        <div *ngIf="sideNavIsOpen" class="toggle-sidenav-button-icon hide-icon"></div>
+        <div *ngIf="!sideNavIsOpen" class="toggle-sidenav-button-icon show-icon"></div>
+    </div>
+</div>

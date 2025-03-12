@@ -1,3 +1,7 @@
-<div class="test-container">
-    <app-header-search-bar class="test"></app-header-search-bar>
-</div>
+<section class="dashboard-container">
+    <div class="dashboard-content">
+        <app-channel class="app-channel" *ngIf="channelIsOpen"></app-channel>
+        <app-thread class="app-thread" *ngIf="threadIsOpen"></app-thread>
+        <app-new-message class="app-new-message" *ngIf="newMessageIsOpen"></app-new-message>
+    </div>
+</section>

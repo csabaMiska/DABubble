@@ -9,6 +9,7 @@
         height: fit-content;
         padding: 25px 34px 20px 45px;
         @include dFlex($jc: space-between, $ai: center);
+        z-index: 500;
 
         @media (max-width: 800px) {
             padding: 17.5px 16px 17.5px 16px;
@@ -31,6 +32,35 @@
     .header-title {
         @media (max-width: 450px) {
             font-size: 20px;
+        }
+    }
+}
+
+.workspace-logo-container {
+    @include dFlex();
+    gap: 16px;
+    flex-grow: 1;
+    
+    .workspace-icon {
+        margin-right: -16px
+    }
+
+    .workspace-logo {
+        @media (max-width: 800px) {
+            width: 50px;
+            height: 50px;
+        }
+    }
+
+    &:hover {
+        cursor: pointer;
+
+        .workspace-icon {
+           color: $purple-3;
+        }
+
+        .workspace-title {
+            color: $purple-3
         }
     }
 }

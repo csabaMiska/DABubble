@@ -9,20 +9,21 @@ import { PasswordResetComponent } from './features/password-reset/password-reset
 import { PasswordNewComponent } from './features/password-new/password-new.component';
 import { ProfilePopupComponent } from './features/profile-popup/profile-popup.component';
 import { MyProfilePopupComponent } from './features/my-profile-popup/my-profile-popup.component';
+import { ChooseAvatarComponent } from './features/choose-avatar/choose-avatar.component';
 
 export const routes: Routes = [
   // Komponenten welche ohne Registration sehbar sind
   { path: 'sign-in', component: LogInComponent },
   { path: 'sign-up', component: SignUpComponent },
+  { path: 'choose-avatar', component: ChooseAvatarComponent },
   { path: 'pass-reset', component: PasswordResetComponent },
   { path: 'pass-new', component: PasswordNewComponent },
   { path: 'profile-popup', component: ProfilePopupComponent },
   { path: 'my-profile-popup', component: MyProfilePopupComponent },
   { path: 'impressum', component: ImpressumComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
-  
-  // Komponenten welche nur nach LogIn sehbar sind
 
+  // Komponenten welche nur nach LogIn sehbar sind
 
   {
     path: 'home',

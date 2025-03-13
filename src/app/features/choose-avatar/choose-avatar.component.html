@@ -1,0 +1,48 @@
+<div class="password-reset-wrapper">
+    <mat-card class="password-reset-card" appearance="outlined">
+        <mat-card-actions class="top-actions-desktop">
+            <button class="arrow-back-btn" mat-icon-button>
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+        </mat-card-actions>
+
+        <mat-card-actions class="top-actions-mobile">
+            <button class="arrow-back-btn" mat-icon-button>
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+        </mat-card-actions>
+
+        <mat-card-header>
+            <mat-card-title>
+                <h1 class="card-title-mobile">Wähle deinen<br />Avatar</h1>
+            </mat-card-title>
+
+            <mat-card-title>
+                <h1 class="card-title-desktop">Wähle deinen Avatar</h1>
+            </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+
+
+            <p>Wähle deinen Avatar.</p>
+            <img mat-card-avatar>
+           
+
+            <form [formGroup]="avatarChosenForm">
+                <img mat-card-image>
+                <img mat-card-image>
+                <img mat-card-image>
+                <img mat-card-image>
+                <img mat-card-image>
+                <img mat-card-image>
+            </form>
+        </mat-card-content>
+
+        <mat-card-actions class="bottom-actions">
+            <button class="confirm-chosen-btn" mat-button [disabled]="avatarChosenForm.invalid">
+                Weiter
+            </button>
+        </mat-card-actions>
+    </mat-card>
+</div>

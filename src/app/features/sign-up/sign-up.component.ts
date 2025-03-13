@@ -7,6 +7,8 @@ import {
 } from '@angular/forms';
 import { MatSharedModule } from '../../shared/material-module/mat-shared.module';
 import { MatPseudoCheckboxModule } from '@angular/material/core';
+import { FirebaseService } from '../../shared/services/firebase/firebase.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
@@ -16,6 +18,8 @@ import { MatPseudoCheckboxModule } from '@angular/material/core';
 })
 export class SignUpComponent implements OnInit {
   private fb = inject(FormBuilder);
+  private firebaseService = inject(FirebaseService); // FirebaseService wird injiziert
+  private router = inject(Router); // Router wird injiziert
   signUpFormCard!: FormGroup;
   hide = signal(true); // Signal für Passwortsichtbarkeit
 
@@ -36,5 +40,23 @@ export class SignUpComponent implements OnInit {
   clickEvent(event: MouseEvent): void {
     this.hide.set(!this.hide());
     event.stopPropagation();
+  }
+
+  signUp(): void {
+    if (this.signUpFormCard.invalid) return;
+
+    const { email, password } = this.signUpFormCard.value;
+    this.firebaseService.register(email, password).subscribe({
+      next: () => {
+        this.navigateToSignIn();
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+  }
+
+  navigateToSignIn(): void {
+    this.router.navigate(['sign-in']);
   }
 }

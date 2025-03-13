@@ -2,9 +2,9 @@
     <section>
         <h1>Anmeldung</h1>
         <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <form [formGroup]="loginForm">
             <div class="login-input-container margin-btm">
-                <img src="/assets/login-img/mail.png" alt="">
+                <img src="assets/img/login-img/mail.png" alt="">
                 <input id="email" type="email" formControlName="email" placeholder="Gib deine E-Mail ein" />
                 <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="error-message">
                     <span *ngIf="emailErrors?.['required']">E-Mail ist erforderlich.</span>
@@ -13,7 +13,7 @@
 
             </div>
             <div class="login-input-container">
-                <img src="/assets/login-img/lock.png" alt="">
+                <img src="assets/img/login-img/lock.png" alt="">
                 <input id="password" type="password" formControlName="password" placeholder="Gib dein Passwort ein" />
                 <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="error-message">
                     <span *ngIf="passwordErrors?.['required']">Passwort ist erforderlich.</span>
@@ -36,12 +36,14 @@
                 <div class="login-seperator"></div>
             </div>
             <div class="google-button-containter-login">
-                <button class="google-button"><img src="/assets/login-img/Google.png" alt="">Anmelden mit
-                    Google</button>
+                <button class="google-button" (click)="logInWithGoogle()">
+                    <img src="assets/img/login-img/Google.png" alt="">
+                    Anmelden mit Google
+                </button>
             </div>
             <div class="login-button-bottom">
-                <button type="submit" [disabled]="loginForm.invalid">Anmelden</button>
-                <button>Gäste Login</button>
+                <button type="submit" [disabled]="loginForm.invalid" (click)="login()">Anmelden</button>
+                <button (click)="logInAnonymous()">Gäste Login</button>
             </div>
         </form>
     </section>

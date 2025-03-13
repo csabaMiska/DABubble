@@ -11,17 +11,19 @@ import { ProfilePopupComponent } from './features/profile-popup/profile-popup.co
 import { MyProfilePopupComponent } from './features/my-profile-popup/my-profile-popup.component';
 
 export const routes: Routes = [
-  // Componenten welche ohne Registration sehbar sind
-  { path: 'login', component: LogInComponent },
-  { path: 'signup', component: SignUpComponent },
+  // Komponenten welche ohne Registration sehbar sind
+  { path: 'sign-in', component: LogInComponent },
+  { path: 'sign-up', component: SignUpComponent },
   { path: 'pass-reset', component: PasswordResetComponent },
   { path: 'pass-new', component: PasswordNewComponent },
-  { path: 'impressum', component: ImpressumComponent },
-  { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'profile-popup', component: ProfilePopupComponent },
   { path: 'my-profile-popup', component: MyProfilePopupComponent },
+  { path: 'impressum', component: ImpressumComponent },
+  { path: 'privacy-policy', component: PrivacyPolicyComponent },
+  
+  // Komponenten welche nur nach LogIn sehbar sind
 
-  // Componenten welche nur nach LogIn sehbar sind
+
   {
     path: 'home',
     component: HomeComponent,
@@ -52,10 +54,10 @@ export const routes: Routes = [
   },
 
   // Ohne LogIn der normale <router-outlet> leitet zu LogIn component
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  // Nicht confiegurierte Seiten leitet auch zu LogIn component
-  { path: '**', redirectTo: 'login' },
+  { path: '', redirectTo: 'sign-in', pathMatch: 'full' },
+  // Nicht Konfigurierte Seiten leitet auch zu LogIn component
+  { path: '**', redirectTo: 'sign-in' },
 ];
 
 // Später müssen wir noch die [AuthGuard] einrichten, dass ohne login die Home keine erreichen kann.
-// Developer Mode lassen wir erst so einfach zu zwischen die Seiten zu naviegieren muss mann nicht immer anmelden.
+// Developer Mode lassen wir erst so einfach zu zwischen die Seiten zu navigieren muss man nicht immer anmelden.

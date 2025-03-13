@@ -2,10 +2,6 @@
 @use "@angular/material" as mat;
 @include mat.core();
 
-:root {
-  $vh: 100%;
-}
-
 $white: rgba(255, 255, 255, 1);
 $bgcolor: rgb(237, 238, 254);
 $light-purple-lines: rgba(173, 176, 217, 1);
@@ -17,8 +13,12 @@ $purple-3: rgba(83, 90, 241, 1);
 $green: rgba(146, 200, 62, 1);
 $rosa: rgba(237, 30, 121, 1);
 
-.full_height {
-  height: calc(var(--vh, 1vh) * 100);
+:root {
+    $vh: 100%
+}
+
+.full-height {
+    height: calc(var(--vh, 1vh) * 100);
 }
 
 $theme: mat.define-theme(

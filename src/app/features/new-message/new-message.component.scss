@@ -1,0 +1,14 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.new-message-container {
+    height: 100%;
+
+    .new-message-content {
+        background-color: $white;
+        height: 100%;
+        width: 100%;
+        border-radius: 30px;
+        @include dFlex($ai: center);
+    }
+}

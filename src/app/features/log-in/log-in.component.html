@@ -2,7 +2,7 @@
     <section>
         <h1>Anmeldung</h1>
         <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit('email')">
             <div class="login-input-container margin-btm">
                 <img src="/assets/login-img/mail.png" alt="">
                 <input id="email" type="email" formControlName="email" placeholder="Gib deine E-Mail ein" />
@@ -36,8 +36,9 @@
                 <div class="login-seperator"></div>
             </div>
             <div class="google-button-containter-login">
-                <button class="google-button"><img src="/assets/login-img/Google.png" alt="">Anmelden mit
-                    Google</button>
+                <button class="google-button" (click)="onSubmit('google'); $event.preventDefault();">
+                    <img src="/assets/login-img/Google.png" alt="">Anmelden mit Google
+                </button>
             </div>
             <div class="login-button-bottom">
                 <button type="submit" [disabled]="loginForm.invalid">Anmelden</button>

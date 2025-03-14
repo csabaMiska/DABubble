@@ -29,8 +29,8 @@ export const routes: Routes = [
     component: HomeComponent,
     children: [
       {
-        path: '',
-        pathMatch: 'full',
+          path: '',
+          pathMatch: 'full',
         outlet: 'pageContentOutlet',
         component: DashboardComponent,
       },

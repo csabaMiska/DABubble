@@ -206,6 +206,43 @@
     background-color: #444df2 !important;
     color: white !important;
   }
+
+  // 
+
+  .avatar-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .avatar-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .avatar-item img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .avatar-item img:hover {
+    border: 2px solid #3f51b5;
+  }
+  
+  mat-radio-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+
+  // 
   
   @media screen and (min-width: 721px) {
     .card-title-desktop {

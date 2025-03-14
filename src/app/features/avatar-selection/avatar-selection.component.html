@@ -1,0 +1,56 @@
+<div class="password-reset-wrapper">
+  <mat-card class="password-reset-card" appearance="outlined">
+    <mat-card-actions class="top-actions-desktop">
+      <button class="arrow-back-btn" mat-icon-button>
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+    </mat-card-actions>
+
+    <mat-card-actions class="top-actions-mobile">
+      <button class="arrow-back-btn" mat-icon-button>
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+    </mat-card-actions>
+
+    <mat-card-header>
+      <mat-card-title>
+        <h1 class="card-title-mobile">Wähle deinen<br />Avatar</h1>
+      </mat-card-title>
+
+      <mat-card-title>
+        <h1 class="card-title-desktop">Wähle deinen Avatar</h1>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- <h2 mat-dialog-title>Wähle deinen Avatar</h2> -->
+      <mat-dialog-content>
+        <div class="avatar-container">
+
+          <mat-radio-group [(ngModel)]="selectedAvatar">
+            <div *ngFor="let avatar of avatars" class="avatar-item">
+
+              <mat-radio-button [value]="avatar.id">
+                <img [src]="avatar.src" [alt]="avatar.alt" />
+              </mat-radio-button>
+
+            </div>
+          </mat-radio-group>
+
+        </div>
+      </mat-dialog-content>
+    </mat-card-content>
+
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="confirmSelection()" [disabled]="!selectedAvatar">
+        Weiter
+      </button>
+    </mat-dialog-actions>
+
+    <!-- <mat-card-actions class="bottom-actions">
+            <button class="confirm-chosen-btn" mat-button [disabled]="avatarChosenForm.invalid">
+                Weiter
+            </button>
+        </mat-card-actions> -->
+  </mat-card>
+</div>

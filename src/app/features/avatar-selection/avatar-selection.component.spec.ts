@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChooseAvatarComponent } from './choose-avatar.component';
+import { AvatarSelectionComponent } from './avatar-selection.component';
 
-describe('ChooseAvatarComponent', () => {
-  let component: ChooseAvatarComponent;
-  let fixture: ComponentFixture<ChooseAvatarComponent>;
+describe('AvatarSelectionComponent', () => {
+  let component: AvatarSelectionComponent;
+  let fixture: ComponentFixture<AvatarSelectionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChooseAvatarComponent]
+      imports: [AvatarSelectionComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ChooseAvatarComponent);
+    fixture = TestBed.createComponent(AvatarSelectionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

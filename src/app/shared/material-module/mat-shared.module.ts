@@ -8,6 +8,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { CommonModule } from '@angular/common';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
+
+
 
 @NgModule({
   imports: [
@@ -21,6 +24,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatRadioModule,
     CommonModule,
     MatCheckboxModule,
+    MatDialogModule
   ],
   exports: [
     ReactiveFormsModule,
@@ -33,6 +37,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatRadioModule,
     CommonModule,
     MatCheckboxModule,
+    MatDialogModule
   ],
 })
 export class MatSharedModule {}

@@ -19,7 +19,6 @@
                 <input class="mat-input" matInput type="password" formControlName="password" required placeholder="Gib dein Passwort ein"
                     [type]="hide() ? 'password' : 'text'" />
                 <mat-error *ngIf="loginForm.get('password')?.errors?.['required']">Passwort ist erforderlich!</mat-error>
-                <mat-error *ngIf="!(emailVerified | async)">Bitte bestätigen Sie Ihre E-Mail-Adresse.</mat-error>
                 <mat-error *ngIf="loginForm.get('password')?.hasError('customError')">{{ loginError }}</mat-error>
             </mat-form-field>
             <div class="new-password-container">

@@ -53,12 +53,20 @@ export class LogInComponent {
 
   login(): void {
     if (this.loginForm.invalid) return;
+  
     const { email, password } = this.loginForm.value;
     this.firebaseService.login(email, password).subscribe({
       next: () => {
-        this.navigateTo('home');
+        this.firebaseService.emailVerified$.subscribe((emailVerified) => {
+          if (emailVerified) {
+            this.navigateTo('home');
+          } else {
+            this.loginError = 'Bitte bestätigen Sie Ihre E-Mail-Adresse, bevor Sie fortfahren.';
+            this.setErrorInputStyleAndMessage();
+          }
+        });
       },
-      error: (error) => { 
+      error: (error) => {
         switch (error.code) {
           case 'auth/invalid-credential':
             this.loginError = 'Ups! Falsche E-Mail oder falsches Passwort. Versuche es erneut.';
@@ -73,7 +81,7 @@ export class LogInComponent {
             this.setErrorInputStyleAndMessage();
             break;
         }
-      }
+      },
     });
   }
 

@@ -59,12 +59,39 @@
     }
   }
 }
-
+label {
+  padding-bottom: 16px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+  gap: 20px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #000;
+}
 .profile-popup-image {
   svg {
     border-radius: 50%;
     border: 6px solid transparent;
   }
+}
+.profile-popup-input {
+  width: 100%;
+}
+.inputfield {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 0px;
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 18px;
+  border: 1px solid #adb0d9;
+  border-radius: 30px;
+  transition: all 125ms ease-in-out;
 }
 
 .profile-popup-info-box {
@@ -98,19 +125,6 @@
     }
     a:hover {
       border: 1px solid $text-gray;
-    }
-    input {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      gap: 0px;
-      width: 100%;
-      padding: 15px 20px;
-      font-size: 18px;
-      border: 1px solid #adb0d9;
-      border-radius: 30px;
-      transition: all 125msease-in-out;
     }
   }
   .profile-popup-status-box {
@@ -154,6 +168,7 @@
   margin-top: 20px;
   margin-bottom: 10px;
   width: 100%;
+
   .profile-popup-contact-mail {
     display: flex;
     justify-content: flex-start;
@@ -192,6 +207,32 @@
 
   &:hover svg rect {
     fill: $purple-3;
+  }
+}
+
+.update-profile-buttons {
+  padding-top: 40px;
+  display: flex;
+  justify-content: space-evenly;
+
+  button {
+    background-color: $white;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+
+    &:hover {
+      transform: scale(1.05);
+      color: #fff;
+      svg path {
+        fill: #fff; // Hier wird die SVG-Farbe geändert, wenn der Button gehovt wird
+      }
+    }
+
+    &:hover svg rect {
+      fill: $purple-3;
+      color: $white;
+    }
   }
 }
 

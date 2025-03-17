@@ -1,95 +1,122 @@
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormBuilder,
   FormGroup,
   Validators,
-  ValidationErrors,
 } from '@angular/forms';
-import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
-import { Analytics } from '@angular/fire/analytics';
-import { logEvent } from 'firebase/analytics';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
+import { Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { Observable } from 'rxjs';
+
+
 
 @Component({
   selector: 'app-log-in',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [
+    ReactiveFormsModule, 
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatButtonModule
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.scss',
 })
 export class LogInComponent {
+  private firebaseAuthService = inject(FirebaseAuthService);
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
+  hide = signal(true);
   loginForm: FormGroup;
-  passwordError: string | null = null;
+  loginError: string | null = null;
+  emailVerified: Observable<boolean>;
 
-  constructor(
-    private fb: FormBuilder,
-    private auth: Auth,
-    private analytics: Analytics,
-    private router: Router
-  ) {
+  constructor() {
+    this.emailVerified = this.firebaseAuthService.emailVerified$;
     this.loginForm = this.fb.group({
-      email: ['konstantin.aksenov+firebase@dev2k.org', [Validators.required, Validators.email]],
-      password: ['#DABubble398', [Validators.required, Validators.minLength(6)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]],
     });
   }
 
-  get email() {
-    return this.loginForm.get('email');
+  clickEvent(event: MouseEvent) {
+    this.hide.set(!this.hide());
+    event.stopPropagation();
   }
 
-  get password() {
-    return this.loginForm.get('password');
-  }
-
-  get emailErrors(): ValidationErrors | null {
-    return this.email?.errors ?? null;
-  }
-
-  get passwordErrors(): ValidationErrors | null {
-    return this.password?.errors ?? null;
-  }
-
-  async onSubmit(loginMethod: string) {
-    logEvent(this.analytics, 'login', { method: loginMethod });
-    console.log(`Login event sent: ${loginMethod}`);
-
-    if (loginMethod === 'email') {
-      if (this.loginForm.invalid) {
-        Object.keys(this.loginForm.controls).forEach((key) => {
-          this.loginForm.get(key)?.markAsTouched(); // Eingabefelder als „berührt“ (touched)
+  login(): void {
+    if (this.loginForm.invalid) return;
+  
+    const { email, password } = this.loginForm.value;
+    this.firebaseAuthService.login(email, password).subscribe({
+      next: () => {
+        this.firebaseAuthService.emailVerified$.subscribe((emailVerified) => {
+          if (emailVerified) {
+            this.navigateTo('home');
+          } else {
+            this.loginError = 'Bitte bestätigen Sie Ihre E-Mail-Adresse, bevor Sie fortfahren.';
+            this.setErrorInputStyleAndMessage();
+          }
         });
-        return;
-      }
+      },
+      error: (error) => {
+        switch (error.code) {
+          case 'auth/invalid-credential':
+            this.loginError = 'Ups! Falsche E-Mail oder falsches Passwort. Versuche es erneut.';
+            this.setErrorInputStyleAndMessage();
+            break;
+          case 'auth/too-many-requests':
+            this.loginError = 'Zu viele fehlgeschlagene Versuche. Versuche es später erneut.';
+            this.setErrorInputStyleAndMessage();
+            break;
+          default:
+            this.loginError = 'Ein unerwarteter Fehler ist aufgetreten.';
+            this.setErrorInputStyleAndMessage();
+            break;
+        }
+      },
+    });
+  }
 
-      const { email, password } = this.loginForm.value; // Das Formular als Objekt.
+  setErrorInputStyleAndMessage() {
+    this.loginForm.reset();
+    this.loginForm.get('password')?.setErrors({ customError: true });
+    this.loginForm.get('email')?.setErrors({ customError: true });
+  }
 
-      try {
-        const userCredential = await signInWithEmailAndPassword(
-          this.auth,
-          email,
-          password
-        );
-        console.log('Login erfolgreich!', userCredential.user);
-        // alert('Login erfolgreich!');
+  logInAnonymous(): void {
+    this.firebaseAuthService.loginanonymous().subscribe({
+      next: () => {
+        this.navigateTo('home');
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+  }
 
-        // Weiterleitung zum Dashboard nach erfolgreichem Login
-        this.router.navigate(['/home/']);
-      } catch (error) {
-        console.error('Login fehlgeschlagen:', error);
-        this.passwordError = 'Falsche Anmeldedaten. Bitte versuche es erneut.';
-        alert('Login fehlgeschlagen. Bitte versuche es erneut.');
+  logInWithGoogle(): void {
+    this.loginForm.disable();
+    this.firebaseAuthService.loginwithgoogle().subscribe({
+      next: () => {
+        this.navigateTo('home');
+      },
+      error: (error) => {
+        console.error(error);
       }
-    } else if (loginMethod === 'google') {
-      try {
-        // Hier später Google-Login-Methode einfügen
-        console.log('Google-Login gestartet');
-        alert('Google-Login erfolgreich!');
-      } catch (error) {
-        console.error('Google-Login fehlgeschlagen:', error);
-        alert('Google-Login fehlgeschlagen. Bitte versuche es erneut.');
-      }
-    }
+    });
+  }
+
+  navigateTo(page: 'home' | 'pass-reset' | 'sign-up'): void {
+    this.router.navigate([page]);
   }
 }

@@ -2,6 +2,8 @@ import { Component, inject } from '@angular/core';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
+import { FirebaseAuthService } from '../../../shared/services/firebase/auth/firebase.auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile-menu',
@@ -15,6 +17,8 @@ import { CommonModule } from '@angular/common';
 })
 export class ProfileMenuComponent {
   readonly dialogRef = inject(MatDialogRef<ProfileMenuComponent>);
+  private firebaseAuthService = inject(FirebaseAuthService);
+  private router = inject(Router);
 
   openProfileDialog() {
     this.dialogRef.close();
@@ -23,6 +27,17 @@ export class ProfileMenuComponent {
 
   logOut() {
     this.dialogRef.close();
-    //hier kommt die LogOut logic
+    this.firebaseAuthService.logout().subscribe({
+      next: () => {
+        this.navigateSignIn();
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+  }
+
+  navigateSignIn(): void {
+    this.router.navigate(['sign-in']);
   }
 }

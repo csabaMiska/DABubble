@@ -9,24 +9,28 @@ import { PasswordResetComponent } from './features/password-reset/password-reset
 import { PasswordNewComponent } from './features/password-new/password-new.component';
 import { ProfilePopupComponent } from './features/profile-popup/profile-popup.component';
 import { MyProfilePopupComponent } from './features/my-profile-popup/my-profile-popup.component';
+import { VerifyEmailComponent } from './features/verify-email/verify-email.component';
+import { AuthActionHandlerComponent } from './features/auth-action-handler/auth-action-handler.component';
+import { AuthGuard } from './auth.guard';
 
 export const routes: Routes = [
   // Komponenten welche ohne Registration sehbar sind
   { path: 'sign-in', component: LogInComponent },
   { path: 'sign-up', component: SignUpComponent },
   { path: 'pass-reset', component: PasswordResetComponent },
+  { path: 'auth-action', component: AuthActionHandlerComponent},
   { path: 'pass-new', component: PasswordNewComponent },
+  { path: 'verify-email', component: VerifyEmailComponent},
   { path: 'profile-popup', component: ProfilePopupComponent },
   { path: 'my-profile-popup', component: MyProfilePopupComponent },
   { path: 'impressum', component: ImpressumComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   
   // Komponenten welche nur nach LogIn sehbar sind
-
-
   {
     path: 'home',
     component: HomeComponent,
+    canActivate: [AuthGuard],
     children: [
       {
           path: '',
@@ -38,18 +42,7 @@ export const routes: Routes = [
         path: 'dashboard',
         outlet: 'pageContentOutlet',
         component: DashboardComponent,
-      },
-      {
-        path: 'impressum',
-        outlet: 'pageContentOutlet',
-        component: ImpressumComponent,
-      },
-      {
-        path: 'privacy-policy',
-        pathMatch: 'full',
-        outlet: 'pageContentOutlet',
-        component: PrivacyPolicyComponent,
-      },
+      }
     ],
   },
 
@@ -58,6 +51,3 @@ export const routes: Routes = [
   // Nicht Konfigurierte Seiten leitet auch zu LogIn component
   { path: '**', redirectTo: 'sign-in' },
 ];
-
-// Später müssen wir noch die [AuthGuard] einrichten, dass ohne login die Home keine erreichen kann.
-// Developer Mode lassen wir erst so einfach zu zwischen die Seiten zu navigieren muss man nicht immer anmelden.

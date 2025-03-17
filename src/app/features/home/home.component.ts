@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,17 +33,24 @@ import { WindowWidthDirective } from '../../shared/directives/window-width/windo
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   private dashboardService = inject(DashboardService);
   private windowWidthDirective = inject(WindowWidthDirective);
+ 
 
   sideNavIsOpen: boolean = true;
   toggleButtonText: 'schließen' | 'öffnen' = 'schließen';
 
+  ngOnInit() {
+    this.dashboardService.sideNavIsOpen$.subscribe(isOpen => {
+      this.sideNavIsOpen = isOpen;
+    });
+  }
+
   toggleSidenav() {
-    this.sideNavIsOpen = !this.sideNavIsOpen;
-    this.sidenav.toggle();
+    console.log('toggleSidenav() called');
+    this.dashboardService.toggleSideNav();
     this.updateToggleButton();
   }
 
@@ -60,7 +67,7 @@ export class HomeComponent {
     this.dashboardService.closeNewMessage();
     this.dashboardService.closeThread();
     if (this.windowWidthDirective.mobilViewOn) {
-      this.sidenav.toggle();
+      this.dashboardService.toggleSideNav();
     }
   }
 
@@ -69,7 +76,7 @@ export class HomeComponent {
     this.dashboardService.closeChannel();
     this.dashboardService.closeThread();
     if (this.windowWidthDirective.mobilViewOn) {
-      this.sidenav.toggle();
+      this.dashboardService.toggleSideNav();
     }
   }
 }

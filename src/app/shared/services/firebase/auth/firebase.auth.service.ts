@@ -57,6 +57,7 @@ export class FirebaseAuthService {
         .then((userCredential) => {
           const user = userCredential.user;
           this.checkemailverification(user);
+          console.log(user);
           observer.next(userCredential);
           observer.complete();
         })

@@ -103,6 +103,7 @@ export class LogInComponent {
   }
 
   logInWithGoogle(): void {
+    this.loginForm.disable();
     this.firebaseAuthService.loginwithgoogle().subscribe({
       next: () => {
         this.navigateTo('home');

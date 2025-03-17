@@ -2,8 +2,8 @@ import { transition, trigger, useAnimation } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { slideInAnimation } from '../../shared/animations/slide-in-animation';
-import { slideOutAnimation } from '../../shared/animations/slide-out-animation';
+import { overlayInAnimation } from '../../shared/animations/overlay-in-animation';
+import { overlayOutAnimation } from '../../shared/animations/overlay-out-animation';
 
 @Component({
   selector: 'app-overlay',
@@ -17,7 +17,7 @@ import { slideOutAnimation } from '../../shared/animations/slide-out-animation';
   animations: [
     trigger('slideInAnimation', [
       transition(':enter', [
-        useAnimation(slideInAnimation, {
+        useAnimation(overlayInAnimation, {
           params: {
             timing: '500ms ease-in',
             from: 'translateY(200%)',
@@ -27,7 +27,7 @@ import { slideOutAnimation } from '../../shared/animations/slide-out-animation';
         }),
       ]),
       transition(':leave', [
-        useAnimation(slideOutAnimation, {
+        useAnimation(overlayOutAnimation, {
           params: {
             timing: '500ms ease-in',
             from: 'translateY(0)',

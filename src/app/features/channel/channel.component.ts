@@ -16,6 +16,9 @@ export class ChannelComponent {
 
   openThread() {
     this.dashboardService.openThread();
+    if (this.windowWidthDirective.tabletViewOn) {
+      this.dashboardService.closeChannel();
+    }
     if (this.windowWidthDirective.mobilViewOn) {
       this.dashboardService.closeChannel();
     }

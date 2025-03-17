@@ -111,6 +111,11 @@ export class PasswordNewComponent implements OnInit {
           this.passwordFormReset.disable();
           this.cdr.markForCheck();
         },
+        complete: () => {
+          setTimeout(() => {
+            this.navigateToSignIn();
+          }, 2500);
+        },
         error: (error) => {
           console.error(error);
         }

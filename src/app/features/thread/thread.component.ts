@@ -16,7 +16,7 @@ export class ThreadComponent {
 
   closeThread() {
     this.dashboardService.closeThread();
-    if (this.windowWidthDirective.mobilViewOn) {
+    if (this.windowWidthDirective.tabletViewOn) {
       this.dashboardService.openChannel();
     }
   }

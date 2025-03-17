@@ -1,56 +1,38 @@
-<div class="password-reset-wrapper">
-  <mat-card class="password-reset-card" appearance="outlined">
-    <mat-card-actions class="top-actions-desktop">
-      <button class="arrow-back-btn" mat-icon-button>
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-    </mat-card-actions>
+<div class="card-wrapper">
+  <!-- HIER DANN DAS BUBBLE LOGO -->
+  <div class="card-self">
+    <section class="card-header">
+      <app-btn-back-selection class="btn-back-selection" [buttonClass]="'backToSelectionBtn'" [disabled]="false"
+        [routerLink]="['/signup']">
+      </app-btn-back-selection>
 
-    <mat-card-actions class="top-actions-mobile">
-      <button class="arrow-back-btn" mat-icon-button>
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-    </mat-card-actions>
+      <div class="headlineOne-wrapper">
+        <h1 class="header-titel">Wähle deinen Avatar</h1>
+      </div>
+    </section>
 
-    <mat-card-header>
-      <mat-card-title>
-        <h1 class="card-title-mobile">Wähle deinen<br />Avatar</h1>
-      </mat-card-title>
+    <section class="card-body">
+      <div class="selected-avatar-wrapper">
+        <img class="selected-avatar-img" [src]="selectedAvatarSrc()" alt="Selected Avatar" />
+        <h2 class="selected-avatar-name">{{ selectedAvatarName() }}</h2>
+      </div>
 
-      <mat-card-title>
-        <h1 class="card-title-desktop">Wähle deinen Avatar</h1>
-      </mat-card-title>
-    </mat-card-header>
+      <div class="selection-wrapper">
+        <h3 class="selection-titel">Wähle eins aus.</h3>
 
-    <mat-card-content>
-      <!-- <h2 mat-dialog-title>Wähle deinen Avatar</h2> -->
-      <mat-dialog-content>
-        <div class="avatar-container">
-
-          <mat-radio-group [(ngModel)]="selectedAvatar">
-            <div *ngFor="let avatar of avatars" class="avatar-item">
-
-              <mat-radio-button [value]="avatar.id">
-                <img [src]="avatar.src" [alt]="avatar.alt" />
-              </mat-radio-button>
-
-            </div>
-          </mat-radio-group>
-
+        <div class="avatar-item-wrapper">
+          <div *ngFor="let avatar of avatars" class="avatar-item">
+            <img [src]="avatar.src" [alt]="avatar.alt" [class.selected]="avatar.id === selectedAvatar"
+              (click)="selectAvatar(avatar.id)" />
+          </div>
         </div>
-      </mat-dialog-content>
-    </mat-card-content>
+      </div>
+    </section>
 
-    <mat-dialog-actions align="end">
-      <button mat-button (click)="confirmSelection()" [disabled]="!selectedAvatar">
-        Weiter
-      </button>
-    </mat-dialog-actions>
-
-    <!-- <mat-card-actions class="bottom-actions">
-            <button class="confirm-chosen-btn" mat-button [disabled]="avatarChosenForm.invalid">
-                Weiter
-            </button>
-        </mat-card-actions> -->
-  </mat-card>
+    <section class="card-footer">
+      <app-btn-forward-selection class="confirm-chosen-btn" (click)="confirmSelection()"
+        [disabled]="!selectedAvatar || buttonDisabled">
+      </app-btn-forward-selection>
+    </section>
+  </div>
 </div>

@@ -1,0 +1,24 @@
+@use "./../../../../styles/mixins.scss" as *;
+
+.btnSelf {
+  width: clamp(6rem, 10vw, 8.7rem);
+  height: clamp(2.5rem, 5vw, 3rem);
+  border-radius: 1.56rem;
+  background-color: #797ef3;
+  border-color: #00000000;
+  color: white;
+  font-size: clamp(1rem, 1vw + 0.5rem, 1.2rem);
+  font-weight: 600;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #444df2;
+  }
+
+  &:disabled {
+    background-color: #686868;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}

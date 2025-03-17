@@ -33,8 +33,8 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
-        path: '',
-        pathMatch: 'full',
+          path: '',
+          pathMatch: 'full',
         outlet: 'pageContentOutlet',
         component: DashboardComponent,
       },

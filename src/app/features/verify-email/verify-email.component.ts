@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FirebaseService } from '../../shared/services/firebase/firebase.service';
+import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { OverlayComponent } from '../../core/overlay/overlay.component';
@@ -19,7 +19,7 @@ import { OverlayComponent } from '../../core/overlay/overlay.component';
 export class VerifyEmailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private firebaseService = inject(FirebaseService);
+  private firebaseAuthService = inject(FirebaseAuthService);
   private cdr = inject(ChangeDetectorRef);
   oobCode: string | null = null;
   confirmEmailText: boolean = false;
@@ -36,7 +36,7 @@ export class VerifyEmailComponent implements OnInit {
       return;
     }
 
-    this.firebaseService.checkactionmail(this.oobCode).subscribe({
+    this.firebaseAuthService.checkactionmail(this.oobCode).subscribe({
       next: (info) => {
         this.email = info.email || "Unbekantes email."
       },
@@ -49,7 +49,7 @@ export class VerifyEmailComponent implements OnInit {
 
   emailVerification() {
     if (this.oobCode) {
-      this.firebaseService.emailverification(this.oobCode).subscribe({
+      this.firebaseAuthService.emailverification(this.oobCode).subscribe({
         next: () => {
           this.confirmEmailText = true;
           this.showOverlayAfterSubmit();

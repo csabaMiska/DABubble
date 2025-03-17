@@ -14,7 +14,7 @@ import {
 } from '@angular/forms';
 import { MatSharedModule } from '../../shared/material-module/mat-shared.module';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FirebaseService } from '../../shared/services/firebase/firebase.service';
+import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
 import { error } from 'console';
 import { OverlayComponent } from '../../core/overlay/overlay.component';
 
@@ -28,7 +28,7 @@ import { OverlayComponent } from '../../core/overlay/overlay.component';
 export class PasswordNewComponent implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
-  private firebaseService = inject(FirebaseService);
+  private firebaseAuthService = inject(FirebaseAuthService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
   passwordFormReset: FormGroup;
@@ -57,7 +57,7 @@ export class PasswordNewComponent implements OnInit {
       return
     }
 
-    this.firebaseService.verifycode(this.oobCode).subscribe({
+    this.firebaseAuthService.verifycode(this.oobCode).subscribe({
       next: () => {
       },
       error: (error) => {
@@ -104,7 +104,7 @@ export class PasswordNewComponent implements OnInit {
 
     const { password } = this.passwordFormReset.value;
     if (this.oobCode) {
-      this.firebaseService.resetpassword(this.oobCode, password).subscribe({
+      this.firebaseAuthService.resetpassword(this.oobCode, password).subscribe({
         next: () => {
           this.showOverlayAfterSubmit();
           this.passwordFormReset.reset();

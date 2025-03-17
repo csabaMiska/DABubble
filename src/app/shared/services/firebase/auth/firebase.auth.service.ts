@@ -21,7 +21,7 @@ import { BehaviorSubject, from, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class FirebaseService {
+export class FirebaseAuthService {
   private auth = inject(Auth);
   private emailVerifiedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   emailVerified$: Observable<boolean> = this.emailVerifiedSubject.asObservable();

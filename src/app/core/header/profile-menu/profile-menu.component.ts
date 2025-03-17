@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
-import { FirebaseService } from '../../../shared/services/firebase/firebase.service';
+import { FirebaseAuthService } from '../../../shared/services/firebase/auth/firebase.auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
 })
 export class ProfileMenuComponent {
   readonly dialogRef = inject(MatDialogRef<ProfileMenuComponent>);
-  private firebaseService = inject(FirebaseService);
+  private firebaseAuthService = inject(FirebaseAuthService);
   private router = inject(Router);
 
   openProfileDialog() {
@@ -27,7 +27,7 @@ export class ProfileMenuComponent {
 
   logOut() {
     this.dialogRef.close();
-    this.firebaseService.logout().subscribe({
+    this.firebaseAuthService.logout().subscribe({
       next: () => {
         this.navigateSignIn();
       },

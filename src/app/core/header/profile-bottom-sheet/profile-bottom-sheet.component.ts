@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { MatIcon } from '@angular/material/icon';
-import { FirebaseService } from '../../../shared/services/firebase/firebase.service';
+import { FirebaseAuthService } from '../../../shared/services/firebase/auth/firebase.auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 })
 export class ProfileBottomSheetComponent {
   private bottomSheetRef = inject<MatBottomSheetRef<ProfileBottomSheetComponent>>(MatBottomSheetRef);
-  private firebaseService = inject(FirebaseService);
+  private firebaseAuthService = inject(FirebaseAuthService);
   private router = inject(Router);
 
   openLink(event: MouseEvent): void {
@@ -30,7 +30,7 @@ export class ProfileBottomSheetComponent {
 
   logOut() {
     this.bottomSheetRef.dismiss();
-    this.firebaseService.logout().subscribe({
+    this.firebaseAuthService.logout().subscribe({
       next: () => {
         this.router.navigate(['sign-in']);
       },

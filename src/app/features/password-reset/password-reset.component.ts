@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSharedModule } from '../../shared/material-module/mat-shared.module';
-import { FirebaseService } from '../../shared/services/firebase/firebase.service';
+import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
 import { Router } from '@angular/router';
 import { OverlayComponent } from '../../core/overlay/overlay.component';
 import { CommonModule } from '@angular/common';
@@ -24,7 +24,7 @@ import { CommonModule } from '@angular/common';
 })
 export class PasswordResetComponent implements OnChanges {
   private fb = inject(FormBuilder);
-  private firebaseService = inject(FirebaseService);
+  private firebaseAuthService = inject(FirebaseAuthService);
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
   emailFormReset: FormGroup;
@@ -47,7 +47,7 @@ export class PasswordResetComponent implements OnChanges {
     if (this.emailFormReset.invalid) return;
 
     const { email } = this.emailFormReset.value;
-    this.firebaseService.sendpasswordresetmail(email).subscribe({
+    this.firebaseAuthService.sendpasswordresetmail(email).subscribe({
       next: () => {
         this.showOverlayAfterSubmit();
         this.emailFormReset.reset();

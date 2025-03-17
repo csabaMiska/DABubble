@@ -9,7 +9,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { FirebaseService } from '../../shared/services/firebase/firebase.service';
+import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { Observable } from 'rxjs';
@@ -30,7 +30,7 @@ import { Observable } from 'rxjs';
   styleUrl: './log-in.component.scss',
 })
 export class LogInComponent {
-  private firebaseService = inject(FirebaseService);
+  private firebaseAuthService = inject(FirebaseAuthService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
   hide = signal(true);
@@ -39,7 +39,7 @@ export class LogInComponent {
   emailVerified: Observable<boolean>;
 
   constructor() {
-    this.emailVerified = this.firebaseService.emailVerified$;
+    this.emailVerified = this.firebaseAuthService.emailVerified$;
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
@@ -55,9 +55,9 @@ export class LogInComponent {
     if (this.loginForm.invalid) return;
   
     const { email, password } = this.loginForm.value;
-    this.firebaseService.login(email, password).subscribe({
+    this.firebaseAuthService.login(email, password).subscribe({
       next: () => {
-        this.firebaseService.emailVerified$.subscribe((emailVerified) => {
+        this.firebaseAuthService.emailVerified$.subscribe((emailVerified) => {
           if (emailVerified) {
             this.navigateTo('home');
           } else {
@@ -92,7 +92,7 @@ export class LogInComponent {
   }
 
   logInAnonymous(): void {
-    this.firebaseService.loginanonymous().subscribe({
+    this.firebaseAuthService.loginanonymous().subscribe({
       next: () => {
         this.navigateTo('home');
       },
@@ -103,7 +103,7 @@ export class LogInComponent {
   }
 
   logInWithGoogle(): void {
-    this.firebaseService.loginwithgoogle().subscribe({
+    this.firebaseAuthService.loginwithgoogle().subscribe({
       next: () => {
         this.navigateTo('home');
       },

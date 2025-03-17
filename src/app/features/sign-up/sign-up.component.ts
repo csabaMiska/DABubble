@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSharedModule } from '../../shared/material-module/mat-shared.module';
-import { FirebaseService } from '../../shared/services/firebase/firebase.service';
+import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
 import { Router } from '@angular/router';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { OverlayComponent } from '../../core/overlay/overlay.component';
@@ -32,7 +32,7 @@ import { OverlayComponent } from '../../core/overlay/overlay.component';
 })
 export class SignUpComponent {
   private fb = inject(FormBuilder);
-  private firebaseService = inject(FirebaseService);
+  private firebaseAuthService = inject(FirebaseAuthService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
   signUpFormCard: FormGroup;
@@ -59,7 +59,7 @@ export class SignUpComponent {
     if (this.signUpFormCard.invalid) return;
 
     const { email, password } = this.signUpFormCard.value;
-    this.firebaseService.register(email, password).subscribe({
+    this.firebaseAuthService.register(email, password).subscribe({
       next: () => {
         this.showOverlayAfterSubmit();
         this.signUpFormCard.reset();

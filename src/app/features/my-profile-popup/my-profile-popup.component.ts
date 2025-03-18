@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { FirebaseService } from '../../shared/services/firebase/firebase.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-my-profile-popup',
@@ -10,42 +12,53 @@ import { FormsModule } from '@angular/forms';
 })
 export class MyProfilePopupComponent implements OnInit {
   user = {
-    name: 'Max Mustermann',
-    email: 'max@example.com',
-    status: 'offline',
+    Name: '',
+    mail: '',
+    online: '',
   };
 
   editingProfile = false;
-  originalUser = { ...this.user }; // Speichern der ursprünglichen Benutzerdaten
+  originalUser = { ...this.user };
 
-  constructor() {}
+  constructor(
+    private firebaseService: FirebaseService,
+    private cdRef: ChangeDetectorRef
+  ) {}
 
-  ngOnInit(): void {
-    setTimeout(() => {
-      this.user = {
-        name: 'Elise Roth',
-        email: 'testmail@mailmail.com',
-        status: 'online',
-      };
-      this.originalUser = { ...this.user }; // Speichern der ursprünglichen Benutzerdaten bei Initialisierung
-    }, 1000);
+  async ngOnInit(): Promise<void> {
+    const userData = await this.firebaseService.getUserData();
+
+    if (userData) {
+      this.user = { ...userData };
+      this.originalUser = { ...this.user };
+    }
   }
 
   enableEditing() {
     this.editingProfile = true;
   }
 
-  saveChanges(newName: string, newEmail: string) {
-    if (newName.trim() || newEmail.trim()) {
-      this.user.name = newName.trim();
-      this.user.email = newEmail.trim();
-      this.originalUser = { ...this.user }; // Setze originalUser auf den aktuellen Stand
+  async saveChanges(newName: string, newEmail: string) {
+    let updatedData: any = {};
+
+    if (newName.trim() && newName.trim() !== this.user.Name) {
+      updatedData.Name = newName.trim();
     }
+    if (newEmail.trim() && newEmail.trim() !== this.user.mail) {
+      updatedData.mail = newEmail.trim();
+    }
+
+    if (Object.keys(updatedData).length > 0) {
+      await this.firebaseService.updateUserData(updatedData);
+      Object.assign(this.user, updatedData);
+      this.originalUser = { ...this.user };
+    }
+
     this.editingProfile = false;
   }
 
   cancelEditing() {
-    this.user = { ...this.originalUser }; // Zurücksetzen auf den aktuellen Zustand von originalUser
+    this.user = { ...this.originalUser };
     this.editingProfile = false;
   }
 }

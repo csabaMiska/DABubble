@@ -93,7 +93,7 @@
     </div>
     <div *ngIf="!editingProfile" class="profile-popup-info-box">
       <div class="profile-popup-name-box">
-        <span>{{ user.name }}</span>
+        <span>{{ user.Name }}</span>
         <a
           *ngIf="!editingProfile"
           (click)="enableEditing(); $event.preventDefault()"
@@ -104,13 +104,13 @@
       <div class="profile-popup-status-box">
         <span
           [ngClass]="
-            user.status === 'online'
+            user.online === 'online'
               ? 'profile-popup-online-indicator'
               : 'profile-popup-offline-indicator'
           "
         ></span>
         <span class="profile-popup-offline-text">{{
-          user.status === "online" ? "Aktiv" : "Abwesend"
+          user.online === "online" ? "Aktiv" : "Abwesend"
         }}</span>
       </div>
     </div>
@@ -147,7 +147,7 @@
         <input
           class="inputfield"
           id="name_input"
-          [(ngModel)]="user.name"
+          [(ngModel)]="user.Name"
           *ngIf="editingProfile"
         />
       </div>
@@ -168,8 +168,8 @@
         </svg>
         <span>E-Mail-Adresse</span>
       </div>
-      <a *ngIf="!editingProfile" href="mailto:{{ user.email }}">{{
-        user.email
+      <a *ngIf="!editingProfile" href="mailto:{{ user.mail }}">{{
+        user.mail
       }}</a>
       <div>
         <label *ngIf="editingProfile" for="email_input">
@@ -203,7 +203,7 @@
         <input
           class="inputfield"
           id="email_input"
-          [(ngModel)]="user.email"
+          [(ngModel)]="user.mail"
           *ngIf="editingProfile"
         />
       </div>
@@ -230,7 +230,7 @@
             />
           </svg>
         </button>
-        <button (click)="saveChanges(user.name, user.email)">
+        <button (click)="saveChanges(user.Name, user.mail)">
           <svg
             width="133"
             height="49"

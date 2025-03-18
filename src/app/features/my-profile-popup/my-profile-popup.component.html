@@ -104,14 +104,15 @@
       <div class="profile-popup-status-box">
         <span
           [ngClass]="
-            user.online === 'online'
+            user.online
               ? 'profile-popup-online-indicator'
               : 'profile-popup-offline-indicator'
           "
         ></span>
-        <span class="profile-popup-offline-text">{{
-          user.online === "online" ? "Aktiv" : "Abwesend"
-        }}</span>
+
+        <span class="profile-popup-offline-text">
+          {{ user.online ? "Aktiv" : "Abwesend" }}
+        </span>
       </div>
     </div>
     <div *ngIf="editingProfile" class="profile-popup-input">

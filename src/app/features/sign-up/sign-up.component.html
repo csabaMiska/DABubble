@@ -1,70 +1,83 @@
 <div class="password-reset-wrapper">
   <mat-card class="password-reset-card" appearance="outlined">
     <mat-card-actions class="top-actions-desktop">
-      <button class="arrow-back-btn" mat-icon-button (click)="navigateToSignIn()">
+      <button *ngIf="!formContainerSwitch" class="arrow-back-btn" mat-icon-button (click)="navigateToSignIn()">
         <mat-icon>arrow_back</mat-icon>
       </button>
-    </mat-card-actions>
-
-    <mat-card-actions class="top-actions-mobile">
-      <button class="arrow-back-btn" mat-icon-button (click)="navigateToSignIn()">
+      <button *ngIf="formContainerSwitch" class="arrow-back-btn" mat-icon-button (click)="navigateBackToForm()">
         <mat-icon>arrow_back</mat-icon>
       </button>
     </mat-card-actions>
 
     <mat-card-header>
       <mat-card-title>
-        <h1 class="card-title-mobile">Konto<br />erstellen</h1>
-      </mat-card-title>
-
-      <mat-card-title>
-        <h1 class="card-title-desktop">Konto erstellen</h1>
+        <h1 *ngIf="!formContainerSwitch" class="card-title-desktop">Konto erstellen</h1>
+        <h1 *ngIf="formContainerSwitch" class="card-title-desktop">Wähle deine Avatar</h1>
       </mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
       <form [formGroup]="signUpFormCard" (ngSubmit)="signUp()">
-        <!-- FORMFIELD NAME LASTNAME -->
-        <mat-form-field style="width: 100%" floatLabel="always">
-          <mat-icon matPrefix>perm_identity</mat-icon>
-          <input class="mat-input" type="text" matInput formControlName="name" placeholder="Name und Nachname">
-          <mat-error *ngIf="signUpFormCard.get('name')?.errors?.['required']">Name ist erforderlich.</mat-error>
-          <mat-error *ngIf="signUpFormCard.get('name')?.errors?.['minlength']">Minimale Länge: 2.</mat-error>
-        </mat-form-field>
+        <div *ngIf="!formContainerSwitch" class="form-container">
+          <!-- FORMFIELD NAME LASTNAME -->
+          <mat-form-field style="width: 100%" floatLabel="always">
+            <mat-icon matPrefix>perm_identity</mat-icon>
+            <input class="mat-input" type="text" matInput formControlName="name" placeholder="Name und Nachname">
+            <mat-error *ngIf="signUpFormCard.get('name')?.errors?.['required']">Name ist erforderlich.</mat-error>
+            <mat-error *ngIf="signUpFormCard.get('name')?.errors?.['minlength']">Minimale Länge: 2.</mat-error>
+          </mat-form-field>
 
-        <!-- FORMFIELD EMAIL -->
-        <mat-form-field style="width: 100%" floatLabel="always">
-          <mat-icon matPrefix>email</mat-icon>
-          <input class="mat-input" type="email" matInput formControlName="email" placeholder="beispielname@email.de">
-          <mat-error *ngIf="signUpFormCard.get('email')?.errors?.['required']">Email ist erforderlich.</mat-error>
-          <mat-error *ngIf="signUpFormCard.get('email')?.errors?.['email']">Ungültiges E-Mail-Format.</mat-error>
-        </mat-form-field>
+          <!-- FORMFIELD EMAIL -->
+          <mat-form-field style="width: 100%" floatLabel="always">
+            <mat-icon matPrefix>email</mat-icon>
+            <input class="mat-input" type="email" matInput formControlName="email" placeholder="beispielname@email.de">
+            <mat-error *ngIf="signUpFormCard.get('email')?.errors?.['required']">Email ist erforderlich.</mat-error>
+            <mat-error *ngIf="signUpFormCard.get('email')?.errors?.['email']">Ungültiges E-Mail-Format.</mat-error>
+          </mat-form-field>
 
-        <!-- FORMFIELD PASSWORD -->
-        <mat-form-field style="width: 100%; height: fit-content;" floatLabel="always">
-          <input class="mat-input" type="password" matInput formControlName="password" placeholder="Neues Passwort"
-            [type]="hide() ? 'password' : 'text'" required>
-          <button mat-icon-button matPrefix (click)="clickEvent($event)" type="button"
-            [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide()">
-            <mat-icon>{{hide() ? 'lock' : 'lock_open'}}</mat-icon>
-          </button>
-          <mat-error *ngIf="signUpFormCard.get('password')?.errors?.['pattern']">Das Passwort muss Klein- und
-            Großbuchstaben, Zahlen und Sonderzeichen enthalten.</mat-error>
-          <mat-error *ngIf="signUpFormCard.get('password')?.errors?.['required']">Password ist erforderlich.</mat-error>
-          <mat-error *ngIf="signUpFormCard.get('password')?.errors?.['minlength']">Minimale Länge: 8.</mat-error>
-        </mat-form-field>
+          <!-- FORMFIELD PASSWORD -->
+          <mat-form-field style="width: 100%; height: fit-content;" floatLabel="always">
+            <input class="mat-input" type="password" matInput formControlName="password" placeholder="Neues Passwort"
+              [type]="hide() ? 'password' : 'text'" required>
+            <button mat-icon-button matPrefix (click)="clickEvent($event)" type="button"
+              [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide()">
+              <mat-icon>{{hide() ? 'lock' : 'lock_open'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="signUpFormCard.get('password')?.errors?.['pattern']">Das Passwort muss Klein- und
+              Großbuchstaben, Zahlen und Sonderzeichen enthalten.</mat-error>
+            <mat-error *ngIf="signUpFormCard.get('password')?.errors?.['required']">Password ist
+              erforderlich.</mat-error>
+            <mat-error *ngIf="signUpFormCard.get('password')?.errors?.['minlength']">Minimale Länge: 8.</mat-error>
+          </mat-form-field>
 
-        <!-- FORMFIELD CHECKBOX -->
-        <div style="margin-top: 12px;">
-          <mat-checkbox formControlName="acceptTerms" class="checkbox">
-            <mat-label class="label-check-box">Ich stimme der<a class="link-check-box" href="#"
-                target="_blank">Datenschutzerklärung</a>zu.</mat-label>
-          </mat-checkbox>
-          <mat-error class="checkbox_error"
-            *ngIf="signUpFormCard.get('acceptTerms')?.invalid && signUpFormCard.get('acceptTerms')?.touched">
-            Sie müssen die Datenschutzrichtlinien akzeptieren.
-          </mat-error>
+          <!-- FORMFIELD CHECKBOX -->
+          <div style="margin-top: 12px;">
+            <mat-checkbox formControlName="acceptTerms" class="checkbox">
+              <mat-label class="label-check-box">Ich stimme der<a class="link-check-box" href="#"
+                  target="_blank">Datenschutzerklärung</a>zu.</mat-label>
+            </mat-checkbox>
+            <mat-error class="checkbox_error"
+              *ngIf="signUpFormCard.get('acceptTerms')?.invalid && signUpFormCard.get('acceptTerms')?.touched">
+              Sie müssen die Datenschutzrichtlinien akzeptieren.
+            </mat-error>
+          </div>
         </div>
+
+        <div *ngIf="formContainerSwitch" class="choose-container">
+          <div class="choose-container-user">
+            <img class="choose-container-user-image" src="{{ selectedAvatar }}" alt="">
+            <span class="choose-container-user-name">{{ userName }}</span>
+          </div>
+          <div class="choose-container-text-container">
+            <span class="choose-container-text">Aus der Liste Wählen</span>
+          </div>
+          <div class="choose-images-container">
+            <div *ngFor="let avatar of avatarsList" (click)="selectYourAvatar(avatar)" class="choose-image-container">
+              <img class="choose-image" src="{{ avatar }}" alt="">
+            </div>
+          </div>
+        </div>
+
         <div class="form-btn-container">
           <button type="submit" class="confirm-password-btn" mat-button [disabled]="signUpFormCard.get('name')?.invalid 
                 || signUpFormCard.get('email')?.invalid 

@@ -2,7 +2,7 @@
     <section>
         <h1>Anmeldung</h1>
         <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
-        <form [formGroup]="loginForm">
+        <form [formGroup]="loginForm" (ngSubmit)="login()">
             <mat-form-field style="width: 100%" floatLabel="always">
                 <input matInput type="email" formControlName="email" placeholder="Gib deine E-Mail ein"
                     pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required />
@@ -22,7 +22,7 @@
                 <mat-error *ngIf="loginForm.get('password')?.hasError('customError')">{{ loginError }}</mat-error>
             </mat-form-field>
             <div class="new-password-container">
-                <button class="login-new-password" (click)="navigateTo('pass-reset')">
+                <button type="button" class="login-new-password" (click)="navigateTo('pass-reset')">
                     Passwort vergessen?
                 </button>
             </div>
@@ -32,13 +32,13 @@
                 <div class="login-seperator"></div>
             </div>
             <div class="google-button-containter-login">
-                <button class="google-button" (click)="logInWithGoogle()">
+                <button type="button" class="google-button" (click)="logInWithGoogle()">
                     <img src="assets/img/login-img/Google.png" alt="">
                     Anmelden mit Google
                 </button>
             </div>
             <div class="login-button-bottom">
-                <button type="submit" [disabled]="loginForm.invalid" (click)="login()">Anmelden</button>
+                <button type="submit" [disabled]="!(loginForm.get('email')?.valid && loginForm.get('password')?.value)">Anmelden</button>
                 <button type="button" (click)="logInAnonymous()">Gäste Login</button>
                 <button type="button" (click)="navigateTo('sign-up')">Sign Up Test Btn</button>
             </div>

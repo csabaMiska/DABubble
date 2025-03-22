@@ -8,7 +8,7 @@
         <div *ngFor="let user of users" class="expansion-panel-user-container">
             <div class="expansion-panel-user-img-container">
                 <div class="expansion-panel-user-status {{ user.status }}"></div>
-                <img class="expansion-panel-user-img" [src]="user.avatar"
+                <img class="expansion-panel-user-img" src="{{ user.avatar }}"
                     alt="logo">
             </div>
             <span class="expansion-panel-user-name">{{ user.name }}</span>

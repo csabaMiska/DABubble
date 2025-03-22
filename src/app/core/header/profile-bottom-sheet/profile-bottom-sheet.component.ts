@@ -64,21 +64,41 @@ export class ProfileBottomSheetComponent implements OnInit {
     this.bottomSheetRef.dismiss();
     this.firebaseAuthService.getCurrentUser().subscribe((user) => {
       if (user) {
-        this.firebaseUserService.updateUser(user.uid, { status: 'offline' }).subscribe({
+        if (user.isAnonymous) {
+          this.deleteGuestUserData(user.uid);
+        } else {
+          this.logOutNormaAndGoogleUser(user.uid);
+        }
+      }
+    });
+  }
+
+  deleteGuestUserData(uid: string) {
+    this.firebaseUserService.deleteUser(uid);
+    this.firebaseAuthService.logout().subscribe({
+      next: () => {
+        this.navigateSignIn();
+      },
+      error: (error) => {
+        console.error('Logout error:', error);
+      }
+    });
+  }
+
+  logOutNormaAndGoogleUser(uid: string) {
+    this.firebaseUserService.updateUser(uid, { status: 'offline' }).subscribe({
+      next: () => {
+        this.firebaseAuthService.logout().subscribe({
           next: () => {
-            this.firebaseAuthService.logout().subscribe({
-              next: () => {
-                this.navigateSignIn();
-              },
-              error: (error) => {
-                console.error('Logout error:', error);
-              }
-            });
+            this.navigateSignIn();
           },
           error: (error) => {
-            console.error('Error updating status:', error);
+            console.error('Logout error:', error);
           }
         });
+      },
+      error: (error) => {
+        console.error('Error updating status:', error);
       }
     });
   }

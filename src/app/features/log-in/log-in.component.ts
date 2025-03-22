@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { Observable } from 'rxjs';
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
+import { User } from '../../shared/interface/user.model';
 
 
 
@@ -61,14 +62,12 @@ export class LogInComponent {
     const { email, password } = this.loginForm.value;
     this.firebaseAuthService.login(email, password).subscribe({
       next: () => {
-        // Check if the email is verified
         this.firebaseAuthService.emailVerified$.subscribe((emailVerified) => {
           if (emailVerified) {
-            // Update the user's status to 'online' right after login
             this.firebaseAuthService.getCurrentUser().subscribe((user) => {
               if (user) {
                 this.firebaseUserService.updateUser(user.uid, { status: 'online' }).subscribe(() => {
-                  this.navigateTo('home'); // Navigate to the home page after updating the status
+                  this.navigateTo('home');
                 });
               }
             });
@@ -106,7 +105,9 @@ export class LogInComponent {
 
   logInAnonymous(): void {
     this.firebaseAuthService.loginanonymous().subscribe({
-      next: () => {
+      next: (userCredential) => {
+        const user = userCredential.user;
+        this.addGastDateToFirestor(user);
         this.navigateTo('home');
       },
       error: (error) => {
@@ -115,16 +116,39 @@ export class LogInComponent {
     });
   }
 
+  addGastDateToFirestor(user: any) {
+    const newGoogleUser: Partial<User> = {
+      uid: user.uid,
+      name: 'Gast',
+      avatar: 'assets/img/profile-images/profile-0.png',
+      status: 'online'
+    }
+    return this.firebaseUserService.addUser(newGoogleUser);
+  }
+
   logInWithGoogle(): void {
     this.loginForm.disable();
     this.firebaseAuthService.loginwithgoogle().subscribe({
-      next: () => {
+      next: (userCredential) => {
+        const user = userCredential.user;
+        this.addGooleUserDateToFirestor(user)
         this.navigateTo('home');
       },
       error: (error) => {
         console.error(error);
       }
     });
+  }
+
+  addGooleUserDateToFirestor(user: any) {
+    const newGoogleUser: Partial<User> = {
+      uid: user.uid,
+      name: user.displayName,
+      email: user.email,
+      avatar: user.photoURL,
+      status: 'online'
+    }
+    return this.firebaseUserService.addUser(newGoogleUser);
   }
 
   navigateTo(page: 'home' | 'pass-reset' | 'sign-up'): void {

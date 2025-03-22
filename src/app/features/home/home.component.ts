@@ -10,6 +10,7 @@ import { HeaderComponent } from '../../core/header/header.component';
 import { CommonModule } from '@angular/common';
 import { DashboardService } from '../../shared/services/dashboard/dashboard.service';
 import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
+import { DirectMessagesUserListComponent } from './direct-messages-user-list/direct-messages-user-list.component';
 
 @Component({
   selector: 'app-home',
@@ -22,6 +23,7 @@ import { WindowWidthDirective } from '../../shared/directives/window-width/windo
     MatButtonModule,
     MatRadioModule,
     MatIconModule,
+    DirectMessagesUserListComponent,
   ],
   providers: [
     {

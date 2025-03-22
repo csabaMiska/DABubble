@@ -16,9 +16,13 @@ export class FirebaseUserService {
   }
 
   getUsers(): Observable<User[]> {
-    return from(getDocs(this.collectionUserRef)).pipe(
-      map(snapshot => snapshot.docs.map(doc => doc.data() as User))
-    );
+    return new Observable(observer => {
+      const unsubscribe = onSnapshot(this.collectionUserRef, (snapshot) => {
+        const users = snapshot.docs.map(doc => doc.data() as User);
+        observer.next(users);
+      });
+      return () => unsubscribe();
+    });
   }
 
   addUser(user: Partial<User>): Observable<void> {

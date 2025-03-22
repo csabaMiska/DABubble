@@ -49,7 +49,6 @@ export class HomeComponent implements OnInit {
   }
 
   toggleSidenav() {
-    console.log('toggleSidenav() called');
     this.dashboardService.toggleSideNav();
     this.updateToggleButton();
   }

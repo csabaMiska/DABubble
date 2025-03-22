@@ -108,15 +108,7 @@ export class SignUpComponent implements OnInit {
       avatar: this.selectedAvatar,
       status: 'offline'
     };
-
-    this.firebaseUserService.addUser(newUser).subscribe({
-      next: () => {
-        console.log('New User registred');
-      },
-      error: (error) => {
-        console.error(error);
-      }
-    });
+    return this.firebaseUserService.addUser(newUser);
   }
 
   showOverlayAfterSubmit() {

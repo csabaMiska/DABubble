@@ -12,11 +12,11 @@
         <div class="header-input-container">
             <app-header-search-bar></app-header-search-bar>
         </div>
-        <div class="header-profile-container" (click)="toogleMenus()">
-            <h1 class="header-profile-name">Max Mustermann</h1>
+        <div class="header-profile-container" *ngIf="user$ | async as user" (click)="toogleMenus()">
+            <h1 class="header-profile-name">{{ user.name }}</h1>
             <div class="header-profile-img-container">
-                <div class="header-user-online-status" [ngClass]="userStatus"></div>
-                <img class="header-profile-img" src="assets/img/profile-images/profile-1.png" alt="logo">
+                <div class="header-user-online-status" [ngClass]="user.status"></div>
+                <img class="header-profile-img" [src]="user.avatar" alt="logo">
             </div>
             <mat-icon>{{ menuIcon }}</mat-icon>
         </div>

@@ -1,64 +1,50 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, doc, docData, setDoc, updateDoc, deleteDoc } from '@angular/fire/firestore';
-import { observable, Observable } from 'rxjs';
+import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, getDoc, getDocs, onSnapshot } from '@angular/fire/firestore';
+import { from, map, Observable } from 'rxjs';
 import { User } from '../../../interface/user.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class FirebaseUserService {
   private firestore = inject(Firestore);
-  private usersCollection = collection(this.firestore, 'users');
+  private collectionUserRef = collection(this.firestore, 'users');
 
-  getAllUsers(): Observable<User[]> {
-    const usersCollection = collection(this.firestore, 'users');
-    return collectionData(usersCollection, { idField: 'uid' }) as Observable<User[]>;
+  getUserById(uid: string): Observable<User | undefined> {
+    const userDoc = doc(this.firestore, 'users', uid);
+    return from(getDoc(userDoc)).pipe(
+      map(snapshot => (snapshot.exists() ? (snapshot.data() as User) : undefined))
+    );
   }
 
- getUserById(userId: string): Observable<User | null> {
-  const userDocRef = doc(this.firestore, `users/${userId}`);
-  return docData(userDocRef, { idField: 'uid' }) as Observable<User | null>;
-}
-
-  addUser(userData: Partial<User>): Observable<void> {
-    const userDocRef = doc(this.usersCollection, userData.uid);
-    return new Observable<void>((observer) => {
-      setDoc(userDocRef, userData)
-        .then(() => {
-          observer.next();
-          observer.complete();
-        })
-        .catch((error) => {
-          observer.error(error);
-        });
-    });
+  getUsers(): Observable<User[]> {
+    return from(getDocs(this.collectionUserRef)).pipe(
+      map(snapshot => snapshot.docs.map(doc => doc.data() as User))
+    );
   }
 
-  updateUser(userId: string, userData: Partial<User>): Observable<void> {
-    const userDocRef = doc(this.usersCollection, userId);
-    return new Observable<void>((observer) => {
-      updateDoc(userDocRef, userData)
-        .then(() => {
-          observer.next();
-          observer.complete();
-        })
-        .catch((error) => {
-          observer.error(error);
-        });
-    });
+  addUser(user: Partial<User>): Observable<void> {
+    if (!user.uid) throw new Error('User UID is required');
+    const userDoc = doc(this.collectionUserRef, user.uid);
+    return from(setDoc(userDoc, user, { merge: true }));
   }
 
-  deleteUser(userId: string): Observable<void> {
-    const userDocRef = doc(this.firestore, `users/${userId}`);
-    return new Observable<void>((observer) => {
-      deleteDoc(userDocRef)
-        .then(() => {
-          observer.next();
-          observer.complete();
-        })
-        .catch((error) => {
-          observer.error(error);
-        });
+  updateUser(uid: string, user: Partial<User>): Observable<void> {
+    const userDoc = doc(this.collectionUserRef, uid);
+    return from(updateDoc(userDoc, user));
+  }
+
+  deleteUser(uid: string): Observable<void> {
+    const userDoc = doc(this.collectionUserRef, uid);
+    return from(deleteDoc(userDoc));
+  }
+
+  getUserRealTime(uid: string): Observable<User | undefined> {
+    const userDoc = doc(this.collectionUserRef, uid);
+    return new Observable<User>((observer) => {
+      onSnapshot(userDoc, (snapshot) => {
+        if (snapshot.exists()) {
+          observer.next(snapshot.data() as User); 
+        }
+      });
     });
   }
 }

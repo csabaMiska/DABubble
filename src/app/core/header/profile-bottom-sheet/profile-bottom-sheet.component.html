@@ -1,8 +1,14 @@
-<section class="profile-bottom-sheet">
+<section class="profile-bottom-sheet" *ngIf="user$ | async as user">
     <div class="profile-bottom-sheet-handle-container">
         <div class="profile-bottom-sheet-handle" (click)="openLink($event)"></div>
     </div>
 
+    <button (click)="openStatusDialog()" [ngClass]="{'is-clicked': isButtonClicked}" [disabled]="isButtonClicked">
+        <div class="btn-container">
+            <div class="status-icon {{ user.status }}"></div>
+            <span class="status-text">{{ user.status }}</span>
+        </div>
+    </button>
     <button (click)="openProfileDialog()">
         <mat-icon>account_circle</mat-icon>
         Profile

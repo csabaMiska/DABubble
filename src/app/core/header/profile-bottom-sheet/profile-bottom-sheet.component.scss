@@ -19,6 +19,23 @@
             cursor: pointer;
             color: $purple-3;
         }
+
+        .btn-container {
+            @include dFlex($jc: start);
+            width: 120px;
+            gap: 8px;
+
+            .status-icon {
+                width: 20px;
+                height: 20px;
+                border: 2px solid $bgcolor;
+                border-radius: 80px;
+            }
+
+            .status-text::first-letter {
+                text-transform: uppercase;
+            }
+        }
     }
 }
 
@@ -32,5 +49,15 @@
         border-radius: 40px;
         background-color: lightgrey;
         margin-top: 16px;
+
+        &:hover {
+            cursor: pointer;
+        }
     }
+}
+
+.is-clicked {
+    color: $purple-3 !important;
+    background-color: $bgcolor !important;
+    border-radius: 100px !important;
 }

@@ -1,10 +1,10 @@
 @use 'mixins.scss' as *;
 @use '@angular/material' as mat;
 
-.profile-menu {
+.status-menu {
     @include dFlex($fd: column);
     width: 282px;
-    height: 234px;
+    height: 287px;
     gap: 15px;
 
     button {
@@ -34,16 +34,6 @@
                 border: 2px solid $bgcolor;
                 border-radius: 80px;
             }
-
-            .status-text::first-letter {
-                text-transform: uppercase;
-            }
         }
     }
-}
-
-.is-clicked {
-    color: $purple-3 !important;
-    background-color: $bgcolor !important;
-    border-radius: 100px !important;
 }

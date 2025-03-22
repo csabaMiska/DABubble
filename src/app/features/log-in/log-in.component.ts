@@ -13,6 +13,7 @@ import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebas
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { Observable } from 'rxjs';
+import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
 
 
 
@@ -33,6 +34,7 @@ import { Observable } from 'rxjs';
 })
 export class LogInComponent {
   private firebaseAuthService = inject(FirebaseAuthService);
+  private firebaseUserService = inject(FirebaseUserService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
   hide = signal(true);
@@ -59,9 +61,17 @@ export class LogInComponent {
     const { email, password } = this.loginForm.value;
     this.firebaseAuthService.login(email, password).subscribe({
       next: () => {
+        // Check if the email is verified
         this.firebaseAuthService.emailVerified$.subscribe((emailVerified) => {
           if (emailVerified) {
-            this.navigateTo('home');
+            // Update the user's status to 'online' right after login
+            this.firebaseAuthService.getCurrentUser().subscribe((user) => {
+              if (user) {
+                this.firebaseUserService.updateUser(user.uid, { status: 'online' }).subscribe(() => {
+                  this.navigateTo('home'); // Navigate to the home page after updating the status
+                });
+              }
+            });
           } else {
             this.loginError = 'Bitte bestätigen Sie Ihre E-Mail-Adresse, bevor Sie fortfahren.';
             this.setErrorInputStyleAndMessage();
@@ -86,6 +96,7 @@ export class LogInComponent {
       },
     });
   }
+  
 
   setErrorInputStyleAndMessage() {
     this.loginForm.reset();

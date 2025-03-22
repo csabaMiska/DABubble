@@ -1,4 +1,10 @@
-<section class="profile-menu">
+<section class="profile-menu" *ngIf="user$ | async as user">
+    <button (click)="openStatusDialog()" [ngClass]="{'is-clicked': isButtonClicked}" [disabled]="isButtonClicked">
+        <div class="btn-container">
+            <div class="status-icon {{ user.status }}"></div>
+            <span class="status-text">{{ user.status }}</span>
+        </div>
+    </button>
     <button (click)="openProfileDialog()">Profil</button>
     <button (click)="logOut()">Log out</button>
 </section>

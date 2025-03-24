@@ -1,23 +1,23 @@
-<div class="profile-popup">
+<div class="profile-popup" *ngIf="user$ | async as user">
   <div class="profile-popup-header">
     <h2 *ngIf="!showEditUserForm">Profil</h2>
     <h2 *ngIf="showEditUserForm">Dein Profil bearbeiten</h2>
-    <div class="profile-popup-close-button">
+    <button class="profile-popup-close-button" (click)="closeProfileView()">
       <mat-icon>close</mat-icon>
-    </div>
+    </button>
   </div>
   <div class="profile-popup-image">
-    <img src="assets/img/profile-images/profile-3.png" alt="Avatar">
+    <img src="{{ user.avatar }}" alt="Avatar">
   </div>
 
   <section *ngIf="!showEditUserForm" class="profile-popup-info-box">
     <div class="profile-popup-name-box">
-      <span>Max Mustermann</span>
+      <span>{{ user.name }}</span>
       <button (click)="enableEditing()">Bearbeiten</button>
     </div>
     <div class="profile-popup-status-box">
-      <span class="profile-popup-indicator online"></span>
-      <span class="profile-popup-text" style="color: rgba(146, 200, 62, 1);">Online</span>
+      <span class="profile-popup-indicator {{ user.status }}"></span>
+      <span class="profile-popup-text">Online</span>
     </div>
   </section>
   <section *ngIf="!showEditUserForm" class="profile-popup-contact-info">
@@ -26,7 +26,7 @@
       <span>E-Mail-Adresse</span>
     </div>
     <div class="profile-popup-mail-container">
-      <a href="mailto:test@test.de">test&test.de</a>
+      <a href="mailto:{{ user.email }}">{{ user.email }}</a>
     </div>
   </section>
 
@@ -42,9 +42,11 @@
       </div>
     </div>
     <div class="profile-popup-edit-user-form-container">
-      <form class="profile-popup-edit-user-form">
+      <form [formGroup]="editUserForm" (ngSubmit)="updateUserData()"  class="profile-popup-edit-user-form">
         <mat-form-field appearance="outline" class="form-field">
-          <input matInput required placeholder="Max Mustermann" class="form-field-input">
+          <input formControlName="name" matInput placeholder="{{ user.name }}">
+          <mat-error *ngIf="editUserForm.get('name')?.hasError('required')">Name ist erforderlich.</mat-error>
+          <mat-error *ngIf="editUserForm.get('name')?.hasError('minlength')">Minimale Länge: 2.</mat-error>
         </mat-form-field>
         <div class="profile-popup-btn-container">
           <button type="button" class="profile-popup-edit-user-cancel-btn" (click)="enableEditing()">

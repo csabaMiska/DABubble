@@ -53,14 +53,16 @@
 }
 
 //Inpits - styling
-@mixin primaryInputStyle() {
+@mixin primaryInputStyle($b-radius) {
     @include mat.form-field-overrides((
-        outlined-container-shape: 30px,
+        outlined-container-shape: $b-radius,
         outlined-outline-color: style.$light-purple-lines,
         outlined-focus-outline-color: style.$purple-2,
         outlined-hover-outline-color: style.$purple-2,
-        container-text-font: "Nunito",
-        container-text-size: 18px,
-        outlined-input-text-placeholder-color: style.$text-gray 
     ));
+
+    //Class benötigt für die mat-errors zu anzeigen einfach in SCC Datei implementieren.
+    // ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    //     display: flex;
+    //   }
 }

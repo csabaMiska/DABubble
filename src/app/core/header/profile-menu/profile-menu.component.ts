@@ -8,6 +8,7 @@ import { FirebaseUserService } from '../../../shared/services/firebase/user/fire
 import { StatusDialogComponent } from '../status-dialog/status-dialog.component';
 import { Observable, switchMap } from 'rxjs';
 import { User } from '../../../shared/interface/user.model';
+import { ProfilePopupComponent } from '../../../features/profile-popup/profile-popup.component';
 
 @Component({
   selector: 'app-profile-menu',
@@ -21,8 +22,9 @@ import { User } from '../../../shared/interface/user.model';
 })
 export class ProfileMenuComponent implements OnInit {
   readonly dialog = inject(MatDialog);
-  readonly dialogRef = inject(MatDialogRef<ProfileMenuComponent>);
+  readonly profileMenuDialogRef = inject(MatDialogRef<ProfileMenuComponent>);
   private statusDialogRef?: MatDialogRef<StatusDialogComponent>;
+  private profilePopupDialogRef?: MatDialogRef<ProfilePopupComponent>;
   private firebaseAuthService = inject(FirebaseAuthService);
   private firebaseUserService = inject(FirebaseUserService);
   private router = inject(Router);
@@ -39,15 +41,16 @@ export class ProfileMenuComponent implements OnInit {
       })
     );
 
-    this.dialogRef.afterClosed().subscribe(() => {
+    this.profileMenuDialogRef.afterClosed().subscribe(() => {
       this.statusDialogRef?.close();
+      this.profilePopupDialogRef?.close();
     });
   }
 
   openStatusDialog(): void {
     this.isButtonClicked = true;
     this.statusDialogRef = this.dialog.open(StatusDialogComponent, {
-      position: { top: '180px', right: '308px' },
+      position: { top: '126px', right: '20px' },
       autoFocus: false,
       hasBackdrop: false
     });
@@ -58,7 +61,11 @@ export class ProfileMenuComponent implements OnInit {
   }
 
   openProfileDialog() {
-    this.dialogRef.close();
+    this.profilePopupDialogRef = this.dialog.open(ProfilePopupComponent, {
+      position: { top: '126px', right: '20px' },
+      autoFocus: false,
+      hasBackdrop: false
+    });
   }
 
   logOut() {
@@ -76,7 +83,7 @@ export class ProfileMenuComponent implements OnInit {
 
   deleteGuestUserData(uid:string) {
     this.firebaseUserService.deleteUser(uid);
-    this.dialogRef.close();
+    this.profileMenuDialogRef.close();
     this.firebaseAuthService.logout().subscribe({
       next: () => {
         this.navigateSignIn();
@@ -101,7 +108,7 @@ export class ProfileMenuComponent implements OnInit {
   logOutNormaAndGoogleUser(uid:string) {
     this.firebaseUserService.updateUser(uid, { status: 'offline' }).subscribe({
       next: () => {
-        this.dialogRef.close();
+        this.profileMenuDialogRef.close();
         this.firebaseAuthService.logout().subscribe({
           next: () => {
             this.navigateSignIn();

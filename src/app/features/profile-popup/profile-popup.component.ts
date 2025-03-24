@@ -1,29 +1,28 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-profile-popup',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule
+  ],
   templateUrl: './profile-popup.component.html',
-  styleUrls: ['./profile-popup.component.scss'],
+  styleUrl: './profile-popup.component.scss',
 })
-export class ProfilePopupComponent implements OnInit {
-  // Kann später entfernt werden wenn Daten direkt von firebase übergeben werden
-  user = {
-    name: 'Max Mustermann',
-    email: 'max@example.com',
-    status: 'offline',
-  };
+export class ProfilePopupComponent {
+  showMessageBtn: boolean = false;
+  showEditUserForm: boolean = false;
 
-  constructor() {}
 
-  ngOnInit(): void {
-    setTimeout(() => {
-      this.user = {
-        name: 'Elise Roth',
-        email: 'testmail@mailmail.com',
-        status: 'online',
-      };
-    }, 1000);
+  enableEditing() {
+    this.showEditUserForm = !this.showEditUserForm;
   }
+
 }

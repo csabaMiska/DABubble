@@ -25,6 +25,7 @@
 }
 
 mat-sidenav {
+    background-color: $bgcolor;
     width: 386px;
 
     @media (max-width: 800px) {

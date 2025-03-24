@@ -66,6 +66,7 @@ export class ProfileBottomSheetComponent implements OnInit {
       if (user) {
         if (user.isAnonymous) {
           this.deleteGuestUserData(user.uid);
+          this.deleteGustUserAuth(user);
         } else {
           this.logOutNormaAndGoogleUser(user.uid);
         }
@@ -82,6 +83,17 @@ export class ProfileBottomSheetComponent implements OnInit {
       error: (error) => {
         console.error('Logout error:', error);
       }
+    });
+  }
+
+  deleteGustUserAuth(user: any) {
+    this.firebaseAuthService.deleteAnonymusUser(user).subscribe({
+      next() {
+        console.log('Gast user has been deleted.')
+      },
+      error(error) {
+        console.error(error)
+      },
     });
   }
 

@@ -129,6 +129,10 @@
       font-size: 20px;
       font-weight: 400;
     }
+
+    .profile-popup-text::first-letter {
+      text-transform: uppercase;
+    }
   }
 }
 

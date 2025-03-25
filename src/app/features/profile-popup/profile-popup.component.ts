@@ -1,15 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable, switchMap, take } from 'rxjs';
 import { User } from '../../shared/interface/user.model';
 import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ChatService } from '../../shared/services/chat/chat.service';
+import { DashboardService } from '../../shared/services/dashboard/dashboard.service';
+import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
 
 @Component({
   selector: 'app-profile-popup',
@@ -21,6 +24,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatInputModule,
     ReactiveFormsModule
   ],
+  providers: [
+    WindowWidthDirective,
+  ],
   templateUrl: './profile-popup.component.html',
   styleUrl: './profile-popup.component.scss',
 })
@@ -31,18 +37,27 @@ export class ProfilePopupComponent implements OnInit {
   editUserForm: FormGroup;
   private firebaseAuthService = inject(FirebaseAuthService);
   private firebaseUserService = inject(FirebaseUserService);
+  private chatService = inject(ChatService);
+  private dashboardService = inject(DashboardService);
+  private windowWidthDirective = inject(WindowWidthDirective);
   showMessageBtn: boolean = false;
   showEditUserForm: boolean = false;
   user$?: Observable<User | undefined>;
 
-  constructor() {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: boolean) {
+    this.showMessageBtn = data ?? false;
     this.editUserForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
     });
   }
 
   ngOnInit(): void {
-    this.getMyProfileDate();
+    if (!this.showMessageBtn) {
+      this.getMyProfileDate();
+    } else {
+      this.getUserDate();
+    }
+
   }
 
   getMyProfileDate(): void {
@@ -53,6 +68,12 @@ export class ProfilePopupComponent implements OnInit {
         }
         return [];
       })
+    );
+  }
+
+  getUserDate(): void {
+    this.user$ = this.chatService.receiverUid$.pipe(
+      switchMap(uid => this.firebaseUserService.getUserRealTime(uid))
     );
   }
 
@@ -76,6 +97,18 @@ export class ProfilePopupComponent implements OnInit {
     });
   }
 
+  openDirectChat(uid: string) {
+    this.chatService.setUid(uid);
+    this.openChatContainer();
+  }
+
+  openChatContainer() {
+    this.profilePopupDialogRef.close();
+    this.dashboardService.openNewMessage();
+    this.dashboardService.closeChannel();
+    this.dashboardService.closeThread();
+  }
+
   closeProfileView() {
     this.profilePopupDialogRef.close();
   }
@@ -83,5 +116,4 @@ export class ProfilePopupComponent implements OnInit {
   enableEditing() {
     this.showEditUserForm = !this.showEditUserForm;
   }
-
 }

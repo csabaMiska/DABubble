@@ -13,11 +13,11 @@
   <section *ngIf="!showEditUserForm" class="profile-popup-info-box">
     <div class="profile-popup-name-box">
       <span>{{ user.name }}</span>
-      <button (click)="enableEditing()">Bearbeiten</button>
+      <button *ngIf="!showMessageBtn" (click)="enableEditing()">Bearbeiten</button>
     </div>
     <div class="profile-popup-status-box">
       <span class="profile-popup-indicator {{ user.status }}"></span>
-      <span class="profile-popup-text">Online</span>
+      <span class="profile-popup-text">{{ user.status }}</span>
     </div>
   </section>
   <section *ngIf="!showEditUserForm" class="profile-popup-contact-info">
@@ -61,7 +61,7 @@
   </section>
 
   <section *ngIf="showMessageBtn" class="profile-popup-btn-container">
-    <button class="profile-popup-contact-send-button">
+    <button class="profile-popup-contact-send-button" (click)="openDirectChat(user.uid)">
       <svg xmlns="http://www.w3.org/2000/svg" height="18.61px" viewBox="0 -960 960 960" width="20px" fill="#e8eaed"
         stroke="white" stroke-width="24">
         <path

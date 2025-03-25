@@ -71,13 +71,4 @@ export class HomeComponent implements OnInit {
       this.dashboardService.toggleSideNav();
     }
   }
-
-  openNewMessage() {
-    this.dashboardService.openNewMessage();
-    this.dashboardService.closeChannel();
-    this.dashboardService.closeThread();
-    if (this.windowWidthDirective.mobilViewOn) {
-      this.dashboardService.toggleSideNav();
-    }
-  }
 }

@@ -57,7 +57,6 @@ export class FirebaseAuthService {
       signInWithEmailAndPassword(this.auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          console.log(user);
           this.checkemailverification(user);
           observer.next(userCredential);
           observer.complete();
@@ -180,12 +179,13 @@ export class FirebaseAuthService {
     });
   }
 
-  getCurrentUser(): Observable<any> {
-    return new Observable((observer) => {
-      this.auth.onAuthStateChanged((user) => {
+  getCurrentUser(): Observable<User | null> {
+    return new Observable<User | null>((observer) => {
+      const unsubscribe = this.auth.onAuthStateChanged(user => {
         observer.next(user);
-        observer.complete();
+        observer.complete(); 
       });
+      return () => unsubscribe();
     });
   }
 

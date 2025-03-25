@@ -1,12 +1,12 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, getDoc, getDocs, onSnapshot } from '@angular/fire/firestore';
+import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, getDoc, onSnapshot } from '@angular/fire/firestore';
 import { from, map, Observable } from 'rxjs';
 import { User } from '../../../interface/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class FirebaseUserService {
   private firestore = inject(Firestore);
-  private collectionUserRef = collection(this.firestore, 'users');
+  private collectionUsersRef = collection(this.firestore, 'users');
 
   getUserById(uid: string): Observable<User | undefined> {
     const userDoc = doc(this.firestore, 'users', uid);
@@ -17,7 +17,7 @@ export class FirebaseUserService {
 
   getUsers(): Observable<User[]> {
     return new Observable(observer => {
-      const unsubscribe = onSnapshot(this.collectionUserRef, (snapshot) => {
+      const unsubscribe = onSnapshot(this.collectionUsersRef, (snapshot) => {
         const users = snapshot.docs.map(doc => doc.data() as User);
         observer.next(users);
       });
@@ -27,22 +27,22 @@ export class FirebaseUserService {
 
   addUser(user: Partial<User>): Observable<void> {
     if (!user.uid) throw new Error('User UID is required');
-    const userDoc = doc(this.collectionUserRef, user.uid);
+    const userDoc = doc(this.collectionUsersRef, user.uid);
     return from(setDoc(userDoc, user, { merge: true }));
   }
 
   updateUser(uid: string, user: Partial<User>): Observable<void> {
-    const userDoc = doc(this.collectionUserRef, uid);
+    const userDoc = doc(this.collectionUsersRef, uid);
     return from(updateDoc(userDoc, user));
   }
 
   deleteUser(uid: string): Observable<void> {
-    const userDoc = doc(this.collectionUserRef, uid);
+    const userDoc = doc(this.collectionUsersRef, uid);
     return from(deleteDoc(userDoc));
   }
 
   getUserRealTime(uid: string): Observable<User | undefined> {
-    const userDoc = doc(this.collectionUserRef, uid);
+    const userDoc = doc(this.collectionUsersRef, uid);
     return new Observable<User>((observer) => {
       onSnapshot(userDoc, (snapshot) => {
         if (snapshot.exists()) {

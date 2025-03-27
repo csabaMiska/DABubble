@@ -12,6 +12,7 @@ $purple-2: rgba(121, 126, 243, 1);
 $purple-3: rgba(83, 90, 241, 1);
 $green: rgba(146, 200, 62, 1);
 $rosa: rgba(237, 30, 121, 1);
+$blue: rgba(19, 129, 255, 1);
 
 :root {
     $vh: 100%
@@ -65,6 +66,10 @@ h1 {
 
 .busy {
   background-color: red;
+}
+
+.away {
+  background-color: yellow;
 }
 
 *,

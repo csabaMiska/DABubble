@@ -3,10 +3,9 @@
     <mat-sidenav #sidenav [mode]="'side'" [position]="'start'" [opened]="sideNavIsOpen">
         <div class="sidenav-content">
             <p>Das ist das Test Nav!</p>
-            <p>Open Test New Message Component.</p>
-            <button (click)="openNewMessage()">New Message</button>
             <p>Open Test Channel Component.</p>
             <button (click)="openChannel()">Test Channel</button>
+            <app-direct-messages-user-list class="expansion-panel"></app-direct-messages-user-list>
         </div>
     </mat-sidenav>
 

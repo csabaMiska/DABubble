@@ -1,5 +1,6 @@
 @use 'styles.scss' as style;
 @forward 'styles.scss';
+@use '@angular/material' as mat;
 
 // Objects - positioning
 @mixin dFlex($d: flex, $jc: center, $ai: center, $fd: row) {
@@ -7,4 +8,65 @@
     justify-content: $jc;
     align-items: $ai;
     flex-direction: $fd;
+}
+
+// Butttons - styling
+@mixin primaryBtnStyle($w, $h) {
+    gap: 10px;
+    background-color: style.$purple-1;
+    color: style.$white;
+    font-family: "Nunito";
+    font-weight: 700;
+    font-size: 18px;
+    border: none;
+    width: $w;
+    height: $h;
+    border-radius: 50px;
+    transition: transform 0.2s ease-in-out;
+
+    &:hover {
+        cursor: pointer;
+        transform: scale(1.03);
+        background-color: style.$purple-2;
+    }
+}
+
+@mixin secondaryBtnStyle($w, $h) {
+    gap: 10px;
+    background-color: style.$white;
+    color: style.$purple-3;
+    font-family: "Nunito";
+    font-weight: 700;
+    font-size: 18px;
+    border: 1px solid style.$purple-2;
+    width: $w;
+    height: $h;
+    border-radius: 50px;
+    transition: transform 0.2s ease-in-out;
+
+    &:hover {
+        cursor: pointer;
+        transform: scale(1.03);
+        background-color: style.$purple-3;
+        color: style.$white;
+    }
+}
+
+//Inpits - styling
+@mixin primaryInputStyle($b-radius) {
+    @include mat.form-field-overrides((
+        outlined-container-shape: $b-radius,
+        outlined-outline-color: style.$light-purple-lines,
+        outlined-focus-outline-color: style.$purple-2,
+        outlined-hover-outline-color: style.$purple-2,
+        outlined-input-text-placeholder-color: style.$text-gray,
+        container-text-size: 18px,
+        container-text-font: "Nunito",
+
+    ));
+
+    //Class benötigt für die mat-errors zu anzeigen einfach in SCC Datei implementieren.
+    // ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    //     display: flex;
+    //   }
 }

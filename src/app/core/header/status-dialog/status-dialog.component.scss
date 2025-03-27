@@ -1,0 +1,39 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.status-menu {
+    @include dFlex($fd: column);
+    width: 282px;
+    height: 287px;
+    gap: 15px;
+
+    button {
+        border: none;
+        background: transparent;
+        width: 222px;
+        height: 53px;
+        color: $black;
+        font-size: 24px;
+        @include dFlex();
+
+        &:hover {
+            cursor: pointer;
+            color: $purple-3;
+            background-color: $bgcolor;
+            border-radius: 100px;
+        }
+
+        .btn-container {
+            @include dFlex($jc: start);
+            width: 120px;
+            gap: 24px;
+
+            .status-icon {
+                width: 20px;
+                height: 20px;
+                border: 2px solid $bgcolor;
+                border-radius: 80px;
+            }
+        }
+    }
+}

@@ -1,0 +1,146 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.message-container {
+    width: 100%;
+    height: fit-content;
+
+    .message-content-container {
+        width: 100%;
+        height: fit-content;
+    }
+}
+
+.timestamp-container {
+    width: 100%;
+    height: fit-content;
+    @include dFlex();
+    margin-bottom: 20px;
+    padding: 0 35px 0 35px;
+
+    .timestamp {
+        width: fit-content;
+        padding: 5px 15px 5px 15px;
+        font-size: 18px;
+        font-weight: 400;
+        border-radius: 30px;
+        border: 1px solid $light-purple-lines;
+    }
+
+    .line-style {
+        flex-grow: 1;
+        border-bottom: 1px solid $light-purple-lines;
+    }
+}
+
+.message-content {
+    width: 100%;
+    height: fit-content;
+    @include dFlex($jc: end, $fd: row);
+    padding: 19px 0 10px 0;
+    margin-bottom: 20px;
+
+    &:hover {
+        cursor: pointer;
+        background-color: $bgcolor;
+
+        .chat-bubble-reverse-desing {
+            background-color: $white !important;
+        }
+    }
+}
+
+.message-content-user-img {
+    width: fit-content;
+    height: 100%;
+    min-height: 141px;
+    margin: 0 45px 0 30px;
+    @include dFlex($ai: start);
+
+    img {
+        width: 70px;
+        height: 70px;
+        border-radius: 180px;
+    }
+}
+
+.message-content-user-content {
+    width: 100%;
+    @include dFlex($fd: column, $ai: end);
+    gap: 8px;
+
+    .message-content-user-name {
+        width: 100%;
+        margin-left: 146px;
+        @include dFlex($jc: end, $fd: row);
+        gap: 20px;
+
+        .message-timestamp {
+            font-weight: 400;
+            font-size: 14px;
+            color: $text-gray;
+        }
+
+        .message-user-name {
+            font-weight: 700;
+            font-size: 18px;
+            color: black;
+        }
+    }
+
+
+    .message-content-user-message {
+        width: 100%;
+        @include dFlex($jc: end, $fd: row);
+
+        .message-bubble {
+            width: fit-content;
+            max-width: 1200px;
+            height: fit-content;
+            margin: 0 0 0 45px;
+            padding: 15px;
+            border-radius: 30px 0 30px 30px;
+            background-color: $purple-2;
+            font-weight: 400;
+            font-size: 18px;
+            color: $white;
+            text-align: right;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+        }
+    }
+
+    .message-content-message-reaction-container {
+        width: 100%;
+        margin-left: 146px;
+        @include dFlex($jc: end, $fd: row);
+        gap: 10px;
+
+        .reacted-icons-container {
+            width: 64px;
+            height: 34px;
+            border-radius: 20px;
+            border: 1px solid $light-purple-lines;
+            padding: 5px 10px 5px 10px;
+            @include dFlex();
+            gap: 10px;
+        }
+    }
+}
+
+.chat-bubble-reverse-positioning {
+    justify-content: start !important;
+    flex-direction: row-reverse !important;
+}
+
+.chat-bubble-reverse-desing {
+    border-radius: 0 20px 20px 20px !important;
+    background-color: $bgcolor !important;
+    color: black !important;
+    margin: 0 45px 0 0 !important;
+}
+
+.avatar-reverse-design {
+    margin: 0 30px 0 45px !important;
+}

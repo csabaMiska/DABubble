@@ -1,6 +1,7 @@
 export interface Message {
-    messageId: string | any;
+    messageId: string;
     senderId: string;
+    isSender: boolean;
     receiverId: string;
     content: string;
     timestamp: string;

@@ -22,7 +22,7 @@ import { User } from '../../shared/interface/user.model';
   selector: 'app-log-in',
   standalone: true,
   imports: [
-    ReactiveFormsModule, 
+    ReactiveFormsModule,
     CommonModule,
     MatFormFieldModule,
     MatInputModule,
@@ -58,7 +58,7 @@ export class LogInComponent {
 
   login(): void {
     if (this.loginForm.invalid) return;
-  
+
     const { email, password } = this.loginForm.value;
     this.firebaseAuthService.login(email, password).subscribe({
       next: () => {
@@ -81,21 +81,25 @@ export class LogInComponent {
         switch (error.code) {
           case 'auth/invalid-credential':
             this.loginError = 'Ups! Falsche E-Mail oder falsches Passwort. Versuche es erneut.';
-            this.setErrorInputStyleAndMessage();
+            break;
+          case 'auth/user-not-found':
+            this.loginError = 'Ups! Die E-Mail-Adresse ist falsch oder existiert nicht. Versuche es erneut';
+            break;
+          case 'auth/wrong-password':
+            this.loginError = 'Ups! Das Passwort ist falsch. Versuche es erneut.';
             break;
           case 'auth/too-many-requests':
             this.loginError = 'Zu viele fehlgeschlagene Versuche. Versuche es später erneut.';
-            this.setErrorInputStyleAndMessage();
             break;
           default:
             this.loginError = 'Ein unerwarteter Fehler ist aufgetreten.';
-            this.setErrorInputStyleAndMessage();
             break;
         }
+        this.setErrorInputStyleAndMessage();
       },
     });
   }
-  
+
 
   setErrorInputStyleAndMessage() {
     this.loginForm.reset();

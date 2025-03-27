@@ -10,15 +10,9 @@
             </div>
         </div>
         <div class="new-message-chat-container">
-
-                <div *ngIf="messages$ | async as messages;" style="width: 200px; height: 200px;">
-                  <div *ngFor="let message of messages">
-                    <p><strong>{{ message.senderId }}:</strong> {{ message.receiverId }}</p>
-                    <p><strong>{{ message.content }}:</strong> {{ message.messageId }}</p>
-                    <small>{{ message.timestamp | date:'short' }}</small>
-                  </div>
-                </div>
-
+            <div class="new-message-chat-content">
+                <app-message class="app-message"></app-message>
+            </div>
         </div>
         <div class="new-message-input-container">
             <div class="new-message-input-content">

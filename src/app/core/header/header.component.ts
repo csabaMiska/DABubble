@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { ProfileMenuComponent } from './profile-menu/profile-menu.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -39,7 +39,7 @@ export class HeaderComponent implements OnInit {
   menuIcon: 'keyboard_arrow_down' | 'keyboard_arrow_up' = 'keyboard_arrow_down';
   workSpaceLogoIsVisible: boolean = false;
   @Output() toggleSidenav = new EventEmitter<void>();
-  user$?: Observable<User | undefined>;
+  user$!: Observable<User | undefined>;
 
   ngOnInit() {
     this.getCurrentUser();

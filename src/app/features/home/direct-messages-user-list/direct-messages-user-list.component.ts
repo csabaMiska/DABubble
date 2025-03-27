@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 import { User } from '../../../shared/interface/user.model';
 import { DashboardService } from '../../../shared/services/dashboard/dashboard.service';
 import { WindowWidthDirective } from '../../../shared/directives/window-width/window-width.directive';
-import { ChatService } from '../../../shared/services/chat/chat.service';
+import { ChatService } from '../../../shared/services/firebase/chat/chat.service';
 
 @Component({
   selector: 'app-direct-messages-user-list',
@@ -41,7 +41,7 @@ export class DirectMessagesUserListComponent implements OnInit {
   }
 
   openDirectChat(uid: string) {
-    this.chatService.setUid(uid);
+    this.chatService.setReceiverUid(uid);
     this.openChatContainer();
   }
 

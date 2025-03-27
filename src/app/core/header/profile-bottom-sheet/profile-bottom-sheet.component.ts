@@ -4,11 +4,13 @@ import { MatIcon } from '@angular/material/icon';
 import { FirebaseAuthService } from '../../../shared/services/firebase/auth/firebase.auth.service';
 import { Router } from '@angular/router';
 import { FirebaseUserService } from '../../../shared/services/firebase/user/firebase.user.service';
-import { Observable, switchMap } from 'rxjs';
+import { Observable, of, switchMap, take } from 'rxjs';
 import { StatusDialogComponent } from '../status-dialog/status-dialog.component';
 import { User } from '../../../shared/interface/user.model';
 import { CommonModule } from '@angular/common';
 import { StatusBottomSheetComponent } from '../status-bottom-sheet/status-bottom-sheet.component';
+import { ProfilePopupComponent } from '../../../features/profile-popup/profile-popup.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-profile-bottom-sheet',
@@ -22,8 +24,10 @@ import { StatusBottomSheetComponent } from '../status-bottom-sheet/status-bottom
 })
 export class ProfileBottomSheetComponent implements OnInit {
   readonly bottomSheet = inject(MatBottomSheet);
+  readonly dialog = inject(MatDialog);
   private bottomSheetRef = inject<MatBottomSheetRef<ProfileBottomSheetComponent>>(MatBottomSheetRef);
   private statusBottomSheetRef?: MatBottomSheetRef<StatusBottomSheetComponent>;
+  private profilePopupDialogRef?: MatDialogRef<ProfilePopupComponent>;
   private firebaseAuthService = inject(FirebaseAuthService);
   private firebaseUserService = inject(FirebaseUserService);
   private router = inject(Router);
@@ -57,11 +61,13 @@ export class ProfileBottomSheetComponent implements OnInit {
 
   openProfileDialog() {
     this.bottomSheetRef.dismiss();
-    //hier kommt noch Logic rein was die Dialog öffnet
+    this.profilePopupDialogRef = this.dialog.open(ProfilePopupComponent, {
+      autoFocus: false,
+      hasBackdrop: false
+    });
   }
 
   logOut() {
-    this.bottomSheetRef.dismiss();
     this.firebaseAuthService.getCurrentUser().subscribe((user) => {
       if (user) {
         if (user.isAnonymous) {

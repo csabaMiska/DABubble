@@ -2,14 +2,15 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon'
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
-import { combineLatest, Observable, switchMap } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { User } from '../../shared/interface/user.model';
-import { ChatService } from '../../shared/services/chat/chat.service';
+import { ChatService } from '../../shared/services/firebase/chat/chat.service';
 import { ProfilePopupComponent } from '../profile-popup/profile-popup.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
 import { Message } from '../../shared/interface/message.model';
 import { FormsModule } from '@angular/forms';
+import { MessageComponent } from './message/message.component';
 
 @Component({
   selector: 'app-new-message',
@@ -17,7 +18,8 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     MatIconModule,
-    FormsModule
+    FormsModule,
+    MessageComponent,
   ],
   templateUrl: './new-message.component.html',
   styleUrl: './new-message.component.scss'
@@ -29,28 +31,12 @@ export class NewMessageComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   private profilePopupDialogRef?: MatDialogRef<ProfilePopupComponent>;
   user$!: Observable<User | undefined>;
-  messages$!: Observable<Message[]>;
   showUserProfile: boolean = true;
   content: string = '';
 
   ngOnInit(): void {
     this.user$ = this.chatService.receiverUid$.pipe(
       switchMap(uid => this.firebaseUserService.getUserRealTime(uid))
-    );
-
-    this.messages$ = combineLatest([
-      this.firebaseAuthService.getCurrentUser().pipe(
-        switchMap(user => (user ? [user.uid] : []))
-      ),
-      this.chatService.receiverUid$
-    ]).pipe(
-      switchMap(([senderId, receiverId]) => {
-        if (senderId && receiverId) {
-          return this.chatService.getMessages(senderId, receiverId);
-        } else {
-          return [];
-        }
-      })
     );
   }
 
@@ -80,7 +66,7 @@ export class NewMessageComponent implements OnInit {
   }
 
   openProfileDialog(uid: string) {
-    this.chatService.setUid(uid);
+    this.chatService.setReceiverUid(uid);
     this.profilePopupDialogRef = this.dialog.open(ProfilePopupComponent, {
       autoFocus: false,
       hasBackdrop: true,

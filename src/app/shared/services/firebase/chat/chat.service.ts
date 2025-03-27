@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Firestore, addDoc, collection, collectionData, doc, query, setDoc, updateDoc } from '@angular/fire/firestore';
 import { BehaviorSubject, from, Observable } from 'rxjs';
-import { Message } from '../../interface/message.model';
+import { Message } from '../../../interface/message.model';
 import { orderBy } from 'firebase/firestore';
 
 @Injectable({
@@ -13,8 +13,10 @@ export class ChatService {
 
   private receiverUidSubject = new BehaviorSubject<string>('');
   receiverUid$ = this.receiverUidSubject.asObservable();
+  private senderUidSubject = new BehaviorSubject<string>('');
+  senderUid$ = this.senderUidSubject.asObservable();
 
-  setUid(uid: string) {
+  setReceiverUid(uid: string) {
     this.receiverUidSubject.next(uid);
   }
 

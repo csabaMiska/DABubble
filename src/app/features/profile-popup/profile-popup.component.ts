@@ -10,7 +10,7 @@ import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebas
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ChatService } from '../../shared/services/chat/chat.service';
+import { ChatService } from '../../shared/services/firebase/chat/chat.service';
 import { DashboardService } from '../../shared/services/dashboard/dashboard.service';
 import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
 
@@ -98,7 +98,7 @@ export class ProfilePopupComponent implements OnInit {
   }
 
   openDirectChat(uid: string) {
-    this.chatService.setUid(uid);
+    this.chatService.setReceiverUid(uid);
     this.openChatContainer();
   }
 

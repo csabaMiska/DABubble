@@ -13,7 +13,8 @@ import {
   User,
   verifyPasswordResetCode,
   applyActionCode,
-  checkActionCode
+  checkActionCode,
+  deleteUser
 } from '@angular/fire/auth';
 import { confirmPasswordReset } from 'firebase/auth';
 import { BehaviorSubject, from, Observable } from 'rxjs';
@@ -56,8 +57,8 @@ export class FirebaseAuthService {
       signInWithEmailAndPassword(this.auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          this.checkemailverification(user);
           console.log(user);
+          this.checkemailverification(user);
           observer.next(userCredential);
           observer.complete();
         })
@@ -179,12 +180,25 @@ export class FirebaseAuthService {
     });
   }
 
-  getCurrentUser(): Observable<any> {
-    return new Observable((observer) => {
-      this.auth.onAuthStateChanged((user) => {
+  getCurrentUser(): Observable<User | null> {
+    return new Observable<User | null>((observer) => {
+      const unsubscribe = this.auth.onAuthStateChanged(user => {
         observer.next(user);
-        observer.complete();
+        observer.complete(); 
       });
+      return () => unsubscribe();
+    });
+  }
+
+  deleteAnonymusUser(user: User): Observable<User> {
+    return new Observable((observer) => {
+      deleteUser(user)
+      .then(() => {
+        observer.complete();
+      })
+      .catch((error) => {
+        console.error(error);
+      })
     });
   }
 }

@@ -25,12 +25,8 @@
 }
 
 mat-sidenav {
+    background-color: $bgcolor;
     width: 386px;
-
-
-    @media (max-width: 1000px) {
-        width: 300px;
-    }
 
     @media (max-width: 800px) {
         width: 100vw;
@@ -42,7 +38,7 @@ mat-sidenav {
     height: 100%;
     background-color: $white;
     border-radius: 30px;
-    @include dFlex($ai: center, $fd: column);
+    @include dFlex($ai: center, $fd: column, $jc: start);
 }
 
 ::ng-deep .mat-drawer-content {
@@ -110,4 +106,9 @@ mat-sidenav {
             }
         }
     }
+}
+
+.expansion-panel {
+    width: 100%;
+    padding-left: 12px;
 }

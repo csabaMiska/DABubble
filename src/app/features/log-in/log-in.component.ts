@@ -13,6 +13,8 @@ import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebas
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { Observable } from 'rxjs';
+import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
+import { User } from '../../shared/interface/user.model';
 
 
 
@@ -20,7 +22,7 @@ import { Observable } from 'rxjs';
   selector: 'app-log-in',
   standalone: true,
   imports: [
-    ReactiveFormsModule, 
+    ReactiveFormsModule,
     CommonModule,
     MatFormFieldModule,
     MatInputModule,
@@ -33,6 +35,7 @@ import { Observable } from 'rxjs';
 })
 export class LogInComponent {
   private firebaseAuthService = inject(FirebaseAuthService);
+  private firebaseUserService = inject(FirebaseUserService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
   hide = signal(true);
@@ -55,13 +58,19 @@ export class LogInComponent {
 
   login(): void {
     if (this.loginForm.invalid) return;
-  
+
     const { email, password } = this.loginForm.value;
     this.firebaseAuthService.login(email, password).subscribe({
       next: () => {
         this.firebaseAuthService.emailVerified$.subscribe((emailVerified) => {
           if (emailVerified) {
-            this.navigateTo('home');
+            this.firebaseAuthService.getCurrentUser().subscribe((user) => {
+              if (user) {
+                this.firebaseUserService.updateUser(user.uid, { status: 'online' }).subscribe(() => {
+                  this.navigateTo('home');
+                });
+              }
+            });
           } else {
             this.loginError = 'Bitte bestätigen Sie Ihre E-Mail-Adresse, bevor Sie fortfahren.';
             this.setErrorInputStyleAndMessage();
@@ -72,20 +81,25 @@ export class LogInComponent {
         switch (error.code) {
           case 'auth/invalid-credential':
             this.loginError = 'Ups! Falsche E-Mail oder falsches Passwort. Versuche es erneut.';
-            this.setErrorInputStyleAndMessage();
+            break;
+          case 'auth/user-not-found':
+            this.loginError = 'Ups! Die E-Mail-Adresse ist falsch oder existiert nicht. Versuche es erneut';
+            break;
+          case 'auth/wrong-password':
+            this.loginError = 'Ups! Das Passwort ist falsch. Versuche es erneut.';
             break;
           case 'auth/too-many-requests':
             this.loginError = 'Zu viele fehlgeschlagene Versuche. Versuche es später erneut.';
-            this.setErrorInputStyleAndMessage();
             break;
           default:
             this.loginError = 'Ein unerwarteter Fehler ist aufgetreten.';
-            this.setErrorInputStyleAndMessage();
             break;
         }
+        this.setErrorInputStyleAndMessage();
       },
     });
   }
+
 
   setErrorInputStyleAndMessage() {
     this.loginForm.reset();
@@ -95,7 +109,9 @@ export class LogInComponent {
 
   logInAnonymous(): void {
     this.firebaseAuthService.loginanonymous().subscribe({
-      next: () => {
+      next: (userCredential) => {
+        const user = userCredential.user;
+        this.addGastDateToFirestor(user);
         this.navigateTo('home');
       },
       error: (error) => {
@@ -104,16 +120,39 @@ export class LogInComponent {
     });
   }
 
+  addGastDateToFirestor(user: any) {
+    const newGoogleUser: Partial<User> = {
+      uid: user.uid,
+      name: 'Gast',
+      avatar: 'assets/img/profile-images/profile-0.png',
+      status: 'online'
+    }
+    return this.firebaseUserService.addUser(newGoogleUser);
+  }
+
   logInWithGoogle(): void {
     this.loginForm.disable();
     this.firebaseAuthService.loginwithgoogle().subscribe({
-      next: () => {
+      next: (userCredential) => {
+        const user = userCredential.user;
+        this.addGooleUserDateToFirestor(user)
         this.navigateTo('home');
       },
       error: (error) => {
         console.error(error);
       }
     });
+  }
+
+  addGooleUserDateToFirestor(user: any) {
+    const newGoogleUser: Partial<User> = {
+      uid: user.uid,
+      name: user.displayName,
+      email: user.email,
+      avatar: user.photoURL,
+      status: 'online'
+    }
+    return this.firebaseUserService.addUser(newGoogleUser);
   }
 
   navigateTo(page: 'home' | 'pass-reset' | 'sign-up'): void {

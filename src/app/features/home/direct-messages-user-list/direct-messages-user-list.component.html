@@ -1,0 +1,18 @@
+<mat-expansion-panel class="expansion-panel" (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+    <mat-expansion-panel-header>
+        <mat-icon>{{ panelOpenState() ? 'arrow_drop_down' : 'arrow_drop_up' }}</mat-icon>
+        <mat-icon class="expansion-panel-icon">account_circle</mat-icon>
+        <span>Direktnachrichten</span>
+    </mat-expansion-panel-header>
+    <div *ngIf="users$ | async as users">
+        <div *ngFor="let user of users" class="expansion-panel-user-container" (click)="openDirectChat(user.uid)">
+            <div class="expansion-panel-user-img-container">
+                <div class="expansion-panel-user-status {{ user.status }}"></div>
+                <img class="expansion-panel-user-img" src="{{ user.avatar }}"
+                    alt="logo">
+            </div>
+            <span class="expansion-panel-user-name">{{ user.name }}</span>
+            <!-- <div class="badge-container" matBadge="0" matBadgePosition="above after"></div> -->
+        </div>
+    </div>
+</mat-expansion-panel>

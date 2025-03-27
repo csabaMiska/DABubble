@@ -7,8 +7,6 @@ import { PrivacyPolicyComponent } from './features/privacy-policy/privacy-policy
 import { HomeComponent } from './features/home/home.component';
 import { PasswordResetComponent } from './features/password-reset/password-reset.component';
 import { PasswordNewComponent } from './features/password-new/password-new.component';
-import { ProfilePopupComponent } from './features/profile-popup/profile-popup.component';
-import { MyProfilePopupComponent } from './features/my-profile-popup/my-profile-popup.component';
 import { VerifyEmailComponent } from './features/verify-email/verify-email.component';
 import { AuthActionHandlerComponent } from './features/auth-action-handler/auth-action-handler.component';
 import { AuthGuard } from './auth.guard';
@@ -21,8 +19,6 @@ export const routes: Routes = [
   { path: 'auth-action', component: AuthActionHandlerComponent},
   { path: 'pass-new', component: PasswordNewComponent },
   { path: 'verify-email', component: VerifyEmailComponent},
-  { path: 'profile-popup', component: ProfilePopupComponent },
-  { path: 'my-profile-popup', component: MyProfilePopupComponent },
   { path: 'impressum', component: ImpressumComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   

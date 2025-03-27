@@ -10,6 +10,7 @@ import { HeaderComponent } from '../../core/header/header.component';
 import { CommonModule } from '@angular/common';
 import { DashboardService } from '../../shared/services/dashboard/dashboard.service';
 import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
+import { DirectMessagesUserListComponent } from './direct-messages-user-list/direct-messages-user-list.component';
 
 @Component({
   selector: 'app-home',
@@ -22,6 +23,7 @@ import { WindowWidthDirective } from '../../shared/directives/window-width/windo
     MatButtonModule,
     MatRadioModule,
     MatIconModule,
+    DirectMessagesUserListComponent,
   ],
   providers: [
     {
@@ -49,7 +51,6 @@ export class HomeComponent implements OnInit {
   }
 
   toggleSidenav() {
-    console.log('toggleSidenav() called');
     this.dashboardService.toggleSideNav();
     this.updateToggleButton();
   }
@@ -65,15 +66,6 @@ export class HomeComponent implements OnInit {
   openChannel() {
     this.dashboardService.openChannel();
     this.dashboardService.closeNewMessage();
-    this.dashboardService.closeThread();
-    if (this.windowWidthDirective.mobilViewOn) {
-      this.dashboardService.toggleSideNav();
-    }
-  }
-
-  openNewMessage() {
-    this.dashboardService.openNewMessage();
-    this.dashboardService.closeChannel();
     this.dashboardService.closeThread();
     if (this.windowWidthDirective.mobilViewOn) {
       this.dashboardService.toggleSideNav();

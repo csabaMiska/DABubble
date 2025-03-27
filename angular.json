@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "polyfills": "src/polyfills.ts",
             "stylePreprocessorOptions": {
               "includePaths": [
                 "src/styles"

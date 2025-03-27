@@ -1,11 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  Firestore,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-} from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, updateDoc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +10,6 @@ export class FirebaseService {
   private userPath =
     'Datenbank-Bubble/Datenbank-Bubble/Benutzer/W8d4eW38q3Hw83Tz827V';
 
-  // Nutzerdaten aus Firestore abrufen
   async getUserData(): Promise<any> {
     const userRef = doc(this.firestore, this.userPath);
     const userSnap = await getDoc(userRef);
@@ -24,7 +17,7 @@ export class FirebaseService {
   }
 
   async updateUserData(updatedData: any) {
-    console.log('🔥 Update Firestore mit:', updatedData); // Debugging
+    console.log('🔥 Update Firestore mit:', updatedData);
     const userRef = doc(this.firestore, this.userPath);
     await updateDoc(userRef, updatedData);
   }

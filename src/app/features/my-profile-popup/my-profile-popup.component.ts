@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FirebaseService } from '../../shared/services/firebase/firebase.service';
-import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-my-profile-popup',
@@ -20,10 +19,7 @@ export class MyProfilePopupComponent implements OnInit {
   editingProfile = false;
   originalUser = { ...this.user };
 
-  constructor(
-    private firebaseService: FirebaseService,
-    private cdRef: ChangeDetectorRef
-  ) {}
+  constructor(private firebaseService: FirebaseService) {}
 
   async ngOnInit(): Promise<void> {
     const userData = await this.firebaseService.getUserData();

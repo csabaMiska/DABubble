@@ -2,8 +2,8 @@
 @forward 'styles.scss';
 
 // Objects - positioning
-@mixin dFlex($jc: center, $ai: center, $fd: row) {
-    display: flex;
+@mixin dFlex($d: flex, $jc: center, $ai: center, $fd: row) {
+    display: $d;
     justify-content: $jc;
     align-items: $ai;
     flex-direction: $fd;

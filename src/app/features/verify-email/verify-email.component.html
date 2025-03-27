@@ -1,0 +1,41 @@
+<section class="verify-email-container">
+    <div class="verify-email-contet">
+        <mat-card class="verify-email-mat-card" appearance="outlined">
+            <mat-card-header>
+                <h1>Email bestätigen</h1>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="verify-email-message-container" *ngIf="!confirmEmailText && !errorMessage">
+                    <p>Willkommen,</p>
+                    <p>Folgen Sie diesem Link, um Ihre E-Mail-Adresse zu verifizieren.</p>
+                    <p class="email">{{ email }}</p>
+                    <p><button (click)="emailVerification()">Bestätigen</button></p>
+                    <p>Wenn Sie nicht darum gebeten haben, diese Adresse zu verifizieren, können Sie diese E-Mail ignorieren.</p>
+                    <p class="txt-al-left">Danke.</p>
+                </div>
+                <div class="verify-email-message-container" *ngIf="confirmEmailText">
+                    <p>Perfekt,</p>
+                    <p>Deine E-Mail-Adresse wurde bestätigt.</p>
+                    <p>Jetzt kannst du dich anmelden, mit Freunden chatten, neue Kanäle erstellen und eine Community aufbauen.</p>
+                    <p class="w-100"><button (click)="navigateToSignIn()">Sign In</button></p>
+                    <p>Melde dich jetzt an und leg los.</p>
+                    <p class="txt-al-left w-100">Viel Spaß.</p>
+                </div>
+                <div class="verify-email-message-container" *ngIf="errorMessage">
+                    <p>Tut uns leid,</p>
+                    <p>Leider, irgendetwas ist schiefgelaufen. Der Bestätigungslink ist möglicherweise abgelaufen oder ungültig.</p>
+                    <p>Hier kannst du zurück zur Startseite navigieren.</p>
+                    <p><button (click)="navigateToSignIn()">Zurück zur Startseite</button></p>
+                    <p class="txt-al-left">Sorry.</p>
+                </div>
+                <p class="txt-al-left">Your DABubble team</p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</section>
+
+<app-overlay class="overlay" 
+[textOverlay]="textOverlay" 
+[iconOverlay]="iconOvarlay" 
+[showOverlay]="showOverlay">
+</app-overlay>

@@ -1,6 +1,6 @@
-<app-header (toogleSidenav)="toggleSidenav()"></app-header>
+<app-header (toggleSidenav)="toggleSidenav()"></app-header>
 <mat-sidenav-container class="sidenav_container" [hasBackdrop]="false">
-    <mat-sidenav #sidenav [mode]="'push'" [position]="'start'" [opened]="'true'">
+    <mat-sidenav #sidenav [mode]="'side'" [position]="'start'" [opened]="sideNavIsOpen">
         <div class="sidenav-content">
             <p>Das ist das Test Nav!</p>
             <p>Open Test New Message Component.</p>

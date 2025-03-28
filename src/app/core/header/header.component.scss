@@ -1,147 +1,145 @@
-@use 'mixins.scss' as *;
-@use '@angular/material' as mat;
+@use "mixins.scss" as *;
+@use "@angular/material" as mat;
 
 .header-container {
-    width: 100vw;
+  width: 100vw;
 
-    .header-content {
-        width: 100%;
-        height: fit-content;
-        padding: 25px 34px 20px 45px;
-        @include dFlex($jc: space-between, $ai: center);
-        z-index: 500;
+  .header-content {
+    width: 100%;
+    height: fit-content;
+    padding: 25px 34px 20px 45px;
+    @include dFlex($jc: space-between, $ai: center);
+    z-index: 500;
 
-        @media (max-width: 800px) {
-            padding: 17.5px 16px 17.5px 16px;
-        }
+    @media (max-width: 800px) {
+      padding: 17.5px 16px 17.5px 16px;
     }
+  }
 }
 
 .header-logo-container {
-    @include dFlex();
-    gap: 16px;
-    flex-grow: 1;
+  @include dFlex();
+  gap: 16px;
+  flex-grow: 1;
 
-    .header-logo {
-        @media (max-width: 800px) {
-            width: 50px;
-            height: 50px;
-        }
+  .header-logo {
+    @media (max-width: 800px) {
+      width: 50px;
+      height: 50px;
     }
+  }
 
-    .header-title {
-        @media (max-width: 450px) {
-            font-size: 20px;
-        }
+  .header-title {
+    @media (max-width: 450px) {
+      font-size: 20px;
     }
+  }
 }
 
 .workspace-logo-container {
-    @include dFlex();
-    gap: 16px;
-    flex-grow: 1;
-    
+  @include dFlex();
+  gap: 16px;
+  flex-grow: 1;
+
+  .workspace-icon {
+    margin-right: -16px;
+  }
+
+  .workspace-logo {
+    @media (max-width: 800px) {
+      width: 50px;
+      height: 50px;
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+
     .workspace-icon {
-        margin-right: -16px
+      color: $purple-3;
     }
 
-    .workspace-logo {
-        @media (max-width: 800px) {
-            width: 50px;
-            height: 50px;
-        }
+    .workspace-title {
+      color: $purple-3;
     }
-
-    &:hover {
-        cursor: pointer;
-
-        .workspace-icon {
-           color: $purple-3;
-        }
-
-        .workspace-title {
-            color: $purple-3
-        }
-    }
+  }
 }
 
 .header-input-container {
-    @include dFlex();
+  @include dFlex();
+  width: 100%;
+
+  app-header-search-bar {
     width: 100%;
 
-    app-header-search-bar {
-        width: 100%;
-
-        @media (max-width: 1140px) {
-            display: none;
-        }
+    @media (max-width: 1140px) {
+      display: none;
     }
+  }
 }
 
 .header-profile-container {
-    @include dFlex();
-    gap: 17.5px;
-    flex-grow: 1;
-    min-width: fit-content;
+  @include dFlex();
+  gap: 17.5px;
+  flex-grow: 1;
+  min-width: fit-content;
 
-    &:hover {
-        cursor: pointer;
-        color: $purple-3;
-    }
+  &:hover {
+    cursor: pointer;
+    color: $purple-3;
+  }
 
-    .header-profile-name {
-        @media (max-width: 800px) {
-            display: none;
-        }
+  .header-profile-name {
+    @media (max-width: 800px) {
+      display: none;
     }
+  }
 
-    mat-icon {
-        @media (max-width: 800px) {
-            display: none;
-        }
+  mat-icon {
+    @media (max-width: 800px) {
+      display: none;
     }
+  }
 }
 
 .header-profile-img-container {
-    width: 75px;
-    height: 75px;
-    @include dFlex($jc: end, $ai: end);
+  width: 75px;
+  height: 75px;
+  @include dFlex($jc: end, $ai: end);
+
+  @media (max-width: 800px) {
+    width: 50px;
+    height: 50px;
+  }
+
+  .header-profile-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 180px;
+  }
+
+  .header-user-online-status {
+    width: 16.67px;
+    height: 16.67px;
+    border: 2px solid $bgcolor;
+    border-radius: 80px;
+    position: absolute;
 
     @media (max-width: 800px) {
-        width: 50px;
-        height: 50px;
+      width: 14px;
+      height: 14px;
     }
-
-    .header-profile-img {
-        width: 100%;
-        height: 100%;
-        border-radius: 180px;
-    }
-
-    .header-user-online-status {
-        width: 16.67px;
-        height: 16.67px;
-        border: 2px solid $bgcolor;
-        border-radius: 80px;
-        position: absolute;
-
-        @media (max-width: 800px) {
-            width: 14px;
-            height: 14px;
-        }
-    }
+  }
 }
 
 ::ng-deep .mat-mdc-dialog-surface {
-    border-top-right-radius: 0px !important;
-
-    @media (max-width: 800px) {
-        border-bottom-left-radius: 0px !important;
-        border-top-right-radius: 30px !important;
-    }
+  @media (max-width: 800px) {
+    border-bottom-left-radius: 0px !important;
+    border-top-right-radius: 30px !important;
+  }
 }
 
 ::ng-deep .mat-bottom-sheet-container {
-    border-top-left-radius: var(--mat-bottom-sheet-container-shape, 28px);
-    border-top-right-radius: var(--mat-bottom-sheet-container-shape, 28px);
+  border-top-left-radius: var(--mat-bottom-sheet-container-shape, 28px);
+  border-top-right-radius: var(--mat-bottom-sheet-container-shape, 28px);
 }

@@ -57,7 +57,6 @@ export class FirebaseAuthService {
       signInWithEmailAndPassword(this.auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          console.log(user);
           this.checkemailverification(user);
           observer.next(userCredential);
           observer.complete();

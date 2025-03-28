@@ -7,14 +7,18 @@
         </div>
         <div class="message-content" [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
             <div class="message-content-user-content">
-                <div class="message-content-user-name" [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
+                <div class="message-content-user-name"
+                    [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
                     <span class="message-timestamp">{{ message.timestamp | date:'HH:mm'}} Uhr</span>
                     <span class="message-user-name">{{ message.senderData.name }}</span>
                 </div>
-                <div class="message-content-user-message" [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
-                    <span class="message-bubble" [ngClass]="{'chat-bubble-reverse-desing': !message.isSender }">{{ message.content }}</span>
+                <div class="message-content-user-message"
+                    [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
+                    <span class="message-bubble" [ngClass]="{'chat-bubble-reverse-desing': !message.isSender }">{{
+                        message.content }}</span>
                 </div>
-                <div class="message-content-message-reaction-container" [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
+                <div class="message-content-message-reaction-container"
+                    [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
                     <div class="reacted-icons-container">
                         <mat-icon>rocket_launch</mat-icon>
                         <span>1</span>
@@ -24,7 +28,13 @@
                         <span>3</span>
                     </div>
                     <div>
-                        <mat-icon>add_reaction</mat-icon>
+                        <mat-icon (click)="openCloseEmojiPicker($event, message.messageId)">add_reaction</mat-icon>
+                        <app-emoji-picker 
+                        *ngIf="showEmojiPicker[message.messageId]"
+                        [buttonRect]="buttonRects[message.messageId]" 
+                        class="emoji-picker"
+                        (click)="closeAllPickers()"
+                        ></app-emoji-picker>
                     </div>
                 </div>
             </div>

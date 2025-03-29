@@ -6,10 +6,6 @@ import {
 import { provideAnalytics, getAnalytics } from '@angular/fire/analytics';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
-import {
-  provideClientHydration,
-  withEventReplay,
-} from '@angular/platform-browser';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
@@ -18,13 +14,14 @@ import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { environment } from './firebase.config';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { LayoutModule } from '@angular/cdk/layout';
+import { provideClientHydration } from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
+    provideClientHydration(),
     provideRouter(routes),
-    provideClientHydration(withEventReplay()),
-    provideFirebaseApp(() => initializeApp(environment)),
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAnalytics(() => getAnalytics()),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),

@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "newProjectRoot": "projects",
+  "newProjectRoot": "dabubble",
   "projects": {
     "dabubble": {
       "projectType": "application",
@@ -15,8 +15,9 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "polyfills": "src/polyfills.ts",
             "stylePreprocessorOptions": {
               "includePaths": [
                 "src/styles"
@@ -24,10 +25,7 @@
             },
             "outputPath": "dist/dabubble",
             "index": "src/index.html",
-            "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "main": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -37,12 +35,7 @@
               "@angular/material/prebuilt-themes/magenta-violet.css",
               "src/styles/styles.scss"
             ],
-            "scripts": [],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -70,15 +63,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "configurations": {
-            "production": {
-              "buildTarget": "dabubble:build:production"
-            },
-            "development": {
-              "buildTarget": "dabubble:build:development"
-            }
-          },
-          "defaultConfiguration": "development"
+          "options": {
+            "buildTarget": "dabubble:build"
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"

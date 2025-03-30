@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, inject, OnInit } from '@angular/core';
 import { FirebaseAuthService } from '../../../shared/services/firebase/auth/firebase.auth.service';
 import { ChatService } from '../../../shared/services/firebase/chat/chat.service';
-import { combineLatest, map, Observable, of, switchMap } from 'rxjs';
+import { combineLatest, map, Observable, of, switchMap, take } from 'rxjs';
 import { Message } from '../../../shared/interface/message.model';
 import { MatIconModule } from '@angular/material/icon';
 import { FirebaseUserService } from '../../../shared/services/firebase/user/firebase.user.service';
@@ -29,6 +29,7 @@ export class MessageComponent implements OnInit {
   isSender: boolean = false;
   showEmojiPicker: { [key: string]: boolean } = {};
   buttonRects: { [key: string]: DOMRect } = {};
+  reactionsStyles$: Observable<Map<string, boolean>> | undefined;
 
   ngOnInit(): void {
     this.messagesWithUserData$ = combineLatest([
@@ -43,6 +44,7 @@ export class MessageComponent implements OnInit {
         }
       })
     );
+    this.getReactionStyle();
   }
 
   getCurrentUserUid() {
@@ -102,6 +104,57 @@ export class MessageComponent implements OnInit {
   closeAllPickers() {
     this.showEmojiPicker = {};
     this.buttonRects = {};
+  }
+
+  handleEmojiSelection(selectedEmoji: any, messageId: string) {
+    this.getCurrentUserUid().pipe(
+      switchMap(senderUid => {
+        return this.chatService.receiverUid$.pipe(
+          switchMap(receiverUid => {
+            if (senderUid) {
+              return this.chatService.addUserReaction(senderUid, receiverUid, messageId, selectedEmoji);
+            } else {
+              return [];
+            }
+          })
+        );
+      })
+    ).subscribe({
+      next: (response) => {
+        this.closeAllPickers();
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+  }
+
+  getReactions(message: Message) {
+    return message.reactions ? Object.values(message.reactions) : [];
+  }
+
+  getReactionKeys(reactions: Record<string, any>): string[] {
+    return reactions ? Object.keys(reactions) : [];
+  }
+
+  getReactionStyle(): void{
+    this.reactionsStyles$ = this.messagesWithUserData$.pipe(
+      switchMap(messages => this.getCurrentUserUid().pipe(
+        map(currentUserUid => {
+          const reactionStyles = new Map<string, boolean>();
+  
+          messages.forEach(message => {
+            if (message.reactions) {
+              Object.entries(message.reactions).forEach(([userId, reaction]) => {
+                reactionStyles.set(userId, currentUserUid === userId);
+              });
+            }
+          });
+  
+          return reactionStyles;
+        })
+      ))
+    );
   }
 }
 

@@ -1,3 +1,5 @@
+import { Reaction } from "../interface/reaction.model";
+
 export interface Message {
     messageId: string;
     senderId: string;
@@ -5,5 +7,5 @@ export interface Message {
     receiverId: string;
     content: string;
     timestamp: string;
-    reactions: Array<string>;
+    reactions: { [reactionId: string]: Reaction};
 }

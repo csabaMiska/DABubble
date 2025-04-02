@@ -16,6 +16,7 @@
     height: fit-content;
     @include dFlex();
     margin-bottom: 20px;
+    margin-top: 20px;
     padding: 0 35px 0 35px;
 
     .timestamp {
@@ -38,7 +39,6 @@
     height: fit-content;
     @include dFlex($jc: end, $fd: row);
     padding: 19px 0 10px 0;
-    margin-bottom: 20px;
 
     &:hover {
         cursor: pointer;
@@ -67,7 +67,7 @@
 .message-content-user-content {
     width: 100%;
     @include dFlex($fd: column, $ai: end);
-    gap: 12px;
+    gap: 8px;
 
     .message-content-user-name {
         width: 100%;
@@ -93,50 +93,21 @@
         width: 100%;
         @include dFlex($jc: end, $fd: row);
 
-        .message-bubble-container {
-            @include dFlex($jc: end, $ai: start);
-            width: 100%;
+        .message-bubble {
+            width: fit-content;
             max-width: 1200px;
             height: fit-content;
             margin: 0 0 0 45px;
-
-            .message-bubble-reactions-container {
-                @include dFlex();
-                position: relative;
-                z-index: 100;
-                margin: -16px -36px 0 0;
-
-                .message-bubble-reaction {
-                    font-size: 18px;
-                    padding: 2px;
-                    border-radius: 15px 15px 15px 0;
-                    border: 2px solid $white;
-                    background-color: $purple-2;
-                    margin: 0 -8px 0 0;
-
-                    &:hover {
-                        background-color: $white;
-                        border-color: $purple-2;
-                        z-index: 200;
-                    }
-                }
-            }
-
-            .message-bubble {
-                width: fit-content;
-                max-width: 1200px;
-                height: fit-content;
-                padding: 15px;
-                border-radius: 30px 0 30px 30px;
-                background-color: $purple-2;
-                font-weight: 400;
-                font-size: 18px;
-                color: $white;
-                text-align: right;
-                word-wrap: break-word;
-                overflow-wrap: break-word;
-                white-space: normal;
-            }
+            padding: 15px;
+            border-radius: 30px 0 30px 30px;
+            background-color: $purple-2;
+            font-weight: 400;
+            font-size: 18px;
+            color: $white;
+            text-align: right;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
         }
     }
 
@@ -146,14 +117,30 @@
         @include dFlex($jc: end, $fd: row);
         gap: 10px;
 
-        .reacted-icons-container {
-            width: 64px;
-            height: 34px;
-            border-radius: 20px;
-            border: 1px solid $light-purple-lines;
-            padding: 5px 10px 5px 10px;
-            @include dFlex();
+        .reacted-emojis-container {
+            @include dFlex($jc: end, $fd: row);
             gap: 10px;
+
+            .reacted-emoji {
+                width: 64px;
+                height: 34px;
+                border-radius: 20px;
+                border: 1px solid $light-purple-lines;
+                padding: 5px 10px 5px 10px;
+                background-color: $white;
+                @include dFlex();
+                gap: 10px;
+
+                &:hover {
+                    cursor: pointer;
+                    border: 2px solid $light-purple-lines;
+                }
+            }
+        }
+
+        .add-reaction-container {
+            @include dFlex();
+            height: 100%;
         }
     }
 }
@@ -171,34 +158,11 @@
     flex-direction: row-reverse !important;
 }
 
-.chat-message-content-reverse-design {
-    margin: 0 45px 0 0 !important;
-    justify-content: start !important;
-    flex-direction: row-reverse !important;
-}
-
-.message-bubble-reactions-container-reverse-design {
-    margin: -14px 0 0 -36px !important;
-}
-
-.message-bubble-reaction-reverse-design {
-    margin: 0 0 0 -8px !important;
-    border-radius: 15px 15px 0 15px !important;
-}
-
-.message-bubble-reaction-receiver-design {
-    background-color: $bgcolor !important;
-
-    &:hover {
-        background-color: $white !important;
-        border-color: $bgcolor !important;
-    }
-}
-
 .chat-bubble-reverse-desing {
     border-radius: 0 20px 20px 20px !important;
     background-color: $bgcolor !important;
     color: black !important;
+    margin: 0 45px 0 0 !important;
 }
 
 .avatar-reverse-design {

@@ -1,10 +1,15 @@
-<section class="message-container">
-    <div *ngFor="let message of messagesWithUserData$ | async" class="message-content-container">
-        <div class="timestamp-container">
+<section class="message-container" *ngFor="let message of (messagesWithUserData$ | async); let i = index">
+    <div class="message-content-container">
+        <div class="timestamp-container" *ngIf="shouldShowTimestamp(message, i)">
             <div class="line-style"></div>
-            <div class="timestamp">{{ message.timestamp | date:'EEEE, d MMMM' }}</div>
+            <div class="timestamp">{{ message.timestamp | customDate }}</div>
             <div class="line-style"></div>
         </div>
+        <app-hover-overlay-menu 
+        [messageId]="message.messageId"
+        [isSender]="message.isSender"
+        (emojiSelected)="emitedEmojiSelected($event.emoji, $event.messageId)"
+        ></app-hover-overlay-menu>
         <div class="message-content" [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
             <div class="message-content-user-content">
                 <div class="message-content-user-name"
@@ -14,27 +19,24 @@
                 </div>
                 <div class="message-content-user-message"
                     [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
-                    <div class="message-bubble-container" [ngClass]="{'chat-message-content-reverse-design': !message.isSender }">
-                        <div class="message-bubble-reactions-container" [ngClass]="{'message-bubble-reactions-container-reverse-design': !message.isSender }">
-                            <div class="message-bubble-reaction" *ngFor="let reaction of getReactions(message)" [ngClass]="{
-                                'message-bubble-reaction-reverse-design': !message.isSender,
-                                'message-bubble-reaction-receiver-design': !(reactionsStyles$ | async)?.get(reaction.user)
-                              }">
-                                {{ reaction.emoji.unicode }}
-                            </div>
-                        </div>
-                        <span class="message-bubble" [ngClass]="{'chat-bubble-reverse-desing': !message.isSender }">{{
-                            message.content }}</span>
-                    </div>
+                    <span class="message-bubble" [ngClass]="{'chat-bubble-reverse-desing': !message.isSender }">{{
+                        message.content }}</span>
                 </div>
-                <div class="message-content-message-reaction-container"
+                <div class="message-content-message-reaction-container" 
                     [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
-                    <div>
+                    <div class="reacted-emojis-container" *ngFor="let reaction of getReactions(message)"
+                        [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
+                        <div class="reacted-emoji" (click)="deleteSelectedEmoji(message.messageId, reaction.emoji)">
+                            <span>{{ reaction.emoji.unicode }}</span>
+                            <span>{{ reaction.counter }}</span>
+                        </div>
+                    </div>
+                    <div class="add-reaction-container">
                         <mat-icon (click)="openCloseEmojiPicker($event, message.messageId)">add_reaction</mat-icon>
                         <app-emoji-picker *ngIf="showEmojiPicker[message.messageId]"
                             [buttonRect]="buttonRects[message.messageId]" class="emoji-picker"
                             (click)="closeAllPickers()"
-                            (emojiSelected)="handleEmojiSelection($event, message.messageId)"></app-emoji-picker>
+                            (emojiSelected)="addEmojiSelection($event, message.messageId)"></app-emoji-picker>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,20 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.hover-overlay-menu-container {
+    @include dFlex();
+    width: fit-content;
+    gap: 10px;
+    background-color: $white;
+    border: 1px solid $light-purple-lines;
+    border-radius: 15px 15px 0 15px;
+    padding: 4px;
+}
+
+.emoji-picker {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}

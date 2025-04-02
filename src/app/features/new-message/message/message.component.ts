@@ -7,6 +7,9 @@ import { Message } from '../../../shared/interface/message.model';
 import { MatIconModule } from '@angular/material/icon';
 import { FirebaseUserService } from '../../../shared/services/firebase/user/firebase.user.service';
 import { EmojiPickerComponent } from '../../../core/emoji-picker/emoji-picker.component';
+import { CustomDatePipe } from '../../../shared/pipe/custom.date.pipe'
+import { HoverOverlayMenuComponent } from '../../../core/hover-overlay-menu/hover-overlay-menu.component';
+import { Emoji } from '../../../shared/interface/emoji.model';
 
 
 @Component({
@@ -16,6 +19,8 @@ import { EmojiPickerComponent } from '../../../core/emoji-picker/emoji-picker.co
     CommonModule,
     MatIconModule,
     EmojiPickerComponent,
+    CustomDatePipe,
+    HoverOverlayMenuComponent
   ],
   templateUrl: './message.component.html',
   styleUrl: './message.component.scss'
@@ -24,14 +29,22 @@ export class MessageComponent implements OnInit {
   private firebaseAuthService = inject(FirebaseAuthService);
   private firebaseUserService = inject(FirebaseUserService);
   private chatService = inject(ChatService);
-  private elementRef = inject(ElementRef)
+  private elementRef = inject(ElementRef);
+
   messagesWithUserData$!: Observable<Array<Message & { senderData?: any }>>;
+  messagesWithUserDataArray: Array<Message & { senderData?: any }> = [];
+
   isSender: boolean = false;
+
   showEmojiPicker: { [key: string]: boolean } = {};
   buttonRects: { [key: string]: DOMRect } = {};
-  reactionsStyles$: Observable<Map<string, boolean>> | undefined;
 
   ngOnInit(): void {
+    this.getMessagesDate();
+    this.convertMessegeData();
+  }
+
+  getMessagesDate() {
     this.messagesWithUserData$ = combineLatest([
       this.getCurrentUserUid(),
       this.chatService.receiverUid$
@@ -44,7 +57,12 @@ export class MessageComponent implements OnInit {
         }
       })
     );
-    this.getReactionStyle();
+  }
+
+  convertMessegeData() {
+    this.messagesWithUserData$.subscribe(messages => {
+      this.messagesWithUserDataArray = messages;
+    });
   }
 
   getCurrentUserUid() {
@@ -106,7 +124,11 @@ export class MessageComponent implements OnInit {
     this.buttonRects = {};
   }
 
-  handleEmojiSelection(selectedEmoji: any, messageId: string) {
+  emitedEmojiSelected(selectedEmoji: Emoji, messageId: string) {
+    this.addEmojiSelection(selectedEmoji, messageId);
+  }
+
+  addEmojiSelection(selectedEmoji: Emoji, messageId: string) {
     this.getCurrentUserUid().pipe(
       switchMap(senderUid => {
         return this.chatService.receiverUid$.pipe(
@@ -120,7 +142,7 @@ export class MessageComponent implements OnInit {
         );
       })
     ).subscribe({
-      next: (response) => {
+      next: () => {
         this.closeAllPickers();
       },
       error: (error) => {
@@ -133,28 +155,39 @@ export class MessageComponent implements OnInit {
     return message.reactions ? Object.values(message.reactions) : [];
   }
 
-  getReactionKeys(reactions: Record<string, any>): string[] {
-    return reactions ? Object.keys(reactions) : [];
+  deleteSelectedEmoji(messageId: string, selectedEmoji: Emoji) {
+    this.getCurrentUserUid().pipe(
+      switchMap(senderUid => {
+        return this.chatService.receiverUid$.pipe(
+          switchMap(receiverUid => {
+            if (senderUid) {
+              return this.chatService.removeUserReaction(senderUid, receiverUid, messageId, selectedEmoji);
+            } else {
+              return [];
+            }
+          })
+        );
+      })
+    ).subscribe({
+      error: (error) => {
+        console.error(error);
+      }
+    });
   }
 
-  getReactionStyle(): void{
-    this.reactionsStyles$ = this.messagesWithUserData$.pipe(
-      switchMap(messages => this.getCurrentUserUid().pipe(
-        map(currentUserUid => {
-          const reactionStyles = new Map<string, boolean>();
-  
-          messages.forEach(message => {
-            if (message.reactions) {
-              Object.entries(message.reactions).forEach(([userId, reaction]) => {
-                reactionStyles.set(userId, currentUserUid === userId);
-              });
-            }
-          });
-  
-          return reactionStyles;
-        })
-      ))
-    );
+  shouldShowTimestamp(message: Message, index: number): boolean {
+    if (index === 0) return true; 
+    const currentTimestamp = this.convertToDate(message.timestamp);
+    const previousMessage = this.messagesWithUserDataArray[index - 1];
+    if (!previousMessage) return true;
+    const previousTimestamp = this.convertToDate(previousMessage.timestamp);
+    return currentTimestamp.toDateString() !== previousTimestamp.toDateString();
+  }
+
+  convertToDate(timestamp: any): Date {
+    if (!timestamp) return new Date(0);
+    if (timestamp.toDate) return timestamp.toDate(); 
+    if (typeof timestamp === "number") return new Date(timestamp);
+    return new Date(timestamp);
   }
 }
-

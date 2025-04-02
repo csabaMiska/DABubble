@@ -4,6 +4,8 @@ import { BehaviorSubject, from, Observable } from 'rxjs';
 import { Message } from '../../../interface/message.model';
 import { orderBy } from 'firebase/firestore';
 import { DocumentSnapshot } from 'firebase/firestore/lite';
+import { Reaction } from '../../../interface/reaction.model';
+import { Emoji } from '../../../interface/emoji.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +25,13 @@ export class ChatService {
 
   getChatId(userFrom: string, userTo: string) {
     return userFrom < userTo ? `${userFrom}_${userTo}` : `${userTo}_${userFrom}`;
+  }
+
+  getMessages(senderId: string, receiverId: string): Observable<Message[]> {
+    const chatId = this.getChatId(senderId, receiverId);
+    const messageRef = collection(this.collectionChatRef, `${chatId}/messages`);
+    const q = query(messageRef, orderBy('timestamp'));
+    return collectionData(q, { idField: 'messageId' }) as Observable<Message[]>;
   }
 
   sendMessage(senderId: string, receiverId: string, message: Partial<Message>): Observable<void> {
@@ -45,28 +54,46 @@ export class ChatService {
     return from(updateDoc(messageRef, message));
   }
 
-  getMessages(senderId: string, receiverId: string): Observable<Message[]> {
-    const chatId = this.getChatId(senderId, receiverId);
-    const messageRef = collection(this.collectionChatRef, `${chatId}/messages`);
-    const q = query(messageRef, orderBy('timestamp'));
-    return collectionData(q, { idField: 'messageId' }) as Observable<Message[]>;
-  }
-
-  addUserReaction(senderUid: string, receiverUid: string, messageId: string, selectedEmoji: any): Observable<void> {
+  addUserReaction(senderUid: string, receiverUid: string, messageId: string, selectedEmoji: Emoji): Observable<void> {
     const chatId = this.getChatId(senderUid, receiverUid);
     const messageRef = doc(this.collectionChatRef, `${chatId}/messages/${messageId}`);
 
     return from(runTransaction(this.firestore, (transaction) =>
       transaction.get(messageRef).then(messageDoc => {
         if (!messageDoc.exists()) {
-          throw new Error('No document to update');
+          return
         }
 
-        let reactions: any = this.getReactionsFromMessage(messageDoc);
-        reactions[senderUid] = {
-          emoji: selectedEmoji,
-          user: senderUid
-        };
+        let reactions = this.getReactionsFromMessage(messageDoc);
+        const reactionKey = `emoji_${selectedEmoji.unicode}`;
+
+        if (reactions[reactionKey]?.users.includes(senderUid)) {
+          reactions = this.removeUserFromReaction(reactions, reactionKey, senderUid);
+        } else {
+          reactions = this.addNewReaction(reactions, reactionKey, senderUid, selectedEmoji);
+        }
+
+        this.updateFirestoreTransaction(transaction, messageRef, reactions);
+      })
+    ));
+  }
+
+  removeUserReaction(senderUid: string, receiverUid: string, messageId: string, selectedEmoji: Emoji): Observable<void> {
+    const chatId = this.getChatId(senderUid, receiverUid);
+    const messageRef = doc(this.collectionChatRef, `${chatId}/messages/${messageId}`);
+
+    return from(runTransaction(this.firestore, (transaction) =>
+      transaction.get(messageRef).then(messageDoc => {
+        if (!messageDoc.exists()) {
+          return;
+        }
+
+        let reactions = this.getReactionsFromMessage(messageDoc);
+        const reactionKey = `emoji_${selectedEmoji.unicode}`;
+
+        if (reactions[reactionKey]?.users.includes(senderUid)) {
+          reactions = this.removeUserFromReaction(reactions, reactionKey, senderUid);
+        }
 
         this.updateFirestoreTransaction(transaction, messageRef, reactions);
       })
@@ -77,7 +104,33 @@ export class ChatService {
     return messageDoc.data()?.['reactions'] || {};
   }
 
-  updateFirestoreTransaction(transaction: Transaction, messageRef: DocumentReference, reactions: any) {
+  removeUserFromReaction(reactions: any, reactionKey: string, senderUid: string) {
+    reactions[reactionKey].users = reactions[reactionKey].users.filter((uid: string) => uid !== senderUid);
+    reactions[reactionKey].counter--;
+
+    if (reactions[reactionKey].counter === 0) {
+      delete reactions[reactionKey];
+    }
+    return reactions;
+  }
+
+  addNewReaction(reactions: any, reactionKey: string, senderUid: string, selectedEmoji: Emoji) {
+    if (!reactions[reactionKey]) {
+      reactions[reactionKey] = {
+        emoji: selectedEmoji,
+        users: [senderUid],
+        counter: 1
+      };
+    } else {
+      if (!reactions[reactionKey].users.includes(senderUid)) {
+        reactions[reactionKey].users.push(senderUid);
+        reactions[reactionKey].counter = reactions[reactionKey].users.length;
+      }
+    }
+    return reactions;
+  }
+
+  updateFirestoreTransaction(transaction: Transaction, messageRef: DocumentReference, reactions: Reaction) {
     if (Object.keys(reactions).length === 0) {
       transaction.update(messageRef, { reactions: deleteField() });
     } else {

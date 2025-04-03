@@ -15,18 +15,24 @@
             </div>
         </div>
         <div class="new-message-input-container">
-            <div class="new-message-input-content">
-                <div class="new-message-input">
-                    <textarea type="text" [(ngModel)]="content" placeholder="Nachricht an {{ user.name }}"></textarea>
-                </div>
+            <form class="new-message-input-content" (ngSubmit)="sendMessage()">
+                <textarea type="text" [(ngModel)]="content" (keydown.enter)="handleEnter($event)" 
+                    placeholder="Nachricht an {{ user.name }}" rows="4" #messageTextarea>
+                </textarea>
                 <div class="new-message-icons-container">
                     <div class="new-message-prefix-icons">
-                        <mat-icon class="prefix-icon">sentiment_satisfied</mat-icon>
-                        <mat-icon class="prefix-icon">alternate_email</mat-icon>
+                        <button class="prefix-icon" type="button">
+                            <mat-icon>sentiment_satisfied</mat-icon>
+                        </button>
+                        <button class="prefix-icon" type="button">
+                            <mat-icon>alternate_email</mat-icon>
+                        </button>
                     </div>
-                    <mat-icon class="sufix-icon" (click)="sendMessage()">send</mat-icon>
+                    <button class="sufix-icon" type="submit" (click)="sendMessage()">
+                        <mat-icon>send</mat-icon>
+                    </button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </section>

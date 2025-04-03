@@ -52,18 +52,34 @@
     }
 }
 
+@mixin iconBtnStyle($tc) {
+    height: 40px;
+    width: 40px;
+    @include dFlex();
+    border-radius: 50px;
+    border: none;
+    background-color: style.$white;
+    color: $tc;
+    font-size: 20px;
+
+    &:hover {
+        cursor: pointer;
+        background-color: style.$bgcolor;
+        color: style.$purple-1;
+    }
+}
+
 //Inpits - styling
 @mixin primaryInputStyle($b-radius) {
-    @include mat.form-field-overrides((
-        outlined-container-shape: $b-radius,
-        outlined-outline-color: style.$light-purple-lines,
-        outlined-focus-outline-color: style.$purple-2,
-        outlined-hover-outline-color: style.$purple-2,
-        outlined-input-text-placeholder-color: style.$text-gray,
-        container-text-size: 18px,
-        container-text-font: "Nunito",
+    @include mat.form-field-overrides((outlined-container-shape: $b-radius,
+            outlined-outline-color: style.$light-purple-lines,
+            outlined-focus-outline-color: style.$purple-2,
+            outlined-hover-outline-color: style.$purple-2,
+            outlined-input-text-placeholder-color: style.$text-gray,
+            container-text-size: 18px,
+            container-text-font: "Nunito",
 
-    ));
+        ));
 
     //Class benötigt für die mat-errors zu anzeigen einfach in SCC Datei implementieren.
     // ::ng-deep .mat-mdc-form-field-subscript-wrapper {

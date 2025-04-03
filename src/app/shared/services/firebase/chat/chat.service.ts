@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, addDoc, collection, collectionData, doc, query, runTransaction, Transaction, updateDoc, DocumentReference, deleteField } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, doc, query, runTransaction, Transaction, updateDoc, DocumentReference, deleteField, onSnapshot } from '@angular/fire/firestore';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { Message } from '../../../interface/message.model';
 import { orderBy } from 'firebase/firestore';
@@ -18,6 +18,8 @@ export class ChatService {
   receiverUid$ = this.receiverUidSubject.asObservable();
   private senderUidSubject = new BehaviorSubject<string>('');
   senderUid$ = this.senderUidSubject.asObservable();
+  private reactionsSubject = new BehaviorSubject<{ [messageId: string]: any }>({});
+  reactions$ = this.reactionsSubject.asObservable();
 
   setReceiverUid(uid: string) {
     this.receiverUidSubject.next(uid);
@@ -54,6 +56,36 @@ export class ChatService {
     return from(updateDoc(messageRef, message));
   }
 
+  subscribeToReactions(senderId: string, receiverId: string, messageId: string) {
+    const chatId = this.getChatId(senderId, receiverId);
+    const messageRef = doc(this.collectionChatRef, `${chatId}/messages/${messageId}`);
+
+    return onSnapshot(messageRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const messageData = docSnap.data();
+        const reactions = messageData?.['reactions'] || {};
+
+        this.reactionsSubject.next({
+          ...this.reactionsSubject.value,
+          [messageId]: this.sortReactions(reactions)
+        });
+      }
+    }, (error) => {
+      console.error("Error fetching reactions:", error);
+    });
+  }
+
+  sortReactions(reactions: Reaction): { emoji: Emoji, counter: number }[] {
+    return reactions
+      ? Object.keys(reactions)
+        .map(key => ({
+          emoji: reactions[key].emoji,
+          counter: reactions[key].counter
+        }))
+        .sort((b, a) => b.counter - a.counter)
+      : [];
+  }
+
   addUserReaction(senderUid: string, receiverUid: string, messageId: string, selectedEmoji: Emoji): Observable<void> {
     const chatId = this.getChatId(senderUid, receiverUid);
     const messageRef = doc(this.collectionChatRef, `${chatId}/messages/${messageId}`);
@@ -78,7 +110,7 @@ export class ChatService {
     ));
   }
 
-  removeUserReaction(senderUid: string, receiverUid: string, messageId: string, selectedEmoji: Emoji): Observable<void> {
+  updateUserReaction(senderUid: string, receiverUid: string, messageId: string, selectedEmoji: Emoji): Observable<void> {
     const chatId = this.getChatId(senderUid, receiverUid);
     const messageRef = doc(this.collectionChatRef, `${chatId}/messages/${messageId}`);
 
@@ -91,8 +123,22 @@ export class ChatService {
         let reactions = this.getReactionsFromMessage(messageDoc);
         const reactionKey = `emoji_${selectedEmoji.unicode}`;
 
-        if (reactions[reactionKey]?.users.includes(senderUid)) {
-          reactions = this.removeUserFromReaction(reactions, reactionKey, senderUid);
+        if (!reactions[reactionKey]) {
+          reactions[reactionKey] = { users: [], counter: 0 };
+        }
+
+        const users: string[] = reactions[reactionKey].users;
+
+        if (users.includes(senderUid)) {
+          reactions[reactionKey].counter--;
+          reactions[reactionKey].users = users.filter(user => user !== senderUid);
+        } else {
+          reactions[reactionKey].counter++;
+          reactions[reactionKey].users.push(senderUid);
+        }
+
+        if (reactions[reactionKey].counter === 0) {
+          delete reactions[reactionKey];
         }
 
         this.updateFirestoreTransaction(transaction, messageRef, reactions);

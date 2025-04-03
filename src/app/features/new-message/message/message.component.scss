@@ -34,11 +34,21 @@
     }
 }
 
+.hover-overlay-menu-container {
+    width: 100%;
+    height: 50px;
+    @include dFlex($jc: end, $fd: row);
+    padding: 0 45px 0 45px;
+    margin-top: -45px;
+}
+
 .message-content {
     width: 100%;
     height: fit-content;
-    @include dFlex($jc: end, $fd: row);
+    @include dFlex($jc: end, $fd: row, $ai: start);
     padding: 19px 0 10px 0;
+    margin-top: 25px;
+    background-color: $white;
 
     &:hover {
         cursor: pointer;
@@ -66,14 +76,13 @@
 
 .message-content-user-content {
     width: 100%;
-    @include dFlex($fd: column, $ai: end);
-    gap: 8px;
+    @include dFlex($fd: column, $ai: start);
 
     .message-content-user-name {
         width: 100%;
-        margin-left: 146px;
         @include dFlex($jc: end, $fd: row);
         gap: 20px;
+        margin-bottom: 8px;
 
         .message-timestamp {
             font-weight: 400;
@@ -92,6 +101,7 @@
     .message-content-user-message {
         width: 100%;
         @include dFlex($jc: end, $fd: row);
+        margin-bottom: 8px;
 
         .message-bubble {
             width: fit-content;
@@ -113,7 +123,6 @@
 
     .message-content-message-reaction-container {
         width: 100%;
-        margin-left: 146px;
         @include dFlex($jc: end, $fd: row);
         gap: 10px;
 
@@ -141,6 +150,10 @@
         .add-reaction-container {
             @include dFlex();
             height: 100%;
+
+            button {
+                @include iconBtnStyle($tc: black);
+            }
         }
     }
 }

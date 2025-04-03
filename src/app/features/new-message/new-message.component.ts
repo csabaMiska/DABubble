@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon'
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
 import { Observable, switchMap } from 'rxjs';
@@ -24,20 +24,30 @@ import { MessageComponent } from './message/message.component';
   templateUrl: './new-message.component.html',
   styleUrl: './new-message.component.scss'
 })
-export class NewMessageComponent implements OnInit {
+export class NewMessageComponent implements OnInit, AfterViewChecked {
   private firebaseUserService = inject(FirebaseUserService);
   private firebaseAuthService = inject(FirebaseAuthService);
   private chatService = inject(ChatService);
+
   readonly dialog = inject(MatDialog);
   private profilePopupDialogRef?: MatDialogRef<ProfilePopupComponent>;
+
   user$!: Observable<User | undefined>;
   showUserProfile: boolean = true;
+
   content: string = '';
+  @ViewChild('messageTextarea') messageTextarea!: ElementRef;
 
   ngOnInit(): void {
     this.user$ = this.chatService.receiverUid$.pipe(
       switchMap(uid => this.firebaseUserService.getUserRealTime(uid))
     );
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.messageTextarea) {
+      this.messageTextarea.nativeElement.focus();
+    }
   }
 
   sendMessage(): void {
@@ -72,5 +82,13 @@ export class NewMessageComponent implements OnInit {
       hasBackdrop: true,
       data: this.showUserProfile
     });
+  }
+
+  handleEnter(event: Event) {
+    const keyboardEvent = event as KeyboardEvent; 
+    if (!keyboardEvent.shiftKey) {
+      event.preventDefault();
+      this.sendMessage();
+    }
   }
 }

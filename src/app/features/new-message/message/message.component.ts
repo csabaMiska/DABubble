@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, inject, OnInit } from '@angular/core';
 import { FirebaseAuthService } from '../../../shared/services/firebase/auth/firebase.auth.service';
 import { ChatService } from '../../../shared/services/firebase/chat/chat.service';
-import { combineLatest, map, Observable, of, switchMap, take } from 'rxjs';
+import { combineLatest, map, Observable, of, switchMap, take, tap } from 'rxjs';
 import { Message } from '../../../shared/interface/message.model';
 import { MatIconModule } from '@angular/material/icon';
 import { FirebaseUserService } from '../../../shared/services/firebase/user/firebase.user.service';
@@ -33,15 +33,18 @@ export class MessageComponent implements OnInit {
 
   messagesWithUserData$!: Observable<Array<Message & { senderData?: any }>>;
   messagesWithUserDataArray: Array<Message & { senderData?: any }> = [];
+  sortedReactions: { [key: string]: any } = {};
 
   isSender: boolean = false;
 
   showEmojiPicker: { [key: string]: boolean } = {};
   buttonRects: { [key: string]: DOMRect } = {};
+  overlayMenuIsHovered: { [key: string]: boolean } = {};
 
   ngOnInit(): void {
     this.getMessagesDate();
     this.convertMessegeData();
+    this.getReactions();
   }
 
   getMessagesDate() {
@@ -122,6 +125,24 @@ export class MessageComponent implements OnInit {
   closeAllPickers() {
     this.showEmojiPicker = {};
     this.buttonRects = {};
+    this.overlayMenuIsHovered = {};
+  }
+
+  getReactions() {
+    this.messagesWithUserData$.subscribe(messages => {
+      const reactionsMap: { [key: string]: any } = {};
+      
+      messages.forEach(message => {
+        const messageId = message.messageId;
+        this.chatService.subscribeToReactions(message.senderId, message.receiverId, messageId);
+        
+        this.chatService.reactions$.subscribe(reactions => {
+          reactionsMap[messageId] = reactions[messageId] || [];
+        });
+      });
+  
+      this.sortedReactions = reactionsMap;
+    });
   }
 
   emitedEmojiSelected(selectedEmoji: Emoji, messageId: string) {
@@ -151,17 +172,13 @@ export class MessageComponent implements OnInit {
     });
   }
 
-  getReactions(message: Message) {
-    return message.reactions ? Object.values(message.reactions) : [];
-  }
-
-  deleteSelectedEmoji(messageId: string, selectedEmoji: Emoji) {
+  handleEmojiClick(messageId: string, selectedEmoji: Emoji) {
     this.getCurrentUserUid().pipe(
       switchMap(senderUid => {
         return this.chatService.receiverUid$.pipe(
           switchMap(receiverUid => {
             if (senderUid) {
-              return this.chatService.removeUserReaction(senderUid, receiverUid, messageId, selectedEmoji);
+              return this.chatService.updateUserReaction(senderUid, receiverUid, messageId, selectedEmoji);
             } else {
               return [];
             }
@@ -189,5 +206,13 @@ export class MessageComponent implements OnInit {
     if (timestamp.toDate) return timestamp.toDate(); 
     if (typeof timestamp === "number") return new Date(timestamp);
     return new Date(timestamp);
+  }
+
+  openHoverOverlayMenu(messageId: string) {
+    this.overlayMenuIsHovered[messageId] = true;
+  }
+
+  closeHoverOverlayMenu(messageId: string) {
+    this.overlayMenuIsHovered[messageId] = false;
   }
 }

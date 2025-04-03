@@ -63,7 +63,7 @@
     width: 100%;
     flex-grow: 1;
     @include dFlex();
-    overflow-y: auto; 
+    overflow-y: auto;
 
     &::-webkit-scrollbar {
         display: none;
@@ -90,35 +90,26 @@
     .new-message-input-content {
         width: 100%;
         height: 100%;
-        border-radius: 20px;
-        border: 1px solid $light-purple-lines;
-        @include dFlex($fd: column, $jc: space-between);
 
-        &:hover {
-            cursor: pointer;
-            border-color: $purple-2;
-        }
-
-        .new-message-input {
+        textarea {
             width: 100%;
-            flex-grow: 1;
-            padding: 20px;
+            height: 100%;
+            padding: 20px 20px 60px 20px;
+            width: 100%;
+            resize: none;
+            align-items: start;
+            border-radius: 20px;
+            border: 1px solid $light-purple-lines;
+            font-size: 18px;
+            font-family: "Nunito";
 
-            textarea {
-                width: 100%;
-                height: 100%;
-                resize: none;
-                align-items: start;
-                border: none;
-                font-size: 18px;
-                font-family: "Nunito";
+            &:hover {
+                border-color: $purple-2;
             }
 
-            textarea:focus,
-            textarea:active {
-                border: none;
-                outline: none;
-                box-shadow: none;
+            &:focus {
+                border: 2px solid $purple-2 !important;
+                outline: none; 
             }
         }
 
@@ -127,31 +118,24 @@
             height: 40px;
             @include dFlex($jc: space-between);
             padding: 0 20px 20px 20px;
+            margin-top: -50px;
 
             .new-message-prefix-icons {
                 @include dFlex();
                 gap: 10px;
 
-                .prefix-icon {
-                    height: 40px;
-                    width: 40px;
-                    @include dFlex();
-                    border-radius: 50px;
-                    color: $text-gray;
-
-                    &:hover {
-                        cursor: pointer;
-                        background-color: $bgcolor;
-                        color: $purple-1;
-                    }
+                button {
+                   @include iconBtnStyle($tc: $text-gray); 
                 }
             }
-         
+
             .sufix-icon {
                 height: 40px;
                 width: 40px;
                 @include dFlex();
                 color: $purple-1;
+                border: none;
+                background-color: $white;
 
                 &:hover {
                     cursor: pointer;

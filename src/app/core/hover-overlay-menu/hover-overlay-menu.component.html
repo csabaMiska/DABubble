@@ -1,6 +1,7 @@
 <section class="hover-overlay-menu-container" [ngClass]="{'hover-overlay-menu-container-reverse-style' : isSender}">
-    <button class="last-used-emojis-container" *ngFor="let lastSelectedEmoji of (userData$ | async)?.lastUsedEmojis">
-        <span (click)="handleEmojiSelection(lastSelectedEmoji.emoji, messageId)">{{ lastSelectedEmoji.emoji.unicode }}</span>
+    <button class="last-used-emojis-container" *ngFor="let lastSelectedEmoji of (userData$ | async)?.lastUsedEmojis"
+        (click)="handleEmojiSelection(lastSelectedEmoji.emoji, messageId)">
+        <span>{{ lastSelectedEmoji.emoji.unicode }}</span>
     </button>
     <button>
         <mat-icon (click)="openCloseEmojiPicker($event, messageId)">add_reaction</mat-icon>
@@ -14,4 +15,4 @@
 </section>
 
 <app-emoji-picker *ngIf="showEmojiPicker[messageId]" [buttonRect]="buttonRects[messageId]" class="emoji-picker"
-        (click)="closeAllPickers()" (emojiSelected)="handleEmojiSelection($event, messageId)"></app-emoji-picker>
+    (click)="closeAllPickers()" (emojiSelected)="handleEmojiSelection($event, messageId)"></app-emoji-picker>

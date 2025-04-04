@@ -1,45 +1,35 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, inject, OnInit } from '@angular/core';
 import { FirebaseAuthService } from '../../../shared/services/firebase/auth/firebase.auth.service';
 import { ChatService } from '../../../shared/services/firebase/chat/chat.service';
 import { combineLatest, map, Observable, of, switchMap, take, tap } from 'rxjs';
 import { Message } from '../../../shared/interface/message.model';
 import { MatIconModule } from '@angular/material/icon';
 import { FirebaseUserService } from '../../../shared/services/firebase/user/firebase.user.service';
-import { EmojiPickerComponent } from '../../../core/emoji-picker/emoji-picker.component';
 import { CustomDatePipe } from '../../../shared/pipe/custom.date.pipe'
-import { HoverOverlayMenuComponent } from '../../../core/hover-overlay-menu/hover-overlay-menu.component';
-import { Emoji } from '../../../shared/interface/emoji.model';
+import { MessageContentComponent } from '../../message-content/message-content.component';
 
 
 @Component({
-  selector: 'app-message',
+  selector: 'app-chat',
   standalone: true,
   imports: [
     CommonModule,
     MatIconModule,
-    EmojiPickerComponent,
-    CustomDatePipe,
-    HoverOverlayMenuComponent
+    MessageContentComponent,
+    CustomDatePipe
   ],
-  templateUrl: './message.component.html',
-  styleUrl: './message.component.scss'
+  templateUrl: './chat.component.html',
+  styleUrl: './chat.component.scss'
 })
-export class MessageComponent implements OnInit {
+export class ChatComponent implements OnInit {
   private firebaseAuthService = inject(FirebaseAuthService);
   private firebaseUserService = inject(FirebaseUserService);
   private chatService = inject(ChatService);
-  private elementRef = inject(ElementRef);
 
   messagesWithUserData$!: Observable<Array<Message & { senderData?: any }>>;
   messagesWithUserDataArray: Array<Message & { senderData?: any }> = [];
   sortedReactions: { [key: string]: any } = {};
-
-  isSender: boolean = false;
-
-  showEmojiPicker: { [key: string]: boolean } = {};
-  buttonRects: { [key: string]: DOMRect } = {};
-  overlayMenuIsHovered: { [key: string]: boolean } = {};
 
   ngOnInit(): void {
     this.getMessagesDate();
@@ -101,33 +91,6 @@ export class MessageComponent implements OnInit {
     )
   }
 
-  openCloseEmojiPicker(event: MouseEvent, messageId: string) {
-    this.showEmojiPicker[messageId] = !this.showEmojiPicker[messageId];
-    if (this.showEmojiPicker[messageId]) {
-      this.buttonRects[messageId] = (event.currentTarget as HTMLElement).getBoundingClientRect();
-    } else {
-      delete this.buttonRects[messageId];
-    }
-  }
-
-  @HostListener('body:click', ['$event'])
-  onbodyClick(event: MouseEvent) {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.closeAllPickers();
-    }
-  }
-
-  @HostListener('window:scroll')
-  onWindowScroll() {
-    this.closeAllPickers();
-  }
-
-  closeAllPickers() {
-    this.showEmojiPicker = {};
-    this.buttonRects = {};
-    this.overlayMenuIsHovered = {};
-  }
-
   getReactions() {
     this.messagesWithUserData$.subscribe(messages => {
       const reactionsMap: { [key: string]: any } = {};
@@ -145,53 +108,6 @@ export class MessageComponent implements OnInit {
     });
   }
 
-  emitedEmojiSelected(selectedEmoji: Emoji, messageId: string) {
-    this.addEmojiSelection(selectedEmoji, messageId);
-  }
-
-  addEmojiSelection(selectedEmoji: Emoji, messageId: string) {
-    this.getCurrentUserUid().pipe(
-      switchMap(senderUid => {
-        return this.chatService.receiverUid$.pipe(
-          switchMap(receiverUid => {
-            if (senderUid) {
-              return this.chatService.addUserReaction(senderUid, receiverUid, messageId, selectedEmoji);
-            } else {
-              return [];
-            }
-          })
-        );
-      })
-    ).subscribe({
-      next: () => {
-        this.closeAllPickers();
-      },
-      error: (error) => {
-        console.error(error);
-      }
-    });
-  }
-
-  handleEmojiClick(messageId: string, selectedEmoji: Emoji) {
-    this.getCurrentUserUid().pipe(
-      switchMap(senderUid => {
-        return this.chatService.receiverUid$.pipe(
-          switchMap(receiverUid => {
-            if (senderUid) {
-              return this.chatService.updateUserReaction(senderUid, receiverUid, messageId, selectedEmoji);
-            } else {
-              return [];
-            }
-          })
-        );
-      })
-    ).subscribe({
-      error: (error) => {
-        console.error(error);
-      }
-    });
-  }
-
   shouldShowTimestamp(message: Message, index: number): boolean {
     if (index === 0) return true; 
     const currentTimestamp = this.convertToDate(message.timestamp);
@@ -206,13 +122,5 @@ export class MessageComponent implements OnInit {
     if (timestamp.toDate) return timestamp.toDate(); 
     if (typeof timestamp === "number") return new Date(timestamp);
     return new Date(timestamp);
-  }
-
-  openHoverOverlayMenu(messageId: string) {
-    this.overlayMenuIsHovered[messageId] = true;
-  }
-
-  closeHoverOverlayMenu(messageId: string) {
-    this.overlayMenuIsHovered[messageId] = false;
   }
 }

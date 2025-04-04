@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, HostListener, inject, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, HostListener, inject, Input, OnInit, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { EmojiPickerComponent } from '../emoji-picker/emoji-picker.component';
 import { Emoji } from '../../shared/interface/emoji.model';
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
-import { filter, map, Observable, of, switchMap, tap } from 'rxjs';
+import { distinctUntilChanged, filter, map, Observable, of, switchMap, tap } from 'rxjs';
 import { User } from '../../shared/interface/user.model';
 import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
 
@@ -92,20 +92,21 @@ export class HoverOverlayMenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.firebaseAuthService.getCurrentUser().pipe(
-      filter(user => user !== null), 
+      filter(user => user !== null),
       switchMap(user => {
         return this.firebaseUserService.getUserRealTime(user.uid).pipe(
           map(userData => {
             this.lastSelectedEmojis = userData?.lastUsedEmojis ?? [];
-
+  
             if (this.lastSelectedEmojis.length === 0) {
               this.lastSelectedEmojis = this.standardEmojis.slice(0, 2);
             } else if (this.lastSelectedEmojis.length === 1) {
               this.lastSelectedEmojis.push(this.standardEmojis[1]);
             }
-
+  
             return { ...userData, lastUsedEmojis: this.lastSelectedEmojis };
-          })
+          }),
+          distinctUntilChanged((prev, curr) => prev.lastUsedEmojis === curr.lastUsedEmojis) // Csak akkor frissít, ha az emoji változik
         );
       })
     ).subscribe(user => {
@@ -144,7 +145,6 @@ export class HoverOverlayMenuComponent implements OnInit {
   handleEmojiSelection(selectedEmoji: Emoji, messageId: string) {
     this.emojiSelected.emit({ emoji: selectedEmoji, messageId });
     this.updateLastUsedEmojis(selectedEmoji);
-    this.closeAllPickers();
   }
 
   updateLastUsedEmojis(selectedEmoji: Emoji) {

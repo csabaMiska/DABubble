@@ -18,6 +18,8 @@ export class ChatService {
   receiverUid$ = this.receiverUidSubject.asObservable();
   private senderUidSubject = new BehaviorSubject<string>('');
   senderUid$ = this.senderUidSubject.asObservable();
+  private messagesSubject = new BehaviorSubject<Message[]>([]);
+  messages$ = this.messagesSubject.asObservable();
   private reactionsSubject = new BehaviorSubject<{ [messageId: string]: any }>({});
   reactions$ = this.reactionsSubject.asObservable();
 
@@ -33,7 +35,21 @@ export class ChatService {
     const chatId = this.getChatId(senderId, receiverId);
     const messageRef = collection(this.collectionChatRef, `${chatId}/messages`);
     const q = query(messageRef, orderBy('timestamp'));
-    return collectionData(q, { idField: 'messageId' }) as Observable<Message[]>;
+
+    return new Observable<Message[]>((observer) => {
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const messages: Message[] = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data() as Message;
+          messages.push({ ...data, messageId: doc.id });
+        });
+        observer.next(messages);
+      }, (error) => {
+        observer.error(error);
+      });
+
+      return () => unsubscribe();
+    });
   }
 
   sendMessage(senderId: string, receiverId: string, message: Partial<Message>): Observable<void> {

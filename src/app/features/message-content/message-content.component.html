@@ -1,0 +1,40 @@
+<div class="message-content" [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }"
+    (mouseenter)="openHoverOverlayMenu(message.messageId)" (mouseleave)="closeHoverOverlayMenu(message.messageId)">
+    <div class="message-content-user-content">
+        <div class="hover-overlay-menu-container" [ngClass]="{'chat-bubble-reverse-positioning': message.isSender }">
+            <app-hover-overlay-menu class="hover-overlay-menu" *ngIf="overlayMenuIsHovered[message.messageId]"
+                [messageId]="message.messageId" [isSender]="message.isSender"
+                (emojiSelected)="emitedEmojiSelected($event.emoji, $event.messageId)"></app-hover-overlay-menu>
+        </div>
+        <div class="message-content-user-name" [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
+            <span class="message-timestamp">{{ message.timestamp | date:'HH:mm'}} Uhr</span>
+            <span class="message-user-name">{{ message.senderData.name }}</span>
+        </div>
+        <div class="message-content-user-message" [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
+            <span class="message-bubble" [ngClass]="{'chat-bubble-reverse-desing': !message.isSender }">{{
+                message.content }}</span>
+        </div>
+        <div class="message-content-message-reaction-container"
+            [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }"
+            *ngIf="sortedReactions[message.messageId]?.length > 0">
+            <div class="reacted-emojis-container" *ngFor="let reaction of sortedReactions[message.messageId]"
+                [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
+                <div class="reacted-emoji" (click)="handleEmojiClick(message.messageId, reaction.emoji)">
+                    <span>{{ reaction.emoji?.unicode }}</span>
+                    <span>{{ reaction.counter }}</span>
+                </div>
+            </div>
+            <div class="add-reaction-container">
+                <button>
+                    <mat-icon (click)="openCloseEmojiPicker($event, message.messageId)">add_reaction</mat-icon>
+                </button>
+                <app-emoji-picker *ngIf="showEmojiPicker[message.messageId]"
+                    [buttonRect]="buttonRects[message.messageId]" class="emoji-picker" (click)="closeAllPickers()"
+                    (emojiSelected)="addEmojiSelection($event, message.messageId)"></app-emoji-picker>
+            </div>
+        </div>
+    </div>
+    <div class="message-content-user-img" [ngClass]="{'avatar-reverse-design': !message.isSender }">
+        <img src="{{ message.senderData.avatar }}" alt="Avatar">
+    </div>
+</div>

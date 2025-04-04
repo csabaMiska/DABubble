@@ -104,9 +104,9 @@ export class ProfilePopupComponent implements OnInit {
 
   openChatContainer() {
     this.profilePopupDialogRef.close();
-    this.dashboardService.openNewMessage();
-    this.dashboardService.closeChannel();
-    this.dashboardService.closeThread();
+    this.dashboardService.openChatWindow();
+    this.dashboardService.closeChannelWindow();
+    this.dashboardService.closeAnswerWindow();
   }
 
   closeProfileView() {

@@ -10,21 +10,21 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
 import { Message } from '../../shared/interface/message.model';
 import { FormsModule } from '@angular/forms';
-import { MessageComponent } from './message/message.component';
+import { ChatComponent } from './chat/chat.component';
 
 @Component({
-  selector: 'app-new-message',
+  selector: 'app-chat-window',
   standalone: true,
   imports: [
     CommonModule,
     MatIconModule,
     FormsModule,
-    MessageComponent,
+    ChatComponent,
   ],
-  templateUrl: './new-message.component.html',
-  styleUrl: './new-message.component.scss'
+  templateUrl: './chat-window.component.html',
+  styleUrl: './chat-window.component.scss'
 })
-export class NewMessageComponent implements OnInit, AfterViewChecked {
+export class ChatWindowComponent implements OnInit, AfterViewChecked {
   private firebaseUserService = inject(FirebaseUserService);
   private firebaseAuthService = inject(FirebaseAuthService);
   private chatService = inject(ChatService);

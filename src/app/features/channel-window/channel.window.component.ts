@@ -3,21 +3,24 @@ import { DashboardService } from '../../shared/services/dashboard/dashboard.serv
 import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
 
 @Component({
-  selector: 'app-thread',
+  selector: 'app-channel-window',
   standalone: true,
   imports: [],
   providers: [WindowWidthDirective],
-  templateUrl: './thread.component.html',
-  styleUrl: './thread.component.scss'
+  templateUrl: './channel-window.component.html',
+  styleUrl: './channel-window.component.scss'
 })
-export class ThreadComponent {
+export class ChannelWindowComponent {
   private dashboardService = inject(DashboardService);
   private windowWidthDirective = inject(WindowWidthDirective);
 
-  closeThread() {
-    this.dashboardService.closeThread();
+  openThread() {
+    this.dashboardService.openAnswerWindow();
     if (this.windowWidthDirective.tabletViewOn) {
-      this.dashboardService.openChannel();
+      this.dashboardService.closeChannelWindow();
+    }
+    if (this.windowWidthDirective.mobilViewOn) {
+      this.dashboardService.closeChannelWindow();
     }
   }
 }

@@ -43,9 +43,9 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.getCurrentUser();
-    this.dashboardService.channelIsOpen$.subscribe(() => this.updateWorkSpaceLogoVisibility());
-    this.dashboardService.threadIsOpen$.subscribe(() => this.updateWorkSpaceLogoVisibility());
-    this.dashboardService.newMessageIsOpen$.subscribe(() => this.updateWorkSpaceLogoVisibility());
+    this.dashboardService.channelWindowIsOpen$.subscribe(() => this.updateWorkSpaceLogoVisibility());
+    this.dashboardService.answerWindowIsOpen$.subscribe(() => this.updateWorkSpaceLogoVisibility());
+    this.dashboardService.chatWindowIsOpen$.subscribe(() => this.updateWorkSpaceLogoVisibility());
   }
 
   getCurrentUser(): void {

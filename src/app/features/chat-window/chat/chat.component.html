@@ -1,0 +1,10 @@
+<section class="message-container" *ngFor="let message of (messagesWithUserData$ | async); let i = index">
+    <div class="message-content-container">
+        <div class="timestamp-container" *ngIf="shouldShowTimestamp(message, i)">
+            <div class="line-style"></div>
+            <div class="timestamp">{{ message.timestamp | customDate }}</div>
+            <div class="line-style"></div>
+        </div>
+        <app-message-content [message]="message" [sortedReactions]="sortedReactions"></app-message-content>
+    </div>
+</section>

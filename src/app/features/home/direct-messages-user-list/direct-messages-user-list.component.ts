@@ -46,9 +46,9 @@ export class DirectMessagesUserListComponent implements OnInit {
   }
 
   openChatContainer() {
-    this.dashboardService.openNewMessage();
-    this.dashboardService.closeChannel();
-    this.dashboardService.closeThread();
+    this.dashboardService.openChatWindow();
+    this.dashboardService.closeChannelWindow();
+    this.dashboardService.closeAnswerWindow();
     if (this.windowWidthDirective.mobilViewOn) {
       this.dashboardService.toggleSideNav();
     }

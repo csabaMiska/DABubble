@@ -1,41 +1,41 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { ChannelComponent } from '../channel/channel.component';
+import { ChannelWindowComponent } from '../channel-window/channel.window.component';
 import { CommonModule } from '@angular/common';
-import { ThreadComponent } from '../thread/thread.component';
 import { DashboardService } from '../../shared/services/dashboard/dashboard.service';
-import { NewMessageComponent } from '../new-message/new-message.component';
 import { fromEvent, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { ChatWindowComponent } from '../chat-window/chat-window.component';
+import { AnswerWindowComponent } from '../answer-window/answer-window.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
     CommonModule,
-    ChannelComponent,
-    ThreadComponent,
-    NewMessageComponent,
+    ChannelWindowComponent,
+    AnswerWindowComponent,
+    ChatWindowComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   private dashboardService = inject(DashboardService);
-  channelIsOpen: boolean = false;
-  threadIsOpen: boolean = false;
-  newMessageIsOpen: boolean = false;
+  channelWindowIsOpen: boolean = false;
+  answerWindowIsOpen: boolean = false;
+  chatWindowIsOpen: boolean = false;
   windowWidth: number = window.innerWidth;
   private resizeSubscription!: Subscription;
 
   ngOnInit() {
-    this.dashboardService.channelIsOpen$.subscribe(isOpen => {
-      this.channelIsOpen = isOpen;
+    this.dashboardService.channelWindowIsOpen$.subscribe(isOpen => {
+      this.channelWindowIsOpen = isOpen;
     });
-    this.dashboardService.threadIsOpen$.subscribe(isOpen => {
-      this.threadIsOpen = isOpen;
+    this.dashboardService.answerWindowIsOpen$.subscribe(isOpen => {
+      this.answerWindowIsOpen = isOpen;
     });
-    this.dashboardService.newMessageIsOpen$.subscribe(isOpen => {
-      this.newMessageIsOpen = isOpen;
+    this.dashboardService.chatWindowIsOpen$.subscribe(isOpen => {
+      this.chatWindowIsOpen = isOpen;
     });
     this.resizeSubscription = fromEvent(window, 'resize')
       .pipe(debounceTime(10))
@@ -52,60 +52,60 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   toggleTabletVisibility() {
     if (this.windowWidth < 1200) {
-      if (this.threadIsOpen) {
-        this.dashboardService.openThread();
-        this.dashboardService.closeChannel();
+      if (this.answerWindowIsOpen) {
+        this.dashboardService.openAnswerWindow();
+        this.dashboardService.closeChannelWindow();
       } else {
-        this.dashboardService.openChannel();
+        this.dashboardService.openChannelWindow();
       }
-      if (this.channelIsOpen) {
-        this.dashboardService.openChannel();
+      if (this.channelWindowIsOpen) {
+        this.dashboardService.openChannelWindow();
       }
-      if (this.newMessageIsOpen) {
-        this.dashboardService.closeChannel();
-        this.dashboardService.closeThread();
+      if (this.chatWindowIsOpen) {
+        this.dashboardService.closeChannelWindow();
+        this.dashboardService.closeAnswerWindow();
       }
     } else {
-      this.dashboardService.openChannel();
-      if (this.threadIsOpen) {
-        this.dashboardService.openThread();
+      this.dashboardService.openChannelWindow();
+      if (this.answerWindowIsOpen) {
+        this.dashboardService.openAnswerWindow();
       }
-      if (this.newMessageIsOpen) {
-        this.dashboardService.closeChannel();
-        this.dashboardService.closeThread();
+      if (this.chatWindowIsOpen) {
+        this.dashboardService.closeChannelWindow();
+        this.dashboardService.closeAnswerWindow();
       }
     }
   }
 
   toggleMobileVisibility() {
     if (this.windowWidth < 800) {
-      if (this.threadIsOpen) {
-        this.dashboardService.openThread();
-        this.dashboardService.closeChannel();
+      if (this.answerWindowIsOpen) {
+        this.dashboardService.openAnswerWindow();
+        this.dashboardService.closeChannelWindow();
         this.dashboardService.closeSideNav();
       } else {
-        this.dashboardService.openChannel();
+        this.dashboardService.openChannelWindow();
         this.dashboardService.closeSideNav();
       }
-      if (this.channelIsOpen) {
-        this.dashboardService.openChannel();
+      if (this.channelWindowIsOpen) {
+        this.dashboardService.openChannelWindow();
         this.dashboardService.closeSideNav();
       }
-      if (this.newMessageIsOpen) {
-        this.dashboardService.closeChannel();
-        this.dashboardService.closeThread();
+      if (this.chatWindowIsOpen) {
+        this.dashboardService.closeChannelWindow();
+        this.dashboardService.closeAnswerWindow();
         this.dashboardService.closeSideNav();
       }
     } else {
-      this.dashboardService.openChannel();
+      this.dashboardService.openChannelWindow();
       this.dashboardService.closeSideNav();
-      if (this.threadIsOpen) {
-        this.dashboardService.openThread();
+      if (this.answerWindowIsOpen) {
+        this.dashboardService.openAnswerWindow();
         this.dashboardService.closeSideNav();
       }
-      if (this.newMessageIsOpen) {
-        this.dashboardService.closeChannel();
-        this.dashboardService.closeThread();
+      if (this.chatWindowIsOpen) {
+        this.dashboardService.closeChannelWindow();
+        this.dashboardService.closeAnswerWindow();
         this.dashboardService.closeSideNav();
       }
     }

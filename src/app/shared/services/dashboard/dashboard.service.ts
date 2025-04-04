@@ -5,38 +5,38 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class DashboardService {
-  private channelOpenSubject = new BehaviorSubject<boolean>(false);
-  private threadOpenSubject = new BehaviorSubject<boolean>(false);
-  private newMessageOpenSubject = new BehaviorSubject<boolean>(false);
+  private channelWindowOpenSubject = new BehaviorSubject<boolean>(false);
+  private answerWindowOpenSubject = new BehaviorSubject<boolean>(false);
+  private chatWindowOpenSubject = new BehaviorSubject<boolean>(false);
   private sideNavOpenSubject = new BehaviorSubject<boolean>(true);
 
-  channelIsOpen$ = this.channelOpenSubject.asObservable();
-  threadIsOpen$ = this.threadOpenSubject.asObservable();
-  newMessageIsOpen$ = this.newMessageOpenSubject.asObservable();
+  channelWindowIsOpen$ = this.channelWindowOpenSubject.asObservable();
+  answerWindowIsOpen$ = this.answerWindowOpenSubject.asObservable();
+  chatWindowIsOpen$ = this.chatWindowOpenSubject.asObservable();
   sideNavIsOpen$ = this.sideNavOpenSubject.asObservable();
 
-  openChannel() {
-    this.channelOpenSubject.next(true);
+  openChannelWindow() {
+    this.channelWindowOpenSubject.next(true);
   }
 
-  closeChannel() {
-    this.channelOpenSubject.next(false);
+  closeChannelWindow() {
+    this.channelWindowOpenSubject.next(false);
   }
 
-  openThread() {
-    this.threadOpenSubject.next(true);
+  openAnswerWindow() {
+    this.answerWindowOpenSubject.next(true);
   }
 
-  closeThread() {
-    this.threadOpenSubject.next(false);
+  closeAnswerWindow() {
+    this.answerWindowOpenSubject.next(false);
   }
 
-  openNewMessage() {
-    this.newMessageOpenSubject.next(true);
+  openChatWindow() {
+    this.chatWindowOpenSubject.next(true);
   }
 
-  closeNewMessage() {
-    this.newMessageOpenSubject.next(false);
+  closeCharWindow() {
+    this.chatWindowOpenSubject.next(false);
   }
 
   openSideNav() {
@@ -54,9 +54,9 @@ export class DashboardService {
 
   isAnyOpen(): boolean {
     return (
-      this.channelOpenSubject.getValue() ||
-      this.threadOpenSubject.getValue() ||
-      this.newMessageOpenSubject.getValue()
+      this.channelWindowOpenSubject.getValue() ||
+      this.answerWindowOpenSubject.getValue() ||
+      this.chatWindowOpenSubject.getValue()
     );
   }
 }

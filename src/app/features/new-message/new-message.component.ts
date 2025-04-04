@@ -37,6 +37,7 @@ export class NewMessageComponent implements OnInit, AfterViewChecked {
 
   content: string = '';
   @ViewChild('messageTextarea') messageTextarea!: ElementRef;
+  textareaShouldFocus = true;
 
   ngOnInit(): void {
     this.user$ = this.chatService.receiverUid$.pipe(
@@ -45,8 +46,13 @@ export class NewMessageComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
-    if (this.messageTextarea) {
-      this.messageTextarea.nativeElement.focus();
+    if (this.textareaShouldFocus) {
+      setTimeout(() => {
+        if (this.messageTextarea) {
+          this.messageTextarea.nativeElement.focus();
+          this.textareaShouldFocus = false;
+        }
+      });
     }
   }
 

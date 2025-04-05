@@ -86,3 +86,42 @@
     //     display: flex;
     //   }
 }
+
+@mixin textareaStyle($max-height) {
+    width: 100%;
+    height: 100%;
+    max-height: $max-height;
+    border-radius: 0;
+    border: none;
+    font-family: "Nunito";
+    font-size: 18px;
+    background-color: style.$white;
+    resize: none;
+
+    &:hover {
+        border: none;
+        outline: none;
+    }
+
+    &:focus {
+        border: none;
+        outline: none;
+    }
+
+    // Classes benötigt für die Komplette textarea Styling mit Icons oder Buttons in der textarea.
+    // .textarea-icons-container {
+    //     width: 100%;
+    //     height: fit-content;
+    //     @include dFlex($jc: space-between);
+    //     margin-top: -50px;
+
+    //     .new-message-prefix-icons {
+    //         @include dFlex();
+    //         gap: 10px;
+
+    //         button {
+    //            @include iconBtnStyle($tc: $text-gray); 
+    //         }
+    //     }
+    // }
+}

@@ -14,25 +14,6 @@
                 <app-chat class="app-message"></app-chat>
             </div>
         </div>
-        <div class="new-message-input-container">
-            <form class="new-message-input-content" (ngSubmit)="sendMessage()">
-                <textarea type="text" [(ngModel)]="content" (keydown.enter)="handleEnter($event)" 
-                    placeholder="Nachricht an {{ user.name }}" rows="4" #messageTextarea>
-                </textarea>
-                <div class="new-message-icons-container">
-                    <div class="new-message-prefix-icons">
-                        <button class="prefix-icon" type="button">
-                            <mat-icon>sentiment_satisfied</mat-icon>
-                        </button>
-                        <button class="prefix-icon" type="button">
-                            <mat-icon>alternate_email</mat-icon>
-                        </button>
-                    </div>
-                    <button class="sufix-icon" type="submit" (click)="sendMessage()">
-                        <mat-icon>send</mat-icon>
-                    </button>
-                </div>
-            </form>
-        </div>
+       <app-message-input-field [content]="user" (messageSent)="onMessageReceived($event)"></app-message-input-field>
     </div>
 </section>

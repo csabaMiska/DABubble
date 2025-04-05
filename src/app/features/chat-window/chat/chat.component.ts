@@ -6,8 +6,9 @@ import { combineLatest, map, Observable, of, switchMap, take, tap } from 'rxjs';
 import { Message } from '../../../shared/interface/message.model';
 import { MatIconModule } from '@angular/material/icon';
 import { FirebaseUserService } from '../../../shared/services/firebase/user/firebase.user.service';
-import { CustomDatePipe } from '../../../shared/pipe/custom.date.pipe'
 import { MessageContentComponent } from '../../message-content/message-content.component';
+import { MessageTimestampComponent } from '../../message-timestamp/message-timestamp.component';
+import { MessageEditComponent } from '../../message-edit/message-edit.component';
 
 
 @Component({
@@ -17,7 +18,8 @@ import { MessageContentComponent } from '../../message-content/message-content.c
     CommonModule,
     MatIconModule,
     MessageContentComponent,
-    CustomDatePipe
+    MessageTimestampComponent,
+    MessageEditComponent
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
@@ -30,6 +32,8 @@ export class ChatComponent implements OnInit {
   messagesWithUserData$!: Observable<Array<Message & { senderData?: any }>>;
   messagesWithUserDataArray: Array<Message & { senderData?: any }> = [];
   sortedReactions: { [key: string]: any } = {};
+
+  messageEditMode: boolean = false;
 
   ngOnInit(): void {
     this.getMessagesDate();

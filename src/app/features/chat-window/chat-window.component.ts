@@ -1,16 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewChecked, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon'
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
-import { Observable, switchMap } from 'rxjs';
+import { combineLatest, Observable, switchMap, take } from 'rxjs';
 import { User } from '../../shared/interface/user.model';
 import { ChatService } from '../../shared/services/firebase/chat/chat.service';
 import { ProfilePopupComponent } from '../profile-popup/profile-popup.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
 import { Message } from '../../shared/interface/message.model';
-import { FormsModule } from '@angular/forms';
 import { ChatComponent } from './chat/chat.component';
+import { MessageInputFieldComponent } from '../message-input-field/message-input-field.component';
 
 @Component({
   selector: 'app-chat-window',
@@ -18,13 +18,13 @@ import { ChatComponent } from './chat/chat.component';
   imports: [
     CommonModule,
     MatIconModule,
-    FormsModule,
     ChatComponent,
+    MessageInputFieldComponent
   ],
   templateUrl: './chat-window.component.html',
   styleUrl: './chat-window.component.scss'
 })
-export class ChatWindowComponent implements OnInit, AfterViewChecked {
+export class ChatWindowComponent implements OnInit {
   private firebaseUserService = inject(FirebaseUserService);
   private firebaseAuthService = inject(FirebaseAuthService);
   private chatService = inject(ChatService);
@@ -35,50 +35,35 @@ export class ChatWindowComponent implements OnInit, AfterViewChecked {
   user$!: Observable<User | undefined>;
   showUserProfile: boolean = true;
 
-  content: string = '';
-  @ViewChild('messageTextarea') messageTextarea!: ElementRef;
-  textareaShouldFocus = true;
-
   ngOnInit(): void {
     this.user$ = this.chatService.receiverUid$.pipe(
       switchMap(uid => this.firebaseUserService.getUserRealTime(uid))
     );
   }
 
-  ngAfterViewChecked(): void {
-    if (this.textareaShouldFocus) {
-      setTimeout(() => {
-        if (this.messageTextarea) {
-          this.messageTextarea.nativeElement.focus();
-          this.textareaShouldFocus = false;
-        }
-      });
-    }
+  onMessageReceived(message: string) {
+    this.sendMessage(message);
   }
 
-  sendMessage(): void {
-    this.firebaseAuthService.getCurrentUser().subscribe(user => {
-      if (user) {
-        const senderId = user.uid;
-        this.chatService.receiverUid$.subscribe(receiverId => {
-          if (receiverId) {
-            const newMessage: Partial<Message> = {
-              senderId: senderId,
-              receiverId: receiverId,
-              timestamp: new Date().toISOString(),
-              content: this.content,
-            };
-            if (this.content.trim().length > 0) {
-              this.chatService.sendMessage(senderId, receiverId, newMessage);
-              this.content = '';
-            }
-          } else {
-            console.error('Receiver ID is undefined');
-          }
-          return;
-        });
-      }
-    });
+  sendMessage(message: string): void {
+    combineLatest([
+      this.firebaseAuthService.getCurrentUser(),
+      this.chatService.receiverUid$
+    ])
+      .pipe(take(1)) // csak egyszeri használatra
+      .subscribe(([user, receiverId]) => {
+        if (user && receiverId) {
+          const newMessage: Partial<Message> = {
+            senderId: user.uid,
+            receiverId,
+            timestamp: new Date().toISOString(),
+            content: message,
+          };
+          this.chatService.sendMessage(user.uid, receiverId, newMessage);
+        } else {
+          console.error('User or receiver ID is undefined');
+        }
+      });
   }
 
   openProfileDialog(uid: string) {
@@ -90,11 +75,5 @@ export class ChatWindowComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  handleEnter(event: Event) {
-    const keyboardEvent = event as KeyboardEvent; 
-    if (!keyboardEvent.shiftKey) {
-      event.preventDefault();
-      this.sendMessage();
-    }
-  }
+
 }

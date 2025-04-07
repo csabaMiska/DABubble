@@ -1,27 +1,27 @@
 <section class="message-edit-container">
-    <form class="message-edit-input-content">
+    <div class="message-edit-input-content">
         <div class="message-edit-field">
-            <textarea type="text" [value]="message.content" rows="4" #editTextarea>
+            <textarea type="text" [(ngModel)]="messageContent" rows="4" #editTextarea>
         </textarea>
         </div>
         <div class="message-edit-icons-container">
             <div class="message-edit-prefix-icons">
-                <button class="icon-btn" type="button">
+                <button class="icon-btn">
                     <mat-icon>sentiment_satisfied</mat-icon>
                 </button>
-                <button class="icon-btn" type="button">
+                <button class="icon-btn">
                     <mat-icon>alternate_email</mat-icon>
                 </button>
             </div>
             <div class="message-edit-btn-container">
-                <button class="secondary-btn" type="submit">
+                <button class="secondary-btn" (click)="cancelEdit(message.messageId)">
                     Abbrechen
                 </button>
-                <button class="primary-btn" type="submit">
+                <button class="primary-btn" (click)="saveMessage(message.messageId)">
                     Speichern
                 </button>
             </div>
         </div>
-    </form>
+    </div>
 </section>
 

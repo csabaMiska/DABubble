@@ -1,12 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, HostListener, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { EmojiPickerComponent } from '../emoji-picker/emoji-picker.component';
 import { Emoji } from '../../shared/interface/emoji.model';
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
-import { distinctUntilChanged, filter, map, Observable, of, switchMap, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, Observable, of, switchMap, tap } from 'rxjs';
 import { User } from '../../shared/interface/user.model';
 import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ManageMessageDialogComponent } from './manage-message-dialog/manage-message-dialog.component';
+import { MessageService } from '../../shared/services/message/message.service';
 
 @Component({
   selector: 'app-hover-overlay-menu',
@@ -19,14 +22,20 @@ import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebas
   templateUrl: './hover-overlay-menu.component.html',
   styleUrl: './hover-overlay-menu.component.scss'
 })
-export class HoverOverlayMenuComponent implements OnInit {
+export class HoverOverlayMenuComponent implements OnInit, OnChanges {
   private elementRef = inject(ElementRef);
   private firebaseUserService = inject(FirebaseUserService);
   private firebaseAuthService = inject(FirebaseAuthService);
+  private messageService = inject(MessageService);
+
+  readonly dialog = inject(MatDialog);
+  private manageMessageDialogRef: { [key: string]: MatDialogRef<ManageMessageDialogComponent> } = {};
 
   @Input() messageId!: string;
   @Input() isSender!: boolean;
+  @Input() isHovered!: boolean;
   @Output() emojiSelected = new EventEmitter<{ emoji: Emoji, messageId: string }>();
+  @Output() dialogHovered = new EventEmitter<{ messageId: string, isHovered: boolean }>();
 
   showEmojiPicker: { [key: string]: boolean } = {};
   buttonRects: { [key: string]: DOMRect } = {};
@@ -91,22 +100,32 @@ export class HoverOverlayMenuComponent implements OnInit {
   userData$!: Observable<User>;
 
   ngOnInit(): void {
+    this.getLastUsedEmojis();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isHovered'] && !changes['isHovered'].currentValue) {
+      this.closeAllDialogs();
+    }
+  }
+
+  getLastUsedEmojis() {
     this.firebaseAuthService.getCurrentUser().pipe(
       filter(user => user !== null),
       switchMap(user => {
         return this.firebaseUserService.getUserRealTime(user.uid).pipe(
           map(userData => {
             this.lastSelectedEmojis = userData?.lastUsedEmojis ?? [];
-  
+
             if (this.lastSelectedEmojis.length === 0) {
               this.lastSelectedEmojis = this.standardEmojis.slice(0, 2);
             } else if (this.lastSelectedEmojis.length === 1) {
               this.lastSelectedEmojis.push(this.standardEmojis[1]);
             }
-  
+
             return { ...userData, lastUsedEmojis: this.lastSelectedEmojis };
           }),
-          distinctUntilChanged((prev, curr) => prev.lastUsedEmojis === curr.lastUsedEmojis) // Csak akkor frissít, ha az emoji változik
+          distinctUntilChanged((prev, curr) => prev.lastUsedEmojis === curr.lastUsedEmojis)
         );
       })
     ).subscribe(user => {
@@ -129,16 +148,23 @@ export class HoverOverlayMenuComponent implements OnInit {
   onbodyClick(event: MouseEvent) {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.closeAllPickers();
+      this.closeAllDialogs();
     }
   }
 
   @HostListener('window:scroll')
   onWindowScroll() {
     this.closeAllPickers();
+    this.closeAllDialogs();
   }
 
   closeAllPickers() {
     this.showEmojiPicker = {};
+    this.buttonRects = {};
+  }
+
+  closeAllDialogs() {
+    this.dialog.closeAll();
     this.buttonRects = {};
   }
 
@@ -149,18 +175,63 @@ export class HoverOverlayMenuComponent implements OnInit {
 
   updateLastUsedEmojis(selectedEmoji: Emoji) {
     const emojiExists = this.lastSelectedEmojis.some(item => item.emoji.unicode === selectedEmoji.unicode);
-  
     if (!emojiExists) {
       if (this.lastSelectedEmojis.length === 2) {
         this.lastSelectedEmojis.shift();
       }
-
       this.lastSelectedEmojis.push({ emoji: selectedEmoji });
-
       this.userData$.subscribe(user => {
         if (user) {
           this.firebaseUserService.updateUser(user.uid, { lastUsedEmojis: this.lastSelectedEmojis });
         }
+      });
+    }
+  }
+
+  calculateDialogPosition(buttonRect: DOMRect) {
+    let left = buttonRect.left + 20;
+    let top = buttonRect.bottom;
+
+    return {
+      top: `${Math.max(0, top)}px`,
+      left: `${Math.max(0, left)}px`
+    };
+  }
+
+  openManageMessageDialog(event: MouseEvent, messageId: string) {
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    this.buttonRects[messageId] = rect;
+    const existingDialogRef = this.manageMessageDialogRef[messageId];
+  
+    if (existingDialogRef) {
+      existingDialogRef.close();
+      delete this.manageMessageDialogRef[messageId];
+    } else {
+      const dialogRef = this.dialog.open(ManageMessageDialogComponent, {
+        position: this.calculateDialogPosition(rect),
+        autoFocus: false,
+        hasBackdrop: false,
+        data: { messageId },
+      });
+  
+      this.manageMessageDialogRef[messageId] = dialogRef;
+  
+      const sub = this.messageService.messageIsHoveredId$
+        .pipe(
+          debounceTime(100), // várunk 100ms-ot, hogy legyen idő áthúzni az egeret
+          distinctUntilChanged()
+        )
+        .subscribe(hoveredId => {
+          if (hoveredId !== messageId) {
+            dialogRef.close();
+            delete this.manageMessageDialogRef[messageId];
+            sub.unsubscribe();
+          }
+        });
+  
+      dialogRef.afterClosed().subscribe(() => {
+        delete this.manageMessageDialogRef[messageId];
+        sub.unsubscribe();
       });
     }
   }

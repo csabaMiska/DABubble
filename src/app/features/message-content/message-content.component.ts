@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, inject, Input } from '@angular/core';
+import { Component, ElementRef, HostListener,inject, Input, OnInit } from '@angular/core';
 import { Message } from '../../shared/interface/message.model';
 import { HoverOverlayMenuComponent } from '../../core/hover-overlay-menu/hover-overlay-menu.component';
 import { EmojiPickerComponent } from '../../core/emoji-picker/emoji-picker.component';
@@ -8,6 +8,7 @@ import { switchMap } from 'rxjs';
 import { ChatService } from '../../shared/services/firebase/chat/chat.service';
 import { Emoji } from '../../shared/interface/emoji.model';
 import { MatIconModule } from '@angular/material/icon';
+import { MessageService } from '../../shared/services/message/message.service';
 
 @Component({
   selector: 'app-message-content',
@@ -21,19 +22,27 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './message-content.component.html',
   styleUrl: './message-content.component.scss'
 })
-export class MessageContentComponent {
+export class MessageContentComponent implements OnInit {
   @Input() message!: Message & { senderData?: any };
   @Input() sortedReactions: { [key: string]: any } = {};
 
   private firebaseAuthService = inject(FirebaseAuthService);
   private chatService = inject(ChatService);
   private elementRef = inject(ElementRef);
+  private messageService = inject(MessageService);
+  private messageContentElement!: HTMLElement;
 
   isSender: boolean = false;
 
   showEmojiPicker: { [key: string]: boolean } = {};
   buttonRects: { [key: string]: DOMRect } = {};
-  overlayMenuIsHovered: { [key: string]: boolean } = {};
+  hoveredMessageId: string | null = null;
+
+  ngOnInit(): void {
+    this.messageService.messageIsHoveredId$.subscribe(id => {
+      this.hoveredMessageId = id;
+    });
+  }
 
   getCurrentUserUid() {
     return this.firebaseAuthService.getCurrentUser().pipe(
@@ -65,7 +74,6 @@ export class MessageContentComponent {
   closeAllPickers() {
     this.showEmojiPicker = {};
     this.buttonRects = {};
-    this.overlayMenuIsHovered = {};
   }
 
   emitedEmojiSelected(selectedEmoji: Emoji, messageId: string) {
@@ -115,11 +123,7 @@ export class MessageContentComponent {
     });
   }
 
-  openHoverOverlayMenu(messageId: string) {
-    this.overlayMenuIsHovered[messageId] = true;
-  }
-
-  closeHoverOverlayMenu(messageId: string) {
-    this.overlayMenuIsHovered[messageId] = false;
+  handleMessageHover(isHovered: boolean, messageId: string) {
+    this.messageService.setMessageIsHoveredId(isHovered ? messageId : null);
   }
 }

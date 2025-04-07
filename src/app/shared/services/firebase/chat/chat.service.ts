@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, addDoc, collection, collectionData, doc, query, runTransaction, Transaction, updateDoc, DocumentReference, deleteField, onSnapshot } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, doc, query, runTransaction, Transaction, updateDoc, DocumentReference, deleteField, onSnapshot, deleteDoc } from '@angular/fire/firestore';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { Message } from '../../../interface/message.model';
 import { orderBy } from 'firebase/firestore';
@@ -61,7 +61,7 @@ export class ChatService {
         return updateDoc(docRef, { messageId: messageId });
       })
       .catch((error) => {
-        console.error(error);
+        console.error("Error sending message:", error);
       })
     );
   }
@@ -69,7 +69,21 @@ export class ChatService {
   updateMessage(senderId: string, receiverId: string, messageId: string, message: Partial<Message>): Observable<void> {
     const chatId = this.getChatId(senderId, receiverId);
     const messageRef = doc(this.collectionChatRef, `${chatId}/messages/${messageId}`);
-    return from(updateDoc(messageRef, message));
+    return from(updateDoc(messageRef, message)
+      .catch((error) => {
+        console.error("Error updating message:", error);
+      })
+    );
+  }
+
+  deleteMessage(senderId: string, receiverId: string, messageId: string): Observable<void> {
+    const chatId = this.getChatId(senderId, receiverId);
+    const messageRef = doc(this.collectionChatRef, `${chatId}/messages/${messageId}`);
+    return from(deleteDoc(messageRef)
+      .catch((error) => {
+        console.error("Error deleting message:", error);
+      })
+    );
   }
 
   subscribeToReactions(senderId: string, receiverId: string, messageId: string) {

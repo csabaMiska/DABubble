@@ -1,8 +1,10 @@
-<div class="message-content" [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }"
-    (mouseenter)="openHoverOverlayMenu(message.messageId)" (mouseleave)="closeHoverOverlayMenu(message.messageId)">
+<section class="message-content" [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }" 
+[ngStyle]="{ 'background-color': hoveredMessageId === message.messageId ? 'rgb(237, 238, 254)' : 'rgba(255, 255, 255, 1)'}" 
+    (mouseenter)="handleMessageHover(true, message.messageId)"
+    (mouseleave)="handleMessageHover(false, message.messageId)">
     <div class="message-content-user-content">
         <div class="hover-overlay-menu-container" [ngClass]="{'chat-bubble-reverse-positioning': message.isSender }">
-            <app-hover-overlay-menu class="hover-overlay-menu" *ngIf="overlayMenuIsHovered[message.messageId]"
+            <app-hover-overlay-menu class="hover-overlay-menu" *ngIf="hoveredMessageId === message.messageId"
                 [messageId]="message.messageId" [isSender]="message.isSender"
                 (emojiSelected)="emitedEmojiSelected($event.emoji, $event.messageId)"></app-hover-overlay-menu>
         </div>
@@ -37,4 +39,4 @@
     <div class="message-content-user-img" [ngClass]="{'avatar-reverse-design': !message.isSender }">
         <img src="{{ message.senderData.avatar }}" alt="Avatar">
     </div>
-</div>
+</section>

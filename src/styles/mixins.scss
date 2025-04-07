@@ -52,6 +52,23 @@
     }
 }
 
+@mixin dialogBtnStyle($w, $h) {
+    border: none;
+    background-color: style.$white;
+    width: $w;
+    height: $h;
+    color: style.$black;
+    font-size: 18px;
+    @include dFlex();
+
+    &:hover {
+        cursor: pointer;
+        color: style.$purple-3;
+        background-color: style.$bgcolor;
+        border-radius: 100px;
+    }
+}
+
 @mixin iconBtnStyle($tc) {
     height: 40px;
     width: 40px;

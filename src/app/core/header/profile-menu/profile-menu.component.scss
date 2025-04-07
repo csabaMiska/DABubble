@@ -6,22 +6,10 @@
     width: 282px;
     height: 234px;
     gap: 15px;
+    background-color: $white;
 
     button {
-        border: none;
-        background: transparent;
-        width: 222px;
-        height: 53px;
-        color: $black;
-        font-size: 24px;
-        @include dFlex();
-
-        &:hover {
-            cursor: pointer;
-            color: $purple-3;
-            background-color: $bgcolor;
-            border-radius: 100px;
-        }
+       @include dialogBtnStyle($w: 222px, $h: 53px);
 
         .btn-container {
             @include dFlex($jc: start);

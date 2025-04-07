@@ -1,7 +1,7 @@
 <section class="message-container" *ngFor="let message of (messagesWithUserData$ | async); let i = index">
     <div class="message-content-container">
         <app-message-timestamp *ngIf="shouldShowTimestamp(message, i)" [timestamp]="message.timestamp"></app-message-timestamp>
-        <app-message-content *ngIf="!messageEditMode" [message]="message" [sortedReactions]="sortedReactions"></app-message-content>
-        <app-message-edit *ngIf="messageEditMode" [message]="message"></app-message-edit>
+        <app-message-content *ngIf="!messageEditMode[message.messageId]" [message]="message" [sortedReactions]="sortedReactions"></app-message-content>
+        <app-message-edit *ngIf="messageEditMode[message.messageId]" [message]="message" (updateMessage)="updateMessage({ messageId: $event.messageId, message: $event.content })"></app-message-edit>
     </div>
 </section>

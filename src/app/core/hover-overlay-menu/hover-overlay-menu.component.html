@@ -9,7 +9,7 @@
     <button>
         <mat-icon>comment</mat-icon>
     </button>
-    <button *ngIf="isSender">
+    <button *ngIf="isSender" (click)="openManageMessageDialog($event, messageId)">
         <mat-icon>more_vert</mat-icon>
     </button>
 </section>

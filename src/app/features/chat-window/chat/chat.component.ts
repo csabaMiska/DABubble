@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { FirebaseAuthService } from '../../../shared/services/firebase/auth/firebase.auth.service';
 import { ChatService } from '../../../shared/services/firebase/chat/chat.service';
-import { combineLatest, filter, map, Observable, of, switchMap, take, takeUntil, tap } from 'rxjs';
+import { combineLatest, filter, map, Observable, of, switchMap, take } from 'rxjs';
 import { Message } from '../../../shared/interface/message.model';
 import { MatIconModule } from '@angular/material/icon';
 import { FirebaseUserService } from '../../../shared/services/firebase/user/firebase.user.service';
@@ -25,7 +25,7 @@ import { MessageService } from '../../../shared/services/message/message.service
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, AfterViewInit {
   private firebaseAuthService = inject(FirebaseAuthService);
   private firebaseUserService = inject(FirebaseUserService);
   private chatService = inject(ChatService);
@@ -34,8 +34,9 @@ export class ChatComponent implements OnInit {
   messagesWithUserData$!: Observable<Array<Message & { senderData?: any }>>;
   messagesWithUserDataArray: Array<Message & { senderData?: any }> = [];
   sortedReactions: { [key: string]: any } = {};
-
   messageEditMode: { [key: string]: boolean } = {};
+
+  @ViewChild('lastMessage') lastMessageEl!: ElementRef;
 
   ngOnInit(): void {
     this.getMessagesDate();
@@ -43,6 +44,21 @@ export class ChatComponent implements OnInit {
     this.getReactions();
     this.checkMessageEditMode();
     this.deleteMessage();
+  }
+
+  ngAfterViewInit() {
+    this.messagesWithUserData$.subscribe(() => {
+      setTimeout(() => {
+        this.scrollToLastMessage();
+      }, 100);
+    });
+  }
+
+  scrollToLastMessage() {
+    const last = document.getElementById('lastMessage');
+  if (last) {
+    last.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
   }
 
   getMessagesDate() {

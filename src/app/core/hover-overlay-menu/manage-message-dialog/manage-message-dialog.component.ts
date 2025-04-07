@@ -2,6 +2,7 @@ import { Component, EventEmitter, Inject, inject, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ChatService } from '../../../shared/services/firebase/chat/chat.service';
 import { MessageService } from '../../../shared/services/message/message.service';
+import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-manage-message-dialog',
@@ -11,9 +12,9 @@ import { MessageService } from '../../../shared/services/message/message.service
   styleUrl: './manage-message-dialog.component.scss'
 })
 export class ManageMessageDialogComponent {
-  private messageService = inject(MessageService);
   readonly dialog = inject(MatDialog);
-  private manageMessageDialogRef: { [key: string]: MatDialogRef<ManageMessageDialogComponent, any> } = {};
+
+  private messageService = inject(MessageService);
   messageId!: string;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { messageId: string }) {
@@ -22,13 +23,19 @@ export class ManageMessageDialogComponent {
 
   editMessage(messageId: string) {
     this.messageService.setMessageEditMode(messageId);
+    this.closeDialog();
   }
 
   deleteMessage(messageId: string) {
-    this.messageService.setMessageDeleteId(messageId);
+    const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {
+      autoFocus: false,
+      hasBackdrop: true,
+      data: { messageId },
+    });
+    this.closeDialog();
   }
 
-  closeManageMessageDialog(messageId: string) {
+  closeDialog() {
     this.dialog.closeAll();
   }
 
@@ -36,7 +43,7 @@ export class ManageMessageDialogComponent {
     this.messageService.setMessageIsHoveredId(messageId);
   }
 
-  dialogIsNotHovered(messageId: string) {
+  dialogIsNotHovered() {
     this.messageService.setMessageIsHoveredId(null);
   }
 }

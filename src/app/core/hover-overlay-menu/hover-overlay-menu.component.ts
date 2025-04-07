@@ -22,7 +22,7 @@ import { MessageService } from '../../shared/services/message/message.service';
   templateUrl: './hover-overlay-menu.component.html',
   styleUrl: './hover-overlay-menu.component.scss'
 })
-export class HoverOverlayMenuComponent implements OnInit, OnChanges {
+export class HoverOverlayMenuComponent implements OnInit {
   private elementRef = inject(ElementRef);
   private firebaseUserService = inject(FirebaseUserService);
   private firebaseAuthService = inject(FirebaseAuthService);
@@ -103,12 +103,6 @@ export class HoverOverlayMenuComponent implements OnInit, OnChanges {
     this.getLastUsedEmojis();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isHovered'] && !changes['isHovered'].currentValue) {
-      this.closeAllDialogs();
-    }
-  }
-
   getLastUsedEmojis() {
     this.firebaseAuthService.getCurrentUser().pipe(
       filter(user => user !== null),
@@ -148,23 +142,16 @@ export class HoverOverlayMenuComponent implements OnInit, OnChanges {
   onbodyClick(event: MouseEvent) {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.closeAllPickers();
-      this.closeAllDialogs();
     }
   }
 
   @HostListener('window:scroll')
   onWindowScroll() {
     this.closeAllPickers();
-    this.closeAllDialogs();
   }
 
   closeAllPickers() {
     this.showEmojiPicker = {};
-    this.buttonRects = {};
-  }
-
-  closeAllDialogs() {
-    this.dialog.closeAll();
     this.buttonRects = {};
   }
 

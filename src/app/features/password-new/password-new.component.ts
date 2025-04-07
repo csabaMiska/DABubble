@@ -15,12 +15,12 @@ import {
 import { MatSharedModule } from '../../shared/material-module/mat-shared.module';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
-import { error } from 'console';
 import { OverlayComponent } from '../../core/overlay/overlay.component';
+import { OverlayService } from '../../shared/services/overlay/overlay.service';
 
 @Component({
   selector: 'app-password-new',
-  imports: [MatSharedModule, ReactiveFormsModule, OverlayComponent],
+  imports: [MatSharedModule, ReactiveFormsModule],
   templateUrl: './password-new.component.html',
   styleUrls: ['./password-new.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,17 +29,16 @@ export class PasswordNewComponent implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private firebaseAuthService = inject(FirebaseAuthService);
+  private overlayService = inject(OverlayService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+
   passwordFormReset: FormGroup;
   hidePassword = signal(true);
   hideConfirmPassword = signal(true);
   passwordDoNotMatch: string | null = null;
   oobCode: string | null = null;
   errorMessage: string = '';
-  showOverlay: boolean = false;
-  textOverlay: string = '';
-  iconOvarlay: boolean = false;
 
   constructor() {
     this.passwordFormReset = this.fb.group({
@@ -124,15 +123,7 @@ export class PasswordNewComponent implements OnInit {
   }
 
   showOverlayAfterSubmit() {
-    if (!this.showOverlay) {
-      this.showOverlay = true;
-      this.textOverlay = 'Passwort zurückgesetzt';
-      this.iconOvarlay = false;
-      setTimeout(() => {
-        this.showOverlay = false;
-        this.cdr.markForCheck();
-      }, 1800);
-    }
+    this.overlayService.showOverlay('Passwort zurückgesetzt!', true, 'password');
   }
 
   setErrorInputStyleAndMessage() {

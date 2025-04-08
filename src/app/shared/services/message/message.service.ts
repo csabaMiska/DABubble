@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+export interface MessageInfo {
+  messageId: string;
+  messegeType: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,6 +16,8 @@ export class MessageService {
   deleteMessageId$ = this.deleteMessageIdSubject.asObservable();
   private messageIsHoveredIdSubject = new BehaviorSubject<string | null>(null);
   messageIsHoveredId$ = this.messageIsHoveredIdSubject.asObservable();
+  private messageInfoIdSubject = new BehaviorSubject<MessageInfo | null>(null);
+  messageInfoId$ = this.messageInfoIdSubject.asObservable();
 
   setMessageEditMode(messageId: string | null) {
     this.messageEditModeSubject.next(messageId);
@@ -22,5 +29,9 @@ export class MessageService {
 
   setMessageIsHoveredId(messageId: string | null) {
     this.messageIsHoveredIdSubject.next(messageId);
+  }
+
+  setMessageInfoId(messageId: string, messageType: string) {
+    this.messageInfoIdSubject.next({ messageId, messegeType: messageType });
   }
 }

@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Inject, inject, Output } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ChatService } from '../../../shared/services/firebase/chat/chat.service';
 import { MessageService } from '../../../shared/services/message/message.service';
 import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 
@@ -13,6 +12,7 @@ import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.comp
 })
 export class ManageMessageDialogComponent {
   readonly dialog = inject(MatDialog);
+  readonly manageMessageDialogRef = inject(MatDialogRef<ManageMessageDialogComponent>);
 
   private messageService = inject(MessageService);
   messageId!: string;
@@ -36,7 +36,7 @@ export class ManageMessageDialogComponent {
   }
 
   closeDialog() {
-    this.dialog.closeAll();
+    this.manageMessageDialogRef.close();
   }
 
   dialogIsHovered(messageId: string) {

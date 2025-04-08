@@ -1,10 +1,10 @@
 @use 'mixins.scss' as *;
 @use '@angular/material' as mat;
 
-.new-message-container {
+.chat-window-container {
     height: 100%;
 
-    .new-message-content {
+    .chat-window-content {
         background-color: $white;
         height: 100%;
         width: 100%;
@@ -13,7 +13,7 @@
     }
 }
 
-.new-message-header {
+.chat-window-header {
     @include dFlex($jc: start);
     width: 100%;
     padding: 30px 0 22px 53px;
@@ -22,7 +22,7 @@
     z-index: 500;
 
 
-    .new-message-user-container {
+    .chat-window-user-container {
         @include dFlex($jc: start);
         width: fit-content;
         gap: 15px;
@@ -34,18 +34,18 @@
             border-radius: 30px;
         }
 
-        .new-message-user-img-container {
+        .chat-window-user-img-container {
             width: 50px;
             height: 50px;
             @include dFlex($jc: end, $ai: end);
 
-            .new-message-user-img {
+            .chat-window-user-img {
                 width: 100%;
                 height: 100%;
                 border-radius: 180px;
             }
 
-            .new-message-user-status {
+            .chat-window-user-status {
                 width: 14px;
                 height: 14px;
                 border: 2px solid $bgcolor;
@@ -54,14 +54,14 @@
             }
         }
 
-        .new-message-user-name {
+        .chat-window-user-name {
             font-weight: 700;
             font-size: 24px;
         }
     }
 }
 
-.new-message-chat-container {
+.chat-window-chat-container {
     width: 100%;
     flex-grow: 1;
     @include dFlex();
@@ -71,12 +71,12 @@
         display: none;
     }
 
-    .new-message-chat-content {
+    .chat-window-chat-content {
         width: 100%;
         height: 100%;
         @include dFlex($ai: end, $jc: start);
 
-        .app-message {
+        .app-chat {
             width: 100%;
             height: 100%;
         }

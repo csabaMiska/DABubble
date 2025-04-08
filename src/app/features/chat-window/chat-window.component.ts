@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon'
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
-import { combineLatest, Observable, switchMap, take } from 'rxjs';
+import { combineLatest, Observable, of, switchMap, take } from 'rxjs';
 import { User } from '../../shared/interface/user.model';
 import { ChatService } from '../../shared/services/firebase/chat/chat.service';
 import { ProfilePopupComponent } from '../profile-popup/profile-popup.component';
@@ -11,6 +11,7 @@ import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebas
 import { Message } from '../../shared/interface/message.model';
 import { ChatComponent } from './chat/chat.component';
 import { MessageInputFieldComponent } from '../message-input-field/message-input-field.component';
+import { MessageInfoComponent } from '../message-info/message-info.component';
 
 @Component({
   selector: 'app-chat-window',
@@ -19,7 +20,8 @@ import { MessageInputFieldComponent } from '../message-input-field/message-input
     CommonModule,
     MatIconModule,
     ChatComponent,
-    MessageInputFieldComponent
+    MessageInputFieldComponent,
+    MessageInfoComponent
   ],
   templateUrl: './chat-window.component.html',
   styleUrl: './chat-window.component.scss'
@@ -33,13 +35,36 @@ export class ChatWindowComponent implements OnInit {
   private profilePopupDialogRef?: MatDialogRef<ProfilePopupComponent>;
 
   user$!: Observable<User | undefined>;
+  chatData$!: Observable<Message[]>;
   showUserProfile: boolean = true;
 
   ngOnInit(): void {
+    this.getUserData();
+    this.getChatData();
+  }
+
+  getUserData() {
     this.user$ = this.chatService.receiverUid$.pipe(
       switchMap(uid => this.firebaseUserService.getUserRealTime(uid))
     );
   }
+
+  getChatData() {
+    this.chatData$ = combineLatest([
+      this.firebaseAuthService.getCurrentUser(),                         
+      this.chatService.receiverUid$
+    ]).pipe(
+      switchMap(([currentUser, receiverId]) => {
+        const senderId = currentUser?.uid;
+        if (senderId && receiverId) {
+          return this.chatService.getMessages(senderId, receiverId);
+        } else {
+          return of([]);
+        }
+      })
+    );
+  }
+  
 
   onMessageReceived(message: string) {
     this.sendMessage(message);
@@ -50,7 +75,7 @@ export class ChatWindowComponent implements OnInit {
       this.firebaseAuthService.getCurrentUser(),
       this.chatService.receiverUid$
     ])
-      .pipe(take(1)) // csak egyszeri használatra
+      .pipe(take(1))
       .subscribe(([user, receiverId]) => {
         if (user && receiverId) {
           const newMessage: Partial<Message> = {
@@ -74,6 +99,4 @@ export class ChatWindowComponent implements OnInit {
       data: this.showUserProfile
     });
   }
-
-
 }

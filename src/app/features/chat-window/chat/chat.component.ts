@@ -10,6 +10,7 @@ import { MessageContentComponent } from '../../message-content/message-content.c
 import { MessageTimestampComponent } from '../../message-timestamp/message-timestamp.component';
 import { MessageEditComponent } from '../../message-edit/message-edit.component';
 import { MessageService } from '../../../shared/services/message/message.service';
+import { MessageInfoComponent } from '../../message-info/message-info.component';
 
 
 @Component({

@@ -1,17 +1,18 @@
-<section *ngIf="user$ | async as user" class="new-message-container">
-    <div class="new-message-content">
-        <div class="new-message-header">
-            <div class="new-message-user-container" (click)="openProfileDialog(user.uid)">
-                <div class="new-message-user-img-container">
-                    <div class="new-message-user-status {{ user.status }}"></div>
-                    <img class="new-message-user-img" src="{{ user.avatar }}" alt="logo">
+<section *ngIf="user$ | async as user" class="chat-window-container">
+    <div class="chat-window-content">
+        <div class="chat-window-header">
+            <div class="chat-window-user-container" (click)="openProfileDialog(user.uid)">
+                <div class="chat-window-user-img-container">
+                    <div class="chat-window-user-status {{ user.status }}"></div>
+                    <img class="chat-window-user-img" src="{{ user.avatar }}" alt="logo">
                 </div>
-                <span class="new-message-user-name">{{ user.name }}</span>
+                <span class="chat-window-user-name">{{ user.name }}</span>
             </div>
         </div>
-        <div class="new-message-chat-container">
-            <div class="new-message-chat-content">
-                <app-chat class="app-message"></app-chat>
+        <div class="chat-window-chat-container">
+            <div class="chat-window-chat-content" *ngIf="chatData$ | async as messages">
+                <app-chat class="app-chat" *ngIf="messages.length > 0"></app-chat>
+                <app-message-info *ngIf="messages.length === 0"></app-message-info>
             </div>
         </div>
        <app-message-input-field [content]="user" (messageSent)="onMessageReceived($event)"></app-message-input-field>

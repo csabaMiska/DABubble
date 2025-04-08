@@ -9,6 +9,7 @@ import { User } from '../../../shared/interface/user.model';
 import { DashboardService } from '../../../shared/services/dashboard/dashboard.service';
 import { WindowWidthDirective } from '../../../shared/directives/window-width/window-width.directive';
 import { ChatService } from '../../../shared/services/firebase/chat/chat.service';
+import { MessageService } from '../../../shared/services/message/message.service';
 
 @Component({
   selector: 'app-direct-messages-user-list',
@@ -28,6 +29,8 @@ export class DirectMessagesUserListComponent implements OnInit {
   private dashboardService = inject(DashboardService);
   private windowWidthDirective = inject(WindowWidthDirective);
   private chatService = inject(ChatService);
+  private messageService = inject(MessageService);
+
   readonly panelOpenState = signal(false);
   hidden = false;
   users$!: Observable<User[]>;
@@ -40,8 +43,9 @@ export class DirectMessagesUserListComponent implements OnInit {
     this.hidden = !this.hidden;
   }
 
-  openDirectChat(uid: string) {
+  openDirectChat(uid: string, type: string) {
     this.chatService.setReceiverUid(uid);
+    this.messageService.setMessageInfoId(uid, type);
     this.openChatContainer();
   }
 

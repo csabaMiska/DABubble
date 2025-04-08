@@ -5,7 +5,7 @@
         <span>Direktnachrichten</span>
     </mat-expansion-panel-header>
     <div *ngIf="users$ | async as users">
-        <div *ngFor="let user of users" class="expansion-panel-user-container" (click)="openDirectChat(user.uid)">
+        <div *ngFor="let user of users" class="expansion-panel-user-container" (click)="openDirectChat(user.uid, user.type)">
             <div class="expansion-panel-user-img-container">
                 <div class="expansion-panel-user-status {{ user.status }}"></div>
                 <img class="expansion-panel-user-img" src="{{ user.avatar }}"

@@ -35,7 +35,7 @@ export class DashboardService {
     this.chatWindowOpenSubject.next(true);
   }
 
-  closeCharWindow() {
+  closeChatWindow() {
     this.chatWindowOpenSubject.next(false);
   }
 

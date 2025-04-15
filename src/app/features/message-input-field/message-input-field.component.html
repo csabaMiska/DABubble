@@ -2,7 +2,7 @@
     <form class="new-message-input-content"(ngSubmit)="getCurrentMessage()">
         <div class="new-message-input-field">
             <textarea type="text" [(ngModel)]="messageContent" (keydown.enter)="handleEnter($event)" 
-            placeholder="Nachricht an {{ messageReceiver }}" rows="4" #messageTextarea>
+            placeholder="{{ placeholderText }} {{ messageReceiver }}" rows="4" #messageTextarea>
         </textarea>
         </div>
         <div class="new-message-icons-container">

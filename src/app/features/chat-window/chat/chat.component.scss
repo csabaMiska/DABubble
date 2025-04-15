@@ -1,11 +1,11 @@
 @use 'mixins.scss' as *;
 @use '@angular/material' as mat;
 
-.message-container {
+.chat-container {
     width: 100%;
     height: fit-content;
 
-    .message-content-container {
+    .chat-content-container {
         width: 100%;
         height: fit-content;
     }

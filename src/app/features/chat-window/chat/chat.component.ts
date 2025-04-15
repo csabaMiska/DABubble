@@ -10,7 +10,8 @@ import { MessageContentComponent } from '../../message-content/message-content.c
 import { MessageTimestampComponent } from '../../message-timestamp/message-timestamp.component';
 import { MessageEditComponent } from '../../message-edit/message-edit.component';
 import { MessageService } from '../../../shared/services/message/message.service';
-import { MessageInfoComponent } from '../../message-info/message-info.component';
+import { EmojiService } from '../../../shared/services/emoji/emoji-service/emoji-service';
+import { AnswerService } from '../../../shared/services/firebase/answer/answer.service';
 
 
 @Component({
@@ -30,12 +31,16 @@ export class ChatComponent implements OnInit, AfterViewInit {
   private firebaseAuthService = inject(FirebaseAuthService);
   private firebaseUserService = inject(FirebaseUserService);
   private chatService = inject(ChatService);
+  private emojiService = inject(EmojiService);
   private messageService = inject(MessageService);
+  private answerService = inject(AnswerService);
 
   messagesWithUserData$!: Observable<Array<Message & { senderData?: any }>>;
   messagesWithUserDataArray: Array<Message & { senderData?: any }> = [];
   sortedReactions: { [key: string]: any } = {};
+  messageAnswers: { [key: string]: any } = {};
   messageEditMode: { [key: string]: boolean } = {};
+  viewContext: 'message' | 'answer' = 'message';
 
   @ViewChild('lastMessage') lastMessageEl!: ElementRef;
 
@@ -43,6 +48,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
     this.getMessagesDate();
     this.convertMessegeData();
     this.getReactions();
+    this.getAnswers();
     this.checkMessageEditMode();
     this.deleteMessage();
   }
@@ -65,7 +71,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   getMessagesDate() {
     this.messagesWithUserData$ = combineLatest([
       this.getCurrentUserUid(),
-      this.chatService.receiverUid$
+      this.messageService.userIdOrChannelId$
     ]).pipe(
       switchMap(([senderId, receiverId]) => {
         if (senderId && receiverId) {
@@ -130,15 +136,35 @@ export class ChatComponent implements OnInit, AfterViewInit {
       const reactionsMap: { [key: string]: any } = {};
 
       messages.forEach(message => {
+        const chatId = this.chatService.getChatId(message.senderId, message.receiverId);
         const messageId = message.messageId;
-        this.chatService.subscribeToReactions(message.senderId, message.receiverId, messageId);
+        this.emojiService.subscribeToReactions(chatId, message.messageId, message.messageFrom);
 
-        this.chatService.reactions$.subscribe(reactions => {
+        this.emojiService.reactions$.subscribe(reactions => {
           reactionsMap[messageId] = reactions[messageId] || [];
         });
       });
 
       this.sortedReactions = reactionsMap;
+    });
+  }
+
+  getAnswers() {
+    this.messagesWithUserData$.subscribe(messages => {
+      const answersMap: { [key: string]: any } = {};
+  
+      messages.forEach(message => {
+        const chatIdOrChannelId = this.chatService.getChatId(message.senderId, message.receiverId);
+        const messageId = message.messageId;
+  
+        this.answerService.subscribeToAnswers(chatIdOrChannelId, messageId, message.messageFrom);
+  
+        this.answerService.answers$.subscribe(answers => {
+          answersMap[messageId] = answers[messageId] || [];
+        });
+      });
+  
+      this.messageAnswers = answersMap;
     });
   }
 
@@ -161,7 +187,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   updateMessage(event: { messageId: string; message: string }) {
     combineLatest([
       this.firebaseAuthService.getCurrentUser(),
-      this.chatService.receiverUid$
+      this.messageService.userIdOrChannelId$
     ])
       .pipe(take(1))
       .subscribe(([user, receiverId]) => {
@@ -177,7 +203,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
     combineLatest([
       this.messageService.deleteMessageId$,
       this.firebaseAuthService.getCurrentUser(),
-      this.chatService.receiverUid$
+      this.messageService.userIdOrChannelId$
     ])
     .pipe(
       filter(([messageId, user, receiverId]) => !!messageId && !!user && !!receiverId),

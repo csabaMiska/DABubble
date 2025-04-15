@@ -10,9 +10,9 @@ import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebas
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ChatService } from '../../shared/services/firebase/chat/chat.service';
 import { DashboardService } from '../../shared/services/dashboard/dashboard.service';
 import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
+import { MessageService } from '../../shared/services/message/message.service';
 
 @Component({
   selector: 'app-profile-popup',
@@ -37,7 +37,7 @@ export class ProfilePopupComponent implements OnInit {
   editUserForm: FormGroup;
   private firebaseAuthService = inject(FirebaseAuthService);
   private firebaseUserService = inject(FirebaseUserService);
-  private chatService = inject(ChatService);
+  private messageService = inject(MessageService);
   private dashboardService = inject(DashboardService);
   private windowWidthDirective = inject(WindowWidthDirective);
   showMessageBtn: boolean = false;
@@ -72,7 +72,7 @@ export class ProfilePopupComponent implements OnInit {
   }
 
   getUserDate(): void {
-    this.user$ = this.chatService.receiverUid$.pipe(
+    this.user$ = this.messageService.userIdOrChannelId$.pipe(
       switchMap(uid => this.firebaseUserService.getUserRealTime(uid))
     );
   }
@@ -98,7 +98,7 @@ export class ProfilePopupComponent implements OnInit {
   }
 
   openDirectChat(uid: string) {
-    this.chatService.setReceiverUid(uid);
+    this.messageService.setUserIdOrChannelId(uid);
     this.openChatContainer();
   }
 

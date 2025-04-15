@@ -15,10 +15,12 @@ export class ManageMessageDialogComponent {
   readonly manageMessageDialogRef = inject(MatDialogRef<ManageMessageDialogComponent>);
 
   private messageService = inject(MessageService);
-  messageId!: string;
+  messageId: string;
+  viewContext: 'message' | 'answer';
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { messageId: string }) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { messageId: string, viewContext: 'message' | 'answer' }) {
     this.messageId = data.messageId;
+    this.viewContext = data.viewContext;
   }
 
   editMessage(messageId: string) {
@@ -40,7 +42,7 @@ export class ManageMessageDialogComponent {
   }
 
   dialogIsHovered(messageId: string) {
-    this.messageService.setMessageIsHoveredId(messageId);
+    this.messageService.setMessageIsHoveredId(`${this.viewContext}-${messageId}`);
   }
 
   dialogIsNotHovered() {

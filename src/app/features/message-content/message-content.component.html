@@ -1,12 +1,12 @@
-<section class="message-content" [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }" 
-[ngStyle]="{ 'background-color': hoveredMessageId === message.messageId ? 'rgb(237, 238, 254)' : 'rgba(255, 255, 255, 1)'}" 
+<section class="message-content" [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }"
+[ngStyle]="{ 'background-color': hoveredMessageId === viewContext + '-' + message.messageId ? 'rgb(237, 238, 254)' : 'rgba(255, 255, 255, 1)'}"
     (mouseenter)="handleMessageHover(true, message.messageId)"
     (mouseleave)="handleMessageHover(false, message.messageId)">
     <div class="message-content-user-content">
         <div class="hover-overlay-menu-container" [ngClass]="{'chat-bubble-reverse-positioning': message.isSender }">
-            <app-hover-overlay-menu class="hover-overlay-menu" *ngIf="hoveredMessageId === message.messageId"
-                [messageId]="message.messageId" [isSender]="message.isSender"
-                (emojiSelected)="emitedEmojiSelected($event.emoji, $event.messageId)"></app-hover-overlay-menu>
+            <app-hover-overlay-menu class="hover-overlay-menu" *ngIf="hoveredMessageId === viewContext + '-' + message.messageId"
+                [message]="message" [viewContext]="viewContext" [isOriginalMessage]="isOriginalMessage"
+                (emojiSelected)="emitedEmojiSelected($event.emoji, $event.messageId, $event.messageFrom)"></app-hover-overlay-menu>
         </div>
         <div class="message-content-user-name" [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
             <span class="message-timestamp">{{ message.timestamp | date:'HH:mm'}} Uhr</span>
@@ -16,12 +16,20 @@
             <span class="message-bubble" [ngClass]="{'chat-bubble-reverse-desing': !message.isSender }">{{
                 message.content }}</span>
         </div>
+        <div class="message-content-answers-info-container" *ngIf="messageAnswers[message.messageId]?.length > 0"
+            [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
+            <div class="message-answers-info">
+                <span>{{ messageAnswers[message.messageId]?.length }} Antworten</span>
+                <span>Lezte Antwort {{ message.lastAnswerTimestamp | date:'HH:mm' }}</span>
+            </div>
+        </div>
         <div class="message-content-message-reaction-container"
             [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }"
             *ngIf="sortedReactions[message.messageId]?.length > 0">
             <div class="reacted-emojis-container" *ngFor="let reaction of sortedReactions[message.messageId]"
                 [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
-                <div class="reacted-emoji" (click)="handleEmojiClick(message.messageId, reaction.emoji)">
+                <div class="reacted-emoji"
+                    (click)="handleEmojiClick(reaction.emoji, message.messageId, message.messageFrom)">
                     <span>{{ reaction.emoji?.unicode }}</span>
                     <span>{{ reaction.counter }}</span>
                 </div>
@@ -32,7 +40,7 @@
                 </button>
                 <app-emoji-picker *ngIf="showEmojiPicker[message.messageId]"
                     [buttonRect]="buttonRects[message.messageId]" class="emoji-picker" (click)="closeAllPickers()"
-                    (emojiSelected)="addEmojiSelection($event, message.messageId)"></app-emoji-picker>
+                    (emojiSelected)="addEmojiSelected($event, message.messageId, message.messageFrom)"></app-emoji-picker>
             </div>
         </div>
     </div>

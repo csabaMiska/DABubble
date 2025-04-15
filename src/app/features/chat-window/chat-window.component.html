@@ -1,4 +1,4 @@
-<section *ngIf="user$ | async as user" class="chat-window-container">
+<section class="chat-window-container" *ngIf="user$ | async as user">
     <div class="chat-window-content">
         <div class="chat-window-header">
             <div class="chat-window-user-container" (click)="openProfileDialog(user.uid)">

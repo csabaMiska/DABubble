@@ -21,11 +21,13 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
   messageReceiver!: string;
   messageContent: string = '';
   textareaShouldFocus = true;
+  placeholderText: string = '';
   @ViewChild('messageTextarea') messageTextarea!: ElementRef;
 
   ngOnInit(): void {
-    this.setMessageReceiver();
     this.messageContent = '';
+    this.placeholderText = 'Nachricht an';
+    this.setMessageReceiver();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -38,9 +40,10 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
   }
 
   setMessageReceiver(): void {
-    if (!this.content || !('type' in this.content)) return;
-
-    if (this.content.type === 'User') {
+    if (!this.content || !('type' in this.content)) {
+      this.placeholderText = 'Antworten...';
+      this.messageReceiver= ''
+    } else if (this.content.type === 'User') {
       this.messageReceiver = (this.content as User).name || '';
     } else if (this.content.type === 'Channel') {
       this.messageReceiver = (this.content as Channel).title || '';

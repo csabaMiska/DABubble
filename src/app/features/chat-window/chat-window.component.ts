@@ -12,6 +12,7 @@ import { Message } from '../../shared/interface/message.model';
 import { ChatComponent } from './chat/chat.component';
 import { MessageInputFieldComponent } from '../message-input-field/message-input-field.component';
 import { MessageInfoComponent } from '../message-info/message-info.component';
+import { MessageService } from '../../shared/services/message/message.service';
 
 @Component({
   selector: 'app-chat-window',
@@ -30,6 +31,7 @@ export class ChatWindowComponent implements OnInit {
   private firebaseUserService = inject(FirebaseUserService);
   private firebaseAuthService = inject(FirebaseAuthService);
   private chatService = inject(ChatService);
+  private messageService = inject(MessageService);
 
   readonly dialog = inject(MatDialog);
   private profilePopupDialogRef?: MatDialogRef<ProfilePopupComponent>;
@@ -44,7 +46,7 @@ export class ChatWindowComponent implements OnInit {
   }
 
   getUserData() {
-    this.user$ = this.chatService.receiverUid$.pipe(
+    this.user$ = this.messageService.userIdOrChannelId$.pipe(
       switchMap(uid => this.firebaseUserService.getUserRealTime(uid))
     );
   }
@@ -52,7 +54,7 @@ export class ChatWindowComponent implements OnInit {
   getChatData() {
     this.chatData$ = combineLatest([
       this.firebaseAuthService.getCurrentUser(),                         
-      this.chatService.receiverUid$
+      this.messageService.userIdOrChannelId$
     ]).pipe(
       switchMap(([currentUser, receiverId]) => {
         const senderId = currentUser?.uid;
@@ -73,12 +75,13 @@ export class ChatWindowComponent implements OnInit {
   sendMessage(message: string): void {
     combineLatest([
       this.firebaseAuthService.getCurrentUser(),
-      this.chatService.receiverUid$
+      this.messageService.userIdOrChannelId$
     ])
       .pipe(take(1))
       .subscribe(([user, receiverId]) => {
         if (user && receiverId) {
           const newMessage: Partial<Message> = {
+            messageFrom: 'chats',
             senderId: user.uid,
             receiverId,
             timestamp: new Date().toISOString(),
@@ -92,7 +95,7 @@ export class ChatWindowComponent implements OnInit {
   }
 
   openProfileDialog(uid: string) {
-    this.chatService.setReceiverUid(uid);
+    this.messageService.setUserIdOrChannelId(uid);
     this.profilePopupDialogRef = this.dialog.open(ProfilePopupComponent, {
       autoFocus: false,
       hasBackdrop: true,

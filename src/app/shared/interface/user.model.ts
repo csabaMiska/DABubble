@@ -8,5 +8,4 @@ export interface User {
     email: string;
     status: string;
     lastUsedEmojis: Array<{emoji: Emoji}>;
-    unreadMessages: Array<string>;
 }

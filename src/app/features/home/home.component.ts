@@ -65,7 +65,7 @@ export class HomeComponent implements OnInit {
 
   openChannel() {
     this.dashboardService.openChannelWindow();
-    this.dashboardService.closeCharWindow();
+    this.dashboardService.closeChatWindow();
     this.dashboardService.closeAnswerWindow();
     if (this.windowWidthDirective.mobilViewOn) {
       this.dashboardService.toggleSideNav();

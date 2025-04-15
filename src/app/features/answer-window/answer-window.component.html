@@ -1,7 +1,19 @@
-<section class="thread-container">
-    <div class="thread-content">
-        <p>Das ist das Test Thread!</p>
-        <p>Hier kannst du schliessen:</p>
-        <button (click)="closeThread()">Close</button>
+<section class="answer-window-container" *ngIf="chatDataOrChannelData$ | async as chatDataOrChannelData">
+    <div class="answer-window-content">
+        <div class="answer-window-header-container">
+            <div class="answer-window-title-container">
+                <h3>Thread</h3>
+                <span># {{ chatDataOrChannelData.name }}</span>
+            </div>
+            <button (click)="closeAnswerWindow()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+        <div class="answer-window-message-container">
+            <div class="answer-window-message-content">
+                <app-answer></app-answer>
+            </div>
+        </div>
+        <app-message-input-field (messageSent)="onMessageReceived($event)"></app-message-input-field>
     </div>
 </section>

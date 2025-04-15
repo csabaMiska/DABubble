@@ -1,14 +1,71 @@
 @use 'mixins.scss' as *;
 @use '@angular/material' as mat;
 
-.thread-container {
+.answer-window-container {
     height: 100%;
 
-    .thread-content {
+    .answer-window-content {
         background-color: $white;
         height: 100%;
         width: 100%;
         border-radius: 30px;
-        @include dFlex($ai: center, $fd: column);
+        @include dFlex($fd: column, $jc: space-between);
     }
+}
+
+.answer-window-header-container {
+    @include dFlex($jc: space-between);
+    width: 100%;
+    height: 100%;
+    max-height: 110px;
+    padding: 30px 40px 22px 40px;
+    box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
+    position: relative;
+    z-index: 500;
+
+    .answer-window-title-container {
+        @include dFlex($jc: start);
+        gap: 5px;
+
+        h3 {
+            margin-block-start: 0;
+            margin-block-end: 0;
+        }
+
+        span {
+            font-size: 14px;
+            font-weight: 400;
+            color: $purple-2;
+        }
+    }
+
+    button {
+        @include iconBtnStyle($tc: $black);
+    }
+}
+
+.answer-window-message-container {
+    width: 100%;
+    flex-grow: 1;
+    @include dFlex();
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    .answer-window-message-content {
+        width: 100%;
+        height: 100%;
+        @include dFlex($ai: end, $jc: start);
+
+        app-answer {
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+
+app-message-input-field {
+    width: 100%;
 }

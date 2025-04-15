@@ -8,7 +8,6 @@ import { Observable } from 'rxjs';
 import { User } from '../../../shared/interface/user.model';
 import { DashboardService } from '../../../shared/services/dashboard/dashboard.service';
 import { WindowWidthDirective } from '../../../shared/directives/window-width/window-width.directive';
-import { ChatService } from '../../../shared/services/firebase/chat/chat.service';
 import { MessageService } from '../../../shared/services/message/message.service';
 
 @Component({
@@ -28,7 +27,6 @@ export class DirectMessagesUserListComponent implements OnInit {
   private firebaseUserService = inject(FirebaseUserService);
   private dashboardService = inject(DashboardService);
   private windowWidthDirective = inject(WindowWidthDirective);
-  private chatService = inject(ChatService);
   private messageService = inject(MessageService);
 
   readonly panelOpenState = signal(false);
@@ -44,7 +42,7 @@ export class DirectMessagesUserListComponent implements OnInit {
   }
 
   openDirectChat(uid: string, type: string) {
-    this.chatService.setReceiverUid(uid);
+    this.messageService.setUserIdOrChannelId(uid);
     this.messageService.setMessageInfoId(uid, type);
     this.openChatContainer();
   }

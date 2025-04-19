@@ -1,0 +1,92 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.add-channel-dialog-container {
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    background-color: $white;
+
+    .add-channel-dialog-input-content {
+        @include dFlex($fd: column, $jc: flex-start);
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.add-channel-dialog-header-container {
+    width: 100%;
+    @include dFlex($fd: column);
+    gap: 27px;
+
+    .add-channel-dialog-title-container {
+        width: 100%;
+        @include dFlex($jc: space-between);
+
+        h3 {
+            margin-block-start: 0;
+            margin-block-end: 0;
+        }
+
+        button {
+            @include iconBtnStyle($tc: $black);
+        }
+    }
+}
+
+.add-channel-dialog-input-container {
+    width: 100%;
+    @include dFlex($fd: column);
+    margin-top: 20px;
+    gap: 20px;
+
+    .form-container {
+        width: 100%;
+
+        .input-container {
+            width: 100%;
+            @include dFlex($fd: column, $ai: flex-start);
+            gap: 20px;
+
+            span {
+                font-size: 18px;
+                font-weight: 700;
+                @include dFlex();
+                gap: 4px;
+
+                p {
+                    font-size: 18px;
+                    font-weight: 400;
+                    color: $text-gray;
+                    margin-block-start: 0;
+                    margin-block-end: 0;
+                }
+            }
+
+            .add-channel-input {
+                width: 100%;
+                @include primaryInputStyle($b-radius: 30px);
+            }
+
+            .matPrefix {
+                font-size: 18px;
+                padding: 0 15px 0 24px;
+                color: $text-gray;
+            }
+        }
+    }
+}
+
+.add-channel-dialog-button-container {
+    width: 100%;
+    @include dFlex($jc: flex-end);
+    margin-top: 20px;
+
+    button {
+        @include primaryBtnStyle($w: 125px, $h: 49px);
+    }
+}
+
+::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: flex;
+}

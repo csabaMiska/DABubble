@@ -15,21 +15,17 @@ $rosa: rgba(237, 30, 121, 1);
 $blue: rgba(19, 129, 255, 1);
 
 :root {
-    $vh: 100%
+  $vh: 100%
 }
 
 .full-height {
-    height: calc(var(--vh, 1vh) * 100);
+  height: calc(var(--vh, 1vh) * 100);
 }
 
-$theme: mat.define-theme(
-  (
-    color: (
-      theme-type: light,
-      primary: mat.$magenta-palette,
-    ),
-  )
-);
+$theme: mat.define-theme((color: (theme-type: light,
+        primary: mat.$magenta-palette,
+      ),
+    ));
 
 html {
   @include mat.core-theme($theme);
@@ -78,6 +74,14 @@ h3 {
   background-color: yellow;
 }
 
+//Primary Button disabled
+.button-disabled {
+  background-color: $text-gray !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+//Box Sizing
 *,
 *::before,
 *::after {

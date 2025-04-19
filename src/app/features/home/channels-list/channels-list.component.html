@@ -1,0 +1,27 @@
+<mat-expansion-panel class="expansion-panel" (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+    <mat-expansion-panel-header>
+        <div class="expansion-panel-header-container">
+            <div class="expansion-panel-header-content">
+                <mat-icon>{{ panelOpenState() ? 'arrow_drop_down' : 'arrow_drop_up' }}</mat-icon>
+                <mat-icon class="expansion-panel-icon">workspaces</mat-icon>
+                <span>Channels</span>
+            </div>
+            <button class="add-channel-button" (click)="onAddChannelClick($event)">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+    </mat-expansion-panel-header>
+    <div class="expansion-panel-content">
+        <div *ngIf="channels$ | async as channels" class="expansion-panel-channels-list">
+            <div *ngFor="let channel of channels" (click)="openChannel(channel.channelId, channel.type)">
+                <app-channel-card [channel]="channel"></app-channel-card>
+            </div>
+        </div>
+        <div class="expansion-panel-add-channel-container">
+            <button (click)="onAddChannelClick($event)">
+                <mat-icon>add_circle</mat-icon>
+                Channel hinzufügen
+            </button>
+        </div>
+    </div>
+</mat-expansion-panel>

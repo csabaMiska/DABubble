@@ -2,10 +2,11 @@
 <mat-sidenav-container class="sidenav_container" [hasBackdrop]="false">
     <mat-sidenav #sidenav [mode]="'side'" [position]="'start'" [opened]="sideNavIsOpen">
         <div class="sidenav-content">
-            <p>Das ist das Test Nav!</p>
-            <p>Open Test Channel Component.</p>
-            <button (click)="openChannel()">Test Channel</button>
-            <app-direct-messages-user-list class="expansion-panel"></app-direct-messages-user-list>
+            <app-workspace></app-workspace>
+            <div class="expansion-panel-container">
+                <app-channels-list class="expansion-panel"></app-channels-list>
+                <app-direct-messages-user-list class="expansion-panel"></app-direct-messages-user-list>
+            </div>
         </div>
     </mat-sidenav>
 

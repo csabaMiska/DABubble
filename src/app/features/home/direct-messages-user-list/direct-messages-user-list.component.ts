@@ -9,6 +9,7 @@ import { User } from '../../../shared/interface/user.model';
 import { DashboardService } from '../../../shared/services/dashboard/dashboard.service';
 import { WindowWidthDirective } from '../../../shared/directives/window-width/window-width.directive';
 import { MessageService } from '../../../shared/services/message/message.service';
+import { UserCardComponent } from '../../../core/user-card/user-card.component';
 
 @Component({
   selector: 'app-direct-messages-user-list',
@@ -17,7 +18,8 @@ import { MessageService } from '../../../shared/services/message/message.service
     CommonModule,
     MatExpansionModule,
     MatIconModule,
-    MatBadgeModule
+    MatBadgeModule,
+    UserCardComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './direct-messages-user-list.component.html',

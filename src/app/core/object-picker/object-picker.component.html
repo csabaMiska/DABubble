@@ -1,0 +1,17 @@
+<section class="object-picker-container">
+    <div *ngFor="let content of contents">
+        <div *ngIf="content.type === 'User'" (click)="selectUser(content.uid)">
+            <app-user-card [user]="content"></app-user-card>
+        </div>
+
+        <div *ngIf="content.type === 'Channel'" (click)="selectUser(content.channelId)">
+            <app-channel-card [channel]="content"></app-channel-card>
+        </div>
+    </div>
+
+    <div *ngIf="contents.length <= 0">
+        <div class="object-picker-text">
+            Kein Inhalt gefunden
+        </div>
+    </div>
+</section>

@@ -132,15 +132,6 @@
     }
 }
 
-::ng-deep .mat-mdc-dialog-surface {
-    border-top-right-radius: 0px !important;
-
-    @media (max-width: 800px) {
-        border-bottom-left-radius: 0px !important;
-        border-top-right-radius: 30px !important;
-    }
-}
-
 ::ng-deep .mat-bottom-sheet-container {
     border-top-left-radius: var(--mat-bottom-sheet-container-shape, 28px);
     border-top-right-radius: var(--mat-bottom-sheet-container-shape, 28px);

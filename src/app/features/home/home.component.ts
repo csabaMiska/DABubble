@@ -11,6 +11,8 @@ import { CommonModule } from '@angular/common';
 import { DashboardService } from '../../shared/services/dashboard/dashboard.service';
 import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
 import { DirectMessagesUserListComponent } from './direct-messages-user-list/direct-messages-user-list.component';
+import { ChannelsListComponent } from './channels-list/channels-list.component';
+import { WorkspaceComponent } from './workspace/workspace.component';
 
 @Component({
   selector: 'app-home',
@@ -24,6 +26,8 @@ import { DirectMessagesUserListComponent } from './direct-messages-user-list/dir
     MatRadioModule,
     MatIconModule,
     DirectMessagesUserListComponent,
+    ChannelsListComponent,
+    WorkspaceComponent
   ],
   providers: [
     {
@@ -38,8 +42,6 @@ import { DirectMessagesUserListComponent } from './direct-messages-user-list/dir
 export class HomeComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   private dashboardService = inject(DashboardService);
-  private windowWidthDirective = inject(WindowWidthDirective);
- 
 
   sideNavIsOpen: boolean = true;
   toggleButtonText: 'schließen' | 'öffnen' = 'schließen';
@@ -60,15 +62,6 @@ export class HomeComponent implements OnInit {
       this.toggleButtonText = 'schließen';
     } else {
       this.toggleButtonText = 'öffnen';
-    }
-  }
-
-  openChannel() {
-    this.dashboardService.openChannelWindow();
-    this.dashboardService.closeChatWindow();
-    this.dashboardService.closeAnswerWindow();
-    if (this.windowWidthDirective.mobilViewOn) {
-      this.dashboardService.toggleSideNav();
     }
   }
 }

@@ -142,3 +142,53 @@
     //     }
     // }
 }
+
+@mixin editableDivStyle($min-height, $max-height) {
+    min-height: $min-height;
+    max-height: $max-height;
+    width: 100%;
+    max-width: 100%;
+    padding: 10px 15px 10px 15px;
+    border: 1px solid style.$light-purple-lines;
+    border-radius: 30px;
+    outline: none;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    font-family: "Nunito";
+    font-size: 18px;
+    font-weight: 400;
+
+    &:empty::before {
+        content: attr(placeholder);
+        color: style.$text-gray;
+    }
+
+    &:hover {
+        cursor: text;
+        border: 1px solid style.$purple-3;
+    }
+
+    &:focus {
+        outline: 2px solid style.$purple-3;
+    }
+}
+
+//Expansion Panel - styling
+@mixin expansionPanelStyle() {
+    border: none !important;
+    box-shadow: none !important;
+    width: 100% !important;
+
+    @include mat.expansion-overrides((container-shape: 0,
+            container-background-color: transparent,
+            header-text-size: 20px,
+            header-text-font: "Nunito",
+            header-indicator-display: none,
+            header-hover-state-layer-color: transparent,
+            header-collapsed-state-height: 40px,
+            header-expanded-state-height: 40px,
+            container-text-size: 18px,
+            container-text-font: "Nunito"
+        ));
+}

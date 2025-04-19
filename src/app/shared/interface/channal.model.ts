@@ -2,7 +2,7 @@ import { Message } from "./message.model";
 
 export interface Channel {
     type: 'Channel';
-    chanelid: string;
+    channelId: string;
     title: string;
     description: string;
     creatorUid: string;

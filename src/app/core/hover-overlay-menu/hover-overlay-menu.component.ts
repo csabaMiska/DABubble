@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, HostListener, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, inject, Input, OnInit, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { EmojiPickerComponent } from '../emoji-picker/emoji-picker.component';
 import { Emoji } from '../../shared/interface/emoji.model';
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
-import { combineLatest, debounceTime, distinctUntilChanged, filter, map, Observable, of, switchMap, take, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, Observable, of, switchMap } from 'rxjs';
 import { User } from '../../shared/interface/user.model';
 import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';

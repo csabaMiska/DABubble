@@ -13,9 +13,13 @@
                 </div>
             </div>
         </div>
-    
-        <div class="message-info-channeL" *ngSwitchCase="'Channel'">
-          <p>Ez egy csatorna: {{ messageInfo?.title }}</p>
-        </div>    
-      </ng-container>
+
+        <div class="message-info-channel-container" *ngSwitchCase="'Channel'">
+            <div class="message-info-channel-content">
+                <h3><mat-icon>numbers</mat-icon> {{ messageInfo?.title }}</h3>
+                <span>Du hast diesen Channel heute erstellt. Das ist der Anfang des Channels 
+                    <p><mat-icon>numbers</mat-icon> {{ messageInfo?.title }}</p></span>
+            </div>
+        </div>
+    </ng-container>
 </section>

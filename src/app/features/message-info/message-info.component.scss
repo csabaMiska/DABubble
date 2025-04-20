@@ -69,3 +69,41 @@
         }
     }
 }
+
+.message-info-channel-container {
+    width: 100%;
+    height: 100%;
+    @include dFlex($fd: column, $ai: start);
+
+    .message-info-channel-content {
+        width: 100%;
+        height: 100%;
+        @include dFlex($fd: column, $jc: flex-end, $ai: start);
+        gap: 10px;
+
+        h3 {
+            @include dFlex();
+            gap: 8px;
+            margin-block-start: 0;
+            margin-block-end: 0;
+        }
+
+        span {
+            @include dFlex();
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 400;
+            color: $black;
+
+            p {
+                @include dFlex();
+                gap: 4px;
+                font-size: 20px;
+                font-weight: 400;
+                color: $purple-2;
+                margin-block-start: 0;
+                margin-block-end: 0;
+            }
+        }
+    }
+}

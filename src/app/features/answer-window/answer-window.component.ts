@@ -3,7 +3,7 @@ import { DashboardService } from '../../shared/services/dashboard/dashboard.serv
 import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
 import { MessageInputFieldComponent } from '../message-input-field/message-input-field.component';
 import { MatIconModule } from '@angular/material/icon';
-import { combineLatest, Observable, of, switchMap, take } from 'rxjs';
+import { combineLatest, filter, Observable, of, switchMap, take } from 'rxjs';
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
 import { CommonModule } from '@angular/common';
 import { AnswerService } from '../../shared/services/firebase/answer/answer.service';
@@ -12,6 +12,9 @@ import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebas
 import { MessageService } from '../../shared/services/message/message.service';
 import { Message } from '../../shared/interface/message.model';
 import { ChatService } from '../../shared/services/firebase/chat/chat.service';
+import { ChannelService } from '../../shared/services/firebase/channel/channel.service';
+import { User } from '../../shared/interface/user.model';
+import { Channel } from '../../shared/interface/channal.model';
 
 @Component({
   selector: 'app-answer-window',
@@ -34,24 +37,26 @@ export class AnswerWindowComponent implements OnInit {
   private answerService = inject(AnswerService);
   private messageService = inject(MessageService);
   private chatService = inject(ChatService);
+  private channelService = inject(ChannelService);
 
-  chatDataOrChannelData$!: Observable<any>;
+  messageInfos$!: Observable<any>;
+  messageInfoType: 'User' | 'Channel' | null = null;
 
   ngOnInit(): void {
-    this.getUserData();
-  }
-
-  getUserData() {
-    this.chatDataOrChannelData$ = this.answerService.messageAnswares$.pipe(
-      switchMap((answerInfo) => {
-        if (answerInfo) {
-          return this.firebaseUserService.getUserRealTime(answerInfo.senderId);
-        } else {
-          // return this.firebaseChannelService.getChannel(answerInfo?.chatIdOrChannelId);
-          return of(null);
-        }
-      })
-    );
+    this.messageService.messageInfoId$.subscribe(messageInfo => {
+      if (messageInfo?.messegeType === 'User') {
+        this.messageInfoType = 'User';
+        this.messageInfos$ = this.firebaseUserService.getUserRealTime(messageInfo.messageId).pipe(
+          filter((user): user is User => user !== undefined)
+        );
+      }
+      else if (messageInfo?.messegeType === 'Channel') {
+        this.messageInfoType = 'Channel';
+        this.messageInfos$ = this.channelService.getChannelById(messageInfo.messageId).pipe(
+          filter((channel): channel is Channel => channel !== undefined)
+        );
+      }
+    });
   }
 
   onMessageReceived(answer: string) {
@@ -73,12 +78,12 @@ export class AnswerWindowComponent implements OnInit {
             this.chatService.updateMessage(senderId, receiverId, messageId, { lastAnswerTimestamp: new Date().toISOString() });
           } else if (messageFrom === 'channels') {
             this.addAnswer(channelId, messageId, messageFrom, answer, senderId);
-            // hier kommt noch die channel updateMessage rein.
+            this.channelService.updateMessage(channelId, messageId, { lastAnswerTimestamp: new Date().toISOString() });
           }
         }
       });
   }
-  
+
   addAnswer(chatIdOrChannelId: string, messageId: string, messageFrom: string, answer: string, senderId: string): void {
     const newAnswer: Partial<Message> = {
       senderId: senderId,

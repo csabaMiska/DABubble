@@ -1,10 +1,16 @@
-<section class="answer-window-container" *ngIf="chatDataOrChannelData$ | async as chatDataOrChannelData">
+<section class="answer-window-container" *ngIf="messageInfos$ | async as messageInfo">
     <div class="answer-window-content">
         <div class="answer-window-header-container">
-            <div class="answer-window-title-container">
-                <h3>Thread</h3>
-                <span># {{ chatDataOrChannelData.name }}</span>
-            </div>
+            <ng-container class="message-info-content" [ngSwitch]="messageInfoType">
+                <div class="answer-window-title-container" *ngSwitchCase="'User'">
+                    <h3>Thread</h3>
+                    <span># {{ messageInfo.name }}</span>
+                </div>
+                <div class="answer-window-title-container" *ngSwitchCase="'Channel'">
+                    <h3>Thread</h3>
+                    <span># {{ messageInfo.title }}</span>
+                </div>
+            </ng-container>
             <button (click)="closeAnswerWindow()">
                 <mat-icon>close</mat-icon>
             </button>

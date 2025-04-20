@@ -69,10 +69,10 @@ export class ChatWindowComponent implements OnInit {
   
 
   onMessageReceived(message: string) {
-    this.sendMessage(message);
+    this.addMessage(message);
   }
 
-  sendMessage(message: string): void {
+  addMessage(message: string): void {
     combineLatest([
       this.firebaseAuthService.getCurrentUser(),
       this.messageService.userIdOrChannelId$

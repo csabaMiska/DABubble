@@ -160,8 +160,13 @@ export class MessageContentComponent implements OnInit {
           take(1),
           switchMap(emojiReceiver => {
             if (senderUid) {
-              const chatId = this.chatService.getChatId(senderUid, emojiReceiver);
-              return this.emojiService.updateUserReaction(chatId, senderUid, messageId, messageFrom, selectedEmoji);
+              let chatIdOrChannelId = '';
+              if (messageFrom === 'chats') {
+                chatIdOrChannelId = this.chatService.getChatId(senderUid, emojiReceiver);
+              } else if (messageFrom === 'channels') {
+                chatIdOrChannelId = emojiReceiver; 
+              }
+              return this.emojiService.updateUserReaction(chatIdOrChannelId, senderUid, messageId, messageFrom, selectedEmoji);
             } else {
               return of();
             }

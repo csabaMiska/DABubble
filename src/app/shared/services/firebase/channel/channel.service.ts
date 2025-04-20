@@ -1,8 +1,9 @@
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, doc, Firestore, onSnapshot, setDoc, updateDoc } from '@angular/fire/firestore';
+import { addDoc, collection, deleteDoc, doc, Firestore, onSnapshot, orderBy, query, setDoc, updateDoc } from '@angular/fire/firestore';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { Channel } from '../../../interface/channal.model';
 import { User } from '../../../interface/user.model';
+import { Message } from '../../../interface/message.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,23 @@ export class ChannelService {
         observer.error(error);
       });
 
+      return () => unsubscribe();
+    });
+  }
+
+  getChannelById(channelId: string): Observable<Channel> {
+    const channelRef = doc(this.collectionChannelRef, `${channelId}`);
+    return new Observable<Channel>((observer) => {
+      const unsubscribe = onSnapshot(channelRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data() as Channel;
+          observer.next({ ...data, channelId: docSnap.id });
+        } else {
+          observer.next({} as Channel);
+        }
+      }, (error) => {
+        observer.error(error);
+      });
       return () => unsubscribe();
     });
   }
@@ -55,7 +73,54 @@ export class ChannelService {
 
   removeUserFromChannel() { }
 
-  getChannelMessages() { }
+  getChannelMessages(channalId: string): Observable<Message[]> {
+    const channelRef = collection(this.collectionChannelRef, `${channalId}/messages`);
+    const q = query(channelRef, orderBy('timestamp'));
 
-  getChannelMembers() { }
+    return new Observable<Message[]>((observer) => {
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const messages: Message[] = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data() as Message;
+          messages.push({ ...data, messageId: doc.id });
+        });
+        observer.next(messages);
+      }, (error) => {
+        observer.error(error);
+      });
+
+      return () => unsubscribe();
+    });
+  }
+
+  addMessageToChannel(channalId: string, message: Partial<any>): Observable<void> {
+    const channelRef = collection(this.collectionChannelRef, `${channalId}/messages/`);
+    return from(addDoc(channelRef, message)
+      .then((docRef: any) => {
+        const messageId = docRef.id;
+        return updateDoc(docRef, { messageId: messageId });
+      })
+      .catch((error) => {
+        console.error("Error sending message:", error);
+      })
+    );
+  }
+
+  updateMessage(channalId: string, messageId: string, message: Partial<any>): Observable<void> {
+    const channelRef = doc(this.collectionChannelRef, `${channalId}/messages/${messageId}`);
+    return from(updateDoc(channelRef, message)
+      .catch((error) => {
+        console.error("Error updating message:", error);
+      })
+    );
+  }
+
+  deleteMessage(channalId: string, messageId: string): Observable<void> {
+    const channelRef = doc(this.collectionChannelRef, `${channalId}/messages/${messageId}`);
+    return from(deleteDoc(channelRef)
+      .catch((error) => {
+        console.error("Error deleting message:", error);
+      })
+    );
+  }
 }

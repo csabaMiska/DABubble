@@ -99,6 +99,7 @@ export class SignUpComponent implements OnInit {
 
   addUser(uid: string, email: string, name:string) {
     const newUser: Partial<User> = {
+      type: 'User',
       uid: uid,
       name: name,
       email: email,

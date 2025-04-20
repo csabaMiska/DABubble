@@ -1,6 +1,31 @@
-<section class="channel-container">
-    <div class="channel-content">
-        <p>Das ist das Test Channel! => </p>
-        <button (click)="openThread()">Test Thread</button>
+<section class="channel-window-container" *ngIf="channel$ | async as channel">
+    <div class="channel-window-content">
+        <div class="channel-window-header">
+            <button class="channel-window-header-button">
+                <mat-icon>numbers</mat-icon>
+                <span>{{ channel.title }}</span>
+                <mat-icon>keyboard_arrow_down</mat-icon>
+            </button>
+            <div class="channel-window-users-container">
+                <button class="channel-window-users-button" *ngIf="channelMembers$ | async as members">
+                    <div class="channel-window-users-button-img-container" *ngFor="let user of members | slice:0:3"
+                        [ngStyle]="{ 'margin-left': '-10px' }">
+                        <img [src]="user.avatar" alt="User Avatar">
+                    </div>
+                    <div *ngIf="members.length > 3">+{{ members.length - 3 }}</div>
+                    <span>{{ members.length }}</span>
+                </button>
+                <button class="channel-window-add-user-button">
+                    <mat-icon>person_add</mat-icon>
+                </button>
+            </div>
+        </div>
+        <div class="channel-window-message-container">
+            <div class="channel-window-message-content" *ngIf="chatData$ | async as messages">
+                <app-channel class="app-chat" *ngIf="messages.length > 0"></app-channel>
+                <app-message-info *ngIf="messages.length === 0"></app-message-info>
+            </div>
+        </div>
+        <app-message-input-field [content]="channel" (messageSent)="onMessageReceived($event)"></app-message-input-field>
     </div>
 </section>

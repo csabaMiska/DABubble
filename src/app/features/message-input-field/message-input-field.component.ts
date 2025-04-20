@@ -46,7 +46,8 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
     } else if (this.content.type === 'User') {
       this.messageReceiver = (this.content as User).name || '';
     } else if (this.content.type === 'Channel') {
-      this.messageReceiver = (this.content as Channel).title || '';
+      const channelTitle = (this.content as Channel).title;
+      this.messageReceiver = '#' + channelTitle;
     }
   }
 

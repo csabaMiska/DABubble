@@ -146,6 +146,7 @@ export class LogInComponent {
 
   addGooleUserDateToFirestor(user: any) {
     const newGoogleUser: Partial<User> = {
+      type: 'User',
       uid: user.uid,
       name: user.displayName,
       email: user.email,

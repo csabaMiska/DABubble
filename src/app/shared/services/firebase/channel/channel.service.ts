@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, deleteDoc, doc, Firestore, onSnapshot, orderBy, query, setDoc, updateDoc } from '@angular/fire/firestore';
+import { addDoc, collection, deleteDoc, deleteField, doc, Firestore, onSnapshot, orderBy, query, setDoc, updateDoc } from '@angular/fire/firestore';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { Channel } from '../../../interface/channal.model';
 import { User } from '../../../interface/user.model';
@@ -67,7 +67,7 @@ export class ChannelService {
     );
   }
 
-  deleteChannel(channalId: string) { 
+  deleteChannel(channalId: string) {
     const channelRef = doc(this.collectionChannelRef, `${channalId}`);
     return from(deleteDoc(channelRef)
       .catch((error) => {
@@ -85,7 +85,14 @@ export class ChannelService {
     );
   }
 
-  removeUserFromChannel() { }
+  removeUserFromChannel(channelId: string, userUid: string) {
+    const channelRef = doc(this.collectionChannelRef, `${channelId}`);
+    return from(updateDoc(channelRef, {[`members.${userUid}`]: deleteField()})
+      .catch((error) => {
+        console.error("Error remove User from Channel:", error);
+      })
+    );
+   }
 
   getChannelMessages(channalId: string): Observable<Message[]> {
     const channelMessagesRef = collection(this.collectionChannelRef, `${channalId}/messages`);

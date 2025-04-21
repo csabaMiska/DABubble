@@ -32,7 +32,7 @@ export class ManageMessageDialogComponent {
     const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {
       autoFocus: false,
       hasBackdrop: true,
-      data: { messageId },
+      data: { messageIdOrChannelId: messageId, isMessage: true },
     });
     this.closeDialog();
   }

@@ -1,17 +1,17 @@
 <section class="confirm-dialog-content">
     <div class="confirm-dialog-text-container">
         <div class="confirm-dialog-header">
-            <h3>Nachricht löschen</h3>
+            <h3>{{ isMessage ? 'Nachricht' : 'Channel'}} löschen</h3>
         </div>
         <span>
-            Bist du sicher, dass du diese Nachricht löschen möchtest?
+            Bist du sicher, dass du diese {{ isMessage ? 'Nachricht' : 'Channel'}} löschen möchtest?
         </span>
     </div>
     <div class="confirm-dialog-btns-container">
         <button class="secondaryBtn" (click)="cancelDeleteMessage()">
             Abbrechen
         </button>
-        <button class="primaryBtn" (click)="confirmDeleteMessage(messageId)">
+        <button class="primaryBtn" (click)="confirmDeleteMessage(messageIdOrChannelId)">
             Löschen
         </button>
     </div>

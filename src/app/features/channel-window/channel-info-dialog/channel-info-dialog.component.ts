@@ -14,6 +14,8 @@ import { FirebaseUserService } from '../../../shared/services/firebase/user/fire
 import { FirebaseAuthService } from '../../../shared/services/firebase/auth/firebase.auth.service';
 import { ProfilePopupComponent } from '../../profile-popup/profile-popup.component';
 import { MessageService } from '../../../shared/services/message/message.service';
+import { ConfirmDialogComponent } from '../../../core/confirm-dialog/confirm-dialog.component';
+import { OverlayService } from '../../../shared/services/overlay/overlay.service';
 
 @Component({
   selector: 'app-channel-info-dialog',
@@ -24,19 +26,20 @@ import { MessageService } from '../../../shared/services/message/message.service
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
-    // ChannelNameValidatorDirective
+    ChannelNameValidatorDirective
   ],
   templateUrl: './channel-info-dialog.component.html',
   styleUrl: './channel-info-dialog.component.scss'
 })
 export class ChannelInfoDialogComponent implements OnInit {
   readonly dialog = inject(MatDialog);
-  private profilePopupDialogRef?: MatDialogRef<ProfilePopupComponent>
+  readonly channelInfoDialog = inject(MatDialogRef<ChannelInfoDialogComponent>);
   private fb = inject(FormBuilder);
   private channelService = inject(ChannelService);
-  private messageService= inject(MessageService);
+  private messageService = inject(MessageService);
   private firebaseUserService = inject(FirebaseUserService);
   private firebaseAuthService = inject(FirebaseAuthService);
+  private overlayService = inject(OverlayService);
 
   channelId!: string;
   channel$!: Observable<Channel>;
@@ -88,14 +91,13 @@ export class ChannelInfoDialogComponent implements OnInit {
       this.firebaseAuthService.getCurrentUser(),
       this.channel$
     ])
-    .pipe(
-      take(1),
-      filter(([user, channel]) => !!user && !!channel)
-    )
-    .subscribe(([user, channel]) => {
-      this.isCreator = user!.uid === channel!.creatorUid;
-      console.log(this.isCreator);
-    });
+      .pipe(
+        take(1),
+        filter(([user, channel]) => !!user && !!channel)
+      )
+      .subscribe(([user, channel]) => {
+        this.isCreator = user!.uid === channel!.creatorUid;
+      });
   }
 
   updateEditFormValue() {
@@ -110,7 +112,7 @@ export class ChannelInfoDialogComponent implements OnInit {
   }
 
   closeDialog() {
-    this.dialog.closeAll();
+    this.channelInfoDialog.close();
   }
 
   toggleChannelNameEdit(channelId: string) {
@@ -140,12 +142,35 @@ export class ChannelInfoDialogComponent implements OnInit {
   }
 
   deleteChannel(channelId: string) {
-    this.channelService.deleteChannel(channelId);
+    const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {
+      autoFocus: false,
+      hasBackdrop: true,
+      data: { messageIdOrChannelId: channelId, isMessage: false },
+    });
+    this.closeDialog();
+  }
+
+  leaveChannel(channelId: string) {
+    this.firebaseAuthService.getCurrentUser().pipe(
+      take(1),
+    ).subscribe(user => {
+      if (!user) return;
+      this.channelService.removeUserFromChannel(channelId, user.uid)
+        .subscribe({
+          next: () => {
+            this.overlayService.showOverlay('Du hast den Channel verlassen.', true, 'logout');
+            this.closeDialog();
+          },
+          error: (error) => {
+            console.error('Hiba a channel elhagyásakor:', error);
+          }
+        });
+    });
   }
 
   openProfileDialog(userUid: string) {
     this.messageService.setUserIdOrChannelId(userUid);
-    this.profilePopupDialogRef = this.dialog.open(ProfilePopupComponent, {
+    const profilePopupDialogRef = this.dialog.open(ProfilePopupComponent, {
       autoFocus: false,
       hasBackdrop: true,
       data: this.showUserProfile

@@ -25,7 +25,7 @@
                         </span>
                         <mat-form-field appearance="outline" class="channel-name-input" *ngIf="editChannelName">
                             <input formControlName="channel" matInput placeholder="z.B. #marketing"
-                                appChannelNameValidator>
+                                [appChannelNameValidator]="channel.title">
                             <mat-icon class="matPrefix" matPrefix>numbers</mat-icon>
                             <mat-error *ngIf="editChannelForm.get('channel')?.hasError('required')">Channel-Name ist
                                 erforderlich.</mat-error>
@@ -62,7 +62,7 @@
                     </div>
                 </div>
                 <div class="channel-info-btn-container">
-                    <button type="button" *ngIf="!isCreator">
+                    <button type="button" *ngIf="!isCreator" (click)="leaveChannel(channel.channelId)">
                         Channel verlassen
                     </button>
                     <button type="button" *ngIf="isCreator" (click)="deleteChannel(channel.channelId)">

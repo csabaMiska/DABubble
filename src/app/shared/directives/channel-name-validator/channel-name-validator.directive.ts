@@ -1,6 +1,6 @@
-import { Directive, inject } from '@angular/core';
+import { Directive, inject, Input } from '@angular/core';
 import { AsyncValidator, AbstractControl, NG_ASYNC_VALIDATORS, ValidationErrors } from '@angular/forms';
-import { Observable, map, take } from 'rxjs';
+import { Observable, map, of, take } from 'rxjs';
 import { ChannelService } from '../../services/firebase/channel/channel.service';
 
 
@@ -17,8 +17,15 @@ import { ChannelService } from '../../services/firebase/channel/channel.service'
 export class ChannelNameValidatorDirective implements AsyncValidator {
   private channelService = inject(ChannelService);
 
+  @Input('appChannelNameValidator') originalName: string = '';
+
   validate(control: AbstractControl): Observable<ValidationErrors | null> {
     const enteredName = control.value?.trim().toLowerCase().replace(/\s+/g, '_');
+    const original = this.originalName?.trim().toLowerCase().replace(/\s+/g, '_');
+
+    if (enteredName === original) {
+      return of(null);
+    }
 
     return this.channelService.getChannels().pipe(
       take(1),

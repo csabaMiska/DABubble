@@ -2,6 +2,7 @@ import { Component, Inject, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MessageService } from '../../shared/services/message/message.service';
 import { OverlayService } from '../../shared/services/overlay/overlay.service';
+import { ChannelService } from '../../shared/services/firebase/channel/channel.service';
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -12,13 +13,16 @@ import { OverlayService } from '../../shared/services/overlay/overlay.service';
 })
 export class ConfirmDialogComponent {
   readonly dialog = inject(MatDialog);
-
   private messageService = inject(MessageService);
   private overlayService = inject(OverlayService);
-  messageId!: string;
+  private channelService = inject(ChannelService);
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { messageId: string }) {
-    this.messageId = data.messageId;
+  messageIdOrChannelId: string;
+  isMessage: boolean;
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { messageIdOrChannelId: string, isMessage: boolean }) {
+    this.messageIdOrChannelId = data.messageIdOrChannelId;
+    this.isMessage = data.isMessage;
   }
 
   cancelDeleteMessage() {
@@ -26,10 +30,18 @@ export class ConfirmDialogComponent {
     this.closeConfirmDialog();
   }
 
-  confirmDeleteMessage(messageId: string) {
-    this.messageService.setMessageDeleteId(messageId);
-    this.overlayService.showOverlay('Nachricht gelöscht!', true, 'delete_forever');
-    this.closeConfirmDialog();
+  confirmDeleteMessage(messageIdOrChannelId: string) {
+    console.log(this.isMessage);
+    if (this.isMessage === true) {
+      this.messageService.setMessageDeleteId(messageIdOrChannelId);
+      this.overlayService.showOverlay('Nachricht gelöscht!', true, 'delete_forever');
+      this.closeConfirmDialog();
+    } else {
+      this.channelService.deleteChannel(messageIdOrChannelId);
+      this.overlayService.showOverlay('Channel gelöscht!', true, 'delete_forever');
+      console.log('Das wird aufgerufen!')
+      this.closeConfirmDialog();
+    }
   }
 
   closeConfirmDialog() {

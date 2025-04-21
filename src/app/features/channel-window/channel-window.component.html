@@ -1,7 +1,7 @@
 <section class="channel-window-container" *ngIf="channel$ | async as channel">
     <div class="channel-window-content">
         <div class="channel-window-header">
-            <button class="channel-window-header-button">
+            <button class="channel-window-header-button" (click)="openChannelInfoDialog($event, channel.channelId)">
                 <mat-icon>numbers</mat-icon>
                 <span>{{ channel.title }}</span>
                 <mat-icon>keyboard_arrow_down</mat-icon>

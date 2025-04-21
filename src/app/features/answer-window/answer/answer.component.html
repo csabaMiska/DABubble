@@ -9,8 +9,8 @@
                 <div class="answer-counter-design-element"></div>
             </div>
         </div>
-        <div class="answers-container">
-            <div class="answers-content" *ngFor="let answer of messageAnswers$ | async as answers">
+        <div class="answers-container" *ngIf="messageAnswers$ | async as answers">
+            <div class="answers-content" *ngFor="let answer of answers; trackBy: trackByMessageId">
                 <app-message-content *ngIf="!answerEditMode[answer.messageId]" [message]="answer"
                     [sortedReactions]="sortedReactionsToAnswers" [viewContext]="viewContext"
                     [isOriginalMessage]="false"></app-message-content>

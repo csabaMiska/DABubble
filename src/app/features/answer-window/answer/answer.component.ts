@@ -189,4 +189,8 @@ export class AnswerComponent implements OnInit {
         this.messageService.setMessageDeleteId(null);
     });
   }
+
+  trackByMessageId(index: number, message: Message): string {
+    return message.messageId;
+  }
 }

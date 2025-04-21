@@ -198,4 +198,8 @@ export class ChatComponent implements OnInit {
       }
     });
   }
+
+  trackByMessageId(index: number, message: Message): string {
+    return message.messageId;
+  }
 }

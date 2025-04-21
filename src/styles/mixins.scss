@@ -52,6 +52,17 @@
     }
 }
 
+@mixin thirdBtnStyle($fs) {
+    color: style.$purple-3;
+    font-size: $fs;
+    font-weight: 600;
+
+    &:hover {
+        font-weight: 800;
+        transform: scale(1.05);
+    }
+}
+
 @mixin dialogBtnStyle($w, $h) {
     border: none;
     background-color: style.$white;

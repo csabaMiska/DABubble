@@ -194,4 +194,8 @@ export class ChannelComponent implements OnInit {
         }
       });
   }
+
+  trackByMessageId(index: number, message: Message): string {
+    return message.messageId;
+  }
 }

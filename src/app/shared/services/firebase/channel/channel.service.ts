@@ -58,9 +58,23 @@ export class ChannelService {
     );
   }
 
-  updateChannel() { }
+  updateChannel(channalId: string, channal: Partial<Channel>) {
+    const channelRef = doc(this.collectionChannelRef, `${channalId}`);
+    return from(updateDoc(channelRef, channal)
+      .catch((error) => {
+        console.error("Error updating Channel:", error);
+      })
+    );
+  }
 
-  deleteChannel() { }
+  deleteChannel(channalId: string) { 
+    const channelRef = doc(this.collectionChannelRef, `${channalId}`);
+    return from(deleteDoc(channelRef)
+      .catch((error) => {
+        console.error("Error deleting Channel:", error);
+      })
+    );
+  }
 
   addUserToChannel(channelId: string, channel: Partial<Channel>) {
     const channelRef = doc(this.collectionChannelRef, `${channelId}`);
@@ -74,8 +88,8 @@ export class ChannelService {
   removeUserFromChannel() { }
 
   getChannelMessages(channalId: string): Observable<Message[]> {
-    const channelRef = collection(this.collectionChannelRef, `${channalId}/messages`);
-    const q = query(channelRef, orderBy('timestamp'));
+    const channelMessagesRef = collection(this.collectionChannelRef, `${channalId}/messages`);
+    const q = query(channelMessagesRef, orderBy('timestamp'));
 
     return new Observable<Message[]>((observer) => {
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -94,8 +108,8 @@ export class ChannelService {
   }
 
   addMessageToChannel(channalId: string, message: Partial<any>): Observable<void> {
-    const channelRef = collection(this.collectionChannelRef, `${channalId}/messages/`);
-    return from(addDoc(channelRef, message)
+    const channelMessagesRef = collection(this.collectionChannelRef, `${channalId}/messages/`);
+    return from(addDoc(channelMessagesRef, message)
       .then((docRef: any) => {
         const messageId = docRef.id;
         return updateDoc(docRef, { messageId: messageId });
@@ -107,8 +121,8 @@ export class ChannelService {
   }
 
   updateMessage(channalId: string, messageId: string, message: Partial<any>): Observable<void> {
-    const channelRef = doc(this.collectionChannelRef, `${channalId}/messages/${messageId}`);
-    return from(updateDoc(channelRef, message)
+    const channelMessageRef = doc(this.collectionChannelRef, `${channalId}/messages/${messageId}`);
+    return from(updateDoc(channelMessageRef, message)
       .catch((error) => {
         console.error("Error updating message:", error);
       })
@@ -116,8 +130,8 @@ export class ChannelService {
   }
 
   deleteMessage(channalId: string, messageId: string): Observable<void> {
-    const channelRef = doc(this.collectionChannelRef, `${channalId}/messages/${messageId}`);
-    return from(deleteDoc(channelRef)
+    const channelMessageRef = doc(this.collectionChannelRef, `${channalId}/messages/${messageId}`);
+    return from(deleteDoc(channelMessageRef)
       .catch((error) => {
         console.error("Error deleting message:", error);
       })

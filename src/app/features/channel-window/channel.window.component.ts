@@ -12,6 +12,8 @@ import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebas
 import { Message } from '../../shared/interface/message.model';
 import { ChannelComponent } from './channel/channel.component';
 import { MessageInfoComponent } from '../message-info/message-info.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ChannelInfoDialogComponent } from './channel-info-dialog/channel-info-dialog.component';
 
 @Component({
   selector: 'app-channel-window',
@@ -31,10 +33,13 @@ export class ChannelWindowComponent implements OnInit {
   private channelService = inject(ChannelService);
   private firebaseUserService = inject(FirebaseUserService);
   private firebaseAuthService = inject(FirebaseAuthService);
+  readonly dialog = inject(MatDialog);
 
   channel$!: Observable<Channel | undefined>;
   channelMembers$!: Observable<User[]>;
   chatData$!: Observable<Message[]>;
+
+  buttonRects!: DOMRect;
 
   ngOnInit(): void {
     this.getChannelData();
@@ -70,15 +75,15 @@ export class ChannelWindowComponent implements OnInit {
 
   getChatData() {
     this.chatData$ = this.messageService.userIdOrChannelId$
-    .pipe(
-      switchMap((channalId) => {
-        if (channalId) {
-          return this.channelService.getChannelMessages(channalId);
-        } else {
-          return of([]);
-        }
-      })
-    );
+      .pipe(
+        switchMap((channalId) => {
+          if (channalId) {
+            return this.channelService.getChannelMessages(channalId);
+          } else {
+            return of([]);
+          }
+        })
+      );
   }
 
   onMessageReceived(message: string) {
@@ -105,5 +110,22 @@ export class ChannelWindowComponent implements OnInit {
           console.error('User or  channelId is undefined');
         }
       });
+  }
+
+  openChannelInfoDialog($event: MouseEvent, channelId: string) {
+    const rect = ($event.currentTarget as HTMLElement).getBoundingClientRect();
+    this.buttonRects = rect;
+
+    const dialogRef = this.dialog.open(ChannelInfoDialogComponent, {
+      position: {
+        top: `${this.buttonRects.top + 40}px`,
+        left: `${this.buttonRects.left}px`,
+      },
+      width: '100vw',
+      maxWidth: '872px',
+      height: '100vh',
+      maxHeight: '616px',
+      data:{ channelId },
+    });
   }
 }

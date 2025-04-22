@@ -3,8 +3,8 @@
         <div class="user-card-user-status {{ user.status }}" *ngIf="!isSelectedUser"></div>
         <img class="user-card-user-img" src="{{ user.avatar }}" alt="logo">
     </div>
-    <span class="user-card-user-name">{{ user.name }}</span>
-    <button *ngIf="isSelectedUser" class="user-card-close-button" (click)="removeUser(user.uid)">
+    <span class="user-card-user-name">{{ user.name }} {{isCurrentUser ? '(Du)' : ''}}</span>
+    <button *ngIf="isSelectedUser && !isCurrentUser" class="user-card-close-button" (click)="removeUser(user.uid)">
         <mat-icon>close</mat-icon>
     </button>
 </section>

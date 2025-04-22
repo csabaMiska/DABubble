@@ -39,7 +39,6 @@ export class ChannelInfoDialogComponent implements OnInit {
   private messageService = inject(MessageService);
   private firebaseUserService = inject(FirebaseUserService);
   private firebaseAuthService = inject(FirebaseAuthService);
-  private overlayService = inject(OverlayService);
 
   channelId!: string;
   channel$!: Observable<Channel>;
@@ -145,7 +144,7 @@ export class ChannelInfoDialogComponent implements OnInit {
     const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {
       autoFocus: false,
       hasBackdrop: true,
-      data: { messageIdOrChannelId: channelId, isMessage: false },
+      data: { messageIdOrChannelId: channelId, confirmType: 'deleteChannel', currentUserUid: null },
     });
     this.closeDialog();
   }
@@ -154,19 +153,16 @@ export class ChannelInfoDialogComponent implements OnInit {
     this.firebaseAuthService.getCurrentUser().pipe(
       take(1),
     ).subscribe(user => {
-      if (!user) return;
-      this.channelService.removeUserFromChannel(channelId, user.uid)
-        .subscribe({
-          next: () => {
-            this.overlayService.showOverlay('Du hast den Channel verlassen.', true, 'logout');
-            this.closeDialog();
-          },
-          error: (error) => {
-            console.error('Hiba a channel elhagyásakor:', error);
-          }
+      if (user) {
+        const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {
+          autoFocus: false,
+          hasBackdrop: true,
+          data: { messageIdOrChannelId: channelId, confirmType: 'leaveChannel', currentUserUid: user.uid },
         });
+        this.closeDialog();
+      }
     });
-  }
+  };
 
   openProfileDialog(userUid: string) {
     this.messageService.setUserIdOrChannelId(userUid);

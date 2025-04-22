@@ -1,0 +1,40 @@
+<section class="users-list-dialog-container">
+    <div class="users-list-dialog-content"  *ngIf="!addUsersMode">
+        <div class="users-list-dialog-content-header">
+            <h3>Mitglieder</h3>
+            <button (click)="closeDialog()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+        <div class="users-list-dialog-content-container">
+            <div class="users-list-container" *ngIf="channelMembers$ | async as users">
+                <div *ngFor="let user of users">
+                    <app-user-card [user]="user" [isSelectedUser]="isCreator" 
+                    (userRemoved)="removeSelectedUserFromChannel($event.userUid)"></app-user-card>
+                </div>
+            </div>
+            <div class="show-add-user-container">
+                <button (click)="showAddUsersMode()">
+                    <mat-icon>person_add</mat-icon>
+                    Mitglieder hinzufügen
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="users-list-dialog-content"  *ngIf="addUsersMode">
+        <div class="users-list-dialog-content-header">
+            <h3>Leute hinzufügen</h3>
+            <button (click)="closeDialog()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+        <div class="users-list-dialog-content-container" *ngIf="channel$ | async as channel">
+            <app-add-user-input [creatorUid]="channel.creatorUid" [channelId]="channel.channelId"></app-add-user-input>
+            <div class="add-user-container">
+                <button (click)="addSelectedUsersToChannel()" [disabled]="selectedUsers.length <= 0" [class.button-disabled]="selectedUsers.length <= 0">
+                    Hinzufügen
+                </button>
+            </div>
+        </div>
+    </div>
+</section>

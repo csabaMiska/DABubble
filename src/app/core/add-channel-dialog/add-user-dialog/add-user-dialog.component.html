@@ -10,22 +10,11 @@
             <mat-radio-button value="1">Alle Mitglieder von {{ channelTitle }} hinzufügen</mat-radio-button>
             <mat-radio-button value="2">Bestimmte Leute hinzufügen</mat-radio-button>
         </mat-radio-group>
-        <div class="add-user-dialog-input-container" *ngIf="showAddUsersInput">
-            <div class="user-tags-container" *ngIf="(selectedUsersData$ | async)!.length > 0">
-                <span *ngFor="let user of selectedUsersData$ | async" class="user-tag">
-                    <app-user-card [user]="user" [isSelectedUser]="true" (userRemoved)="removeUserFromSelectedUsers($event.userUid)"></app-user-card>
-                </span>
-            </div>
-            <div #editableDiv class="editable-div" contenteditable="true" placeholder="Name eingeben"
-                (input)="onEditableInput(editableDiv)">
-            </div>
-        </div>
-        <app-object-picker *ngIf="objectSelectorIsOpen" [ngStyle]="calculateObjectSelectorPosition(inputRects)"
-            [contents]="filteredUsers" (selectedObject)="addUserToSelectedUsers($event.objectId)"></app-object-picker>
+        <app-add-user-input *ngIf="showAddUsersInput" [creatorUid]="creatorUid" [channelId]="channelId"></app-add-user-input>
     </div>
     <div class="add-user-dialog-button-container">
-        <button [disabled]="showAddUsersInput && (selectedUsersData$ | async)!.length <= 0"
-            [class.button-disabled]="showAddUsersInput && (selectedUsersData$ | async)!.length <= 0"
+        <button [disabled]="showAddUsersInput && selectedUsers.length <= 0"
+            [class.button-disabled]="showAddUsersInput && selectedUsers.length <= 0"
             (click)="addUsersToChannel()">Erstellen</button>
     </div>
 </section>

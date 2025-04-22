@@ -7,7 +7,7 @@
                 <mat-icon>keyboard_arrow_down</mat-icon>
             </button>
             <div class="channel-window-users-container">
-                <button class="channel-window-users-button" *ngIf="channelMembers$ | async as members">
+                <button class="channel-window-users-button" *ngIf="channelMembers$ | async as members" (click)="openChannelUsersListDialog($event, channel.channelId, false)">
                     <div class="channel-window-users-button-img-container" *ngFor="let user of members | slice:0:3"
                         [ngStyle]="{ 'margin-left': '-10px' }">
                         <img [src]="user.avatar" alt="User Avatar">
@@ -15,7 +15,7 @@
                     <div *ngIf="members.length > 3">+{{ members.length - 3 }}</div>
                     <span>{{ members.length }}</span>
                 </button>
-                <button class="channel-window-add-user-button">
+                <button class="channel-window-add-user-button" (click)="openChannelUsersListDialog($event, channel.channelId, true)">
                     <mat-icon>person_add</mat-icon>
                 </button>
             </div>

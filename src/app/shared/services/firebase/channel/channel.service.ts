@@ -2,8 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { addDoc, collection, deleteDoc, deleteField, doc, Firestore, onSnapshot, orderBy, query, setDoc, updateDoc } from '@angular/fire/firestore';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { Channel } from '../../../interface/channal.model';
-import { User } from '../../../interface/user.model';
 import { Message } from '../../../interface/message.model';
+import { User } from '../../../interface/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,9 @@ import { Message } from '../../../interface/message.model';
 export class ChannelService {
   private firestore = inject(Firestore);
   private collectionChannelRef = collection(this.firestore, 'channels');
+
+  users$!: Observable<User[]>;
+  selectedUsers$ = new BehaviorSubject<string[]>([]);
 
   getChannels(): Observable<Channel[]> {
     return new Observable<Channel[]>((observer) => {

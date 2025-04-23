@@ -14,6 +14,7 @@ export class ChannelService {
 
   users$!: Observable<User[]>;
   selectedUsers$ = new BehaviorSubject<string[]>([]);
+  channelMembers$!: Observable<User[]>;
 
   getChannels(): Observable<Channel[]> {
     return new Observable<Channel[]>((observer) => {
@@ -90,12 +91,12 @@ export class ChannelService {
 
   removeUserFromChannel(channelId: string, userUid: string) {
     const channelRef = doc(this.collectionChannelRef, `${channelId}`);
-    return from(updateDoc(channelRef, {[`members.${userUid}`]: deleteField()})
+    return from(updateDoc(channelRef, { [`members.${userUid}`]: deleteField() })
       .catch((error) => {
         console.error("Error remove User from Channel:", error);
       })
     );
-   }
+  }
 
   getChannelMessages(channalId: string): Observable<Message[]> {
     const channelMessagesRef = collection(this.collectionChannelRef, `${channalId}/messages`);

@@ -29,7 +29,10 @@
             </button>
         </div>
         <div class="users-list-dialog-content-container" *ngIf="channel$ | async as channel">
-            <app-add-user-input [creatorUid]="channel.creatorUid" [channelId]="channel.channelId"></app-add-user-input>
+            <app-add-user-input 
+                [creatorUid]="channel.creatorUid" 
+                [channelId]="channel.channelId"
+                [channelNowCreated]="false"></app-add-user-input>
             <div class="add-user-container">
                 <button (click)="addSelectedUsersToChannel()" [disabled]="selectedUsers.length <= 0" [class.button-disabled]="selectedUsers.length <= 0">
                     Hinzufügen

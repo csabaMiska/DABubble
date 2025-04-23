@@ -44,6 +44,7 @@ export class ChannelWindowComponent implements OnInit {
   ngOnInit(): void {
     this.getChannelData();
     this.getChannelMembers();
+    this.setChannelMembers();
     this.getChatData();
     this.getAllUsers();
   }
@@ -59,7 +60,7 @@ export class ChannelWindowComponent implements OnInit {
   }
 
   getChannelMembers() {
-    this.channelMembers$ = this.channel$.pipe(
+    this.channelService.channelMembers$ = this.channel$.pipe(
       switchMap(channel => {
         if (!channel || !channel.members) return of([]);
         const members = channel.members;
@@ -76,6 +77,10 @@ export class ChannelWindowComponent implements OnInit {
           .sort((a, b) => a.role === 'creator' ? -1 : 1)
       )
     );
+  }
+
+  setChannelMembers() {
+    this.channelMembers$ = this.channelService.channelMembers$;
   }
 
   getChatData() {

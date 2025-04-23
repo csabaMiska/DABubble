@@ -25,22 +25,17 @@ export class AddUserInputComponent {
 
   @Input() creatorUid!: string;
   @Input() channelId!: string;
+  @Input() channelNowCreated!: boolean;
 
   editableContentEmpty: boolean = true;
   objectSelectorIsOpen: boolean = false;
   inputRects: DOMRect = {} as DOMRect;
 
-  users$!: Observable<User[]>;
   filteredUsers: User[] = [];
   selectedUsersData$: Observable<User[]> = of([]);
 
   ngOnInit(): void {
-    this.getAllUsers();
     this.getSelectedUsersByIds();
-  }
-
-  getAllUsers() {
-    this.users$ = this.channelService.users$;
   }
 
   getSelectedUsersByIds() {
@@ -62,7 +57,7 @@ export class AddUserInputComponent {
       const rect = element.getBoundingClientRect();
       this.inputRects = rect;
       this.objectSelectorIsOpen = true;
-      this.searchUser(text);
+      this.searchUse(text)
     } else if (text.length === 0 && this.objectSelectorIsOpen) {
       this.objectSelectorIsOpen = false;
     }
@@ -80,21 +75,28 @@ export class AddUserInputComponent {
     };
   }
 
-  searchUser(text: string) {
-    if (text.length > 0) {
-      const userSearchTerm = text.toLowerCase();
-      this.channelService.selectedUsers$.pipe(take(1)).subscribe(selectedUsers => {
-        this.users$.pipe(take(1)).subscribe(users => {
-          this.filteredUsers = users.filter(user =>
-            user.name.toLowerCase().includes(userSearchTerm) &&
-            user.uid !== this.creatorUid &&
-            !selectedUsers.includes(user.uid)
-          );
-        });
-      });
-    } else {
+  searchUse(text: string) {
+    if (text.trim().length === 0) {
       this.filteredUsers = [];
+      return;
     }
+  
+    const searchTerm = text.toLowerCase();
+  
+    combineLatest([
+      this.channelService.users$.pipe(take(1)),
+      this.channelNowCreated ? of([]) : this.channelService.channelMembers$.pipe(take(1)),
+      this.channelService.selectedUsers$.pipe(take(1))
+    ]).subscribe(([allUsers, members, selectedUids]) => {
+      const memberUids = members.map(m => m.uid);
+      const allExcludedUids = new Set([...memberUids, ...selectedUids]);
+  
+      this.filteredUsers = allUsers.filter(user =>
+        user.name.toLowerCase().includes(searchTerm) &&
+        user.uid !== this.creatorUid &&
+        !allExcludedUids.has(user.uid)
+      );
+    });
   }
 
   @HostListener('document:click', ['$event'])

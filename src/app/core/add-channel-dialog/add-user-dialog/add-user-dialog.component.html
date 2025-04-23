@@ -10,7 +10,11 @@
             <mat-radio-button value="1">Alle Mitglieder von {{ channelTitle }} hinzufügen</mat-radio-button>
             <mat-radio-button value="2">Bestimmte Leute hinzufügen</mat-radio-button>
         </mat-radio-group>
-        <app-add-user-input *ngIf="showAddUsersInput" [creatorUid]="creatorUid" [channelId]="channelId"></app-add-user-input>
+        <app-add-user-input 
+            *ngIf="showAddUsersInput" 
+            [creatorUid]="creatorUid" 
+            [channelId]="channelId"
+            [channelNowCreated]="true"></app-add-user-input>
     </div>
     <div class="add-user-dialog-button-container">
         <button [disabled]="showAddUsersInput && selectedUsers.length <= 0"

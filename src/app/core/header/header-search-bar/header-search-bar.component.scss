@@ -12,54 +12,48 @@
         margin-right: 149px;
         margin-left: 118px;
         height: 70px;
+        background-color: $white;
+        border-radius: 42px;
+        align-items: center;
+        text-align: center;
 
-        @include mat.form-field-overrides((
-                filled-active-indicator-color: $white,
-                filled-hover-active-indicator-color: $white,
-                filled-focus-active-indicator-color: $white,
-                filled-disabled-active-indicator-color: §$white,
-                filled-container-color: $white ));
+        button {
+            height: 47px;
+            width: 47px;
+            margin-right: 45px;
+            @include dFlex();
+            border-radius: 50px;
+            border: none;
+            background-color: $white;
+
+            mat-icon {
+                color: $text-gray;
+                font-size: 35px;
+                width: 35px;
+                height: 35px;
+            }
+
+            &:hover {
+                cursor: pointer;
+                background-color: $bgcolor;
+
+                mat-icon {
+                    color: $purple-1;
+                }
+            }
+        }
+
+        @include mat.form-field-overrides((outlined-container-shape: 42px,
+                outlined-outline-color: $white,
+                outlined-focus-outline-color: $white,
+                outlined-hover-outline-color: $white,
+                outlined-input-text-placeholder-color: $text-gray,
+                container-text-size: 24px,
+                container-text-font: "Nunito",
+            ));
     }
 }
 
-// ::ng-deep .mat-mdc-form-field-subscript-wrapper {
-//     display: none;
-// }
-
-// ::ng-deep .mdc-text-field {
-//     border-radius: 42px !important;
-//     border: none !important;
-//     align-items: center !important;
-//     padding: 0 !important;
-//     font-family: 'Nunito';
-//     color: $text-gray;
-//     font-size: 24px;
-//     background-color: $white !important;
-// }
-
-// ::ng-deep .mat-mdc-form-field-focus-overlay {
-//     background-color: $white !important;
-// }
-
-// ::ng-deep .mat-mdc-form-field-input-control {
-//     padding-left: 45px !important;
-
-//     @media (max-width: 1140px) {
-//        padding-left: 24px !important;
-//     }
-// }
-
-// ::ng-deep .mat-mdc-form-field-icon-suffix {
-//     padding: 0 45px 0 4px !important;
-// }
-
-mat-icon {
-    width: 35px !important;
-    height: 35px !important;
-    fill: $text-gray;
-    font-size: 35px;
+::ng-deep .mdc-text-field {
+    align-items: center !important;
 }
-
-// ::ng-deep .mat-mdc-form-field-icon-suffix>.mat-icon {
-//     padding: 0 !important;
-// }

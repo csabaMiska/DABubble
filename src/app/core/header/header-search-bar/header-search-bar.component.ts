@@ -1,9 +1,11 @@
-import { Component, ElementRef, HostListener, inject } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms'
 import { CommonModule } from '@angular/common';
+import { ObjectPickerComponent } from '../../object-picker/object-picker.component';
+import { FirebaseUserService } from '../../../shared/services/firebase/user/firebase.user.service';
 
 @Component({
   selector: 'app-header-search-bar',
@@ -13,74 +15,77 @@ import { CommonModule } from '@angular/common';
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    ObjectPickerComponent
   ],
   templateUrl: './header-search-bar.component.html',
   styleUrl: './header-search-bar.component.scss'
 })
-export class HeaderSearchBarComponent {
-  testUsers: Array<{ firstName: string, lastName: string, img: string, status: 'online' | 'offline' | 'busy' }> = [
-    { firstName: 'Bruce', lastName: 'Wayne', img: '1', status: 'online' },
-    { firstName: 'Kent', lastName: 'Clark', img: '3', status: 'offline' },
-    { firstName: 'Lois', lastName: 'Lane', img: '6', status: 'busy' },
-    { firstName: 'Alfed', lastName: 'Pennyworth', img: '4', status: 'online' },
-    { firstName: 'James', lastName: 'Gordon', img: '2', status: 'busy' }
-  ];
+export class HeaderSearchBarComponent implements OnInit {
+  private firebaseUserService = inject(FirebaseUserService);
 
-  testChannels: Array<{ channelName: string }> = [
-    { channelName: 'Gotham-City-News' },
-    { channelName: 'Start-City-News' },
-    { channelName: 'Jokers-News' },
-    { channelName: 'GCPD' },
-    { channelName: 'Rasz-al-Gul' }
-  ];
-
-  private eRef = inject(ElementRef);
+  objectSelectorIsOpen: boolean = false;
+  inputRects: DOMRect = {} as DOMRect;
 
   searchTerm: string = '';
-  filteredUsers: Array<{ firstName: string, lastName: string, img: string, status: 'online' | 'offline' | 'busy'}> = [];
-  filteredChannels: Array<{ channelName: string }> = [];
+  filteredObjects: any[] = [];
+
+  ngOnInit(): void {
+    
+  }
 
   onSearch() {
-    if (this.searchTerm.includes('@')) {
-      const userSearchTerm = this.searchTerm.slice(1).toLowerCase(); 
-      this.filteredUsers = this.testUsers.filter(user => 
-        user.firstName.toLowerCase().includes(userSearchTerm) || 
-        user.lastName.toLowerCase().includes(userSearchTerm) ||
-        user.img.includes(userSearchTerm) ||
-        user.status.includes(userSearchTerm)
-      );
-    } else {
-      this.filteredUsers = [];
-    }
+    // if (this.searchTerm.includes('@')) {
+    //   const userSearchTerm = this.searchTerm.slice(1).toLowerCase(); 
+    //   this.filteredObjects = this.testUsers.filter(user => 
+    //     user.firstName.toLowerCase().includes(userSearchTerm) || 
+    //     user.lastName.toLowerCase().includes(userSearchTerm) ||
+    //     user.img.includes(userSearchTerm) ||
+    //     user.status.includes(userSearchTerm)
+    //   );
+    // } else {
+    //   this.filteredObjects = [];
+    // }
 
-    if (this.searchTerm.includes('#')) {
-      const channelSearchTerm = this.searchTerm.slice(1).toLowerCase(); 
-      this.filteredChannels = this.testChannels.filter(channel => 
-        channel.channelName.toLowerCase().includes(channelSearchTerm)
-      );
-    } else {
-      this.filteredChannels = [];
-    }
+    // if (this.searchTerm.includes('#')) {
+    //   const channelSearchTerm = this.searchTerm.slice(1).toLowerCase(); 
+    //   this.filteredObjects = this.testChannels.filter(channel => 
+    //     channel.channelName.toLowerCase().includes(channelSearchTerm)
+    //   );
+    // } else {
+    //   this.filteredObjects = [];
+    // }
   }
 
-  onSelectUser(user: { firstName: string, lastName: string }) {
-    const mention = `@${user.firstName.toLowerCase()}${user.lastName.toLowerCase()}`;
-    this.searchTerm = mention; 
-    this.filteredUsers = [];
+
+
+
+
+  selectedObject(objectId: string) {
+    console.log(objectId);
   }
 
-  onSelectChannel(channel: { channelName: string }) {
-    const selectedChannel = `#${channel.channelName.toLowerCase()}`;
-    this.searchTerm = selectedChannel 
-    this.filteredChannels = []; 
+
+  calculateObjectSelectorPosition(inputRect: DOMRect) {
+    if (!inputRect) return {};
+
+    return {
+      position: 'fixed',
+      top: `${Math.max(0, inputRect.bottom - 16)}px`,
+      left: `${Math.max(0, inputRect.left + 20)}px`
+    };
   }
 
   @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event) {
-    if (!this.eRef.nativeElement.contains(event.target)) {
-      this.filteredUsers = [];
-      this.filteredChannels = [];
+  onDocumentClick(event: MouseEvent) {
+    const clickedInside = this.isClickInsideObjectSelector(event);
+    if (!clickedInside) {
+      this.objectSelectorIsOpen = false;
     }
+  }
+
+  isClickInsideObjectSelector(event: MouseEvent): boolean {
+    const objectSelector = document.querySelector('app-object-picker');
+    return objectSelector?.contains(event.target as Node) ?? false;
   }
 }

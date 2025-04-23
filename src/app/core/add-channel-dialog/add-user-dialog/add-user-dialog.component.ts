@@ -72,7 +72,7 @@ export class AddUserDialogComponent {
   }
 
   addAllUsersToChannel() {
-    this.channelService.users$.subscribe(users => {
+    this.firebaseUserService.getUsers().subscribe(users => {
       const allUsers = users.map(user => user.uid);
       const nonCreatorUsers = allUsers.filter(uid => uid !== this.creatorUid);
       const membersToAdd: { [uid: string]: { role: 'member' } } = {};

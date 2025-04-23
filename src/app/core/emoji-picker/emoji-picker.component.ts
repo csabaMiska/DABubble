@@ -14,9 +14,7 @@ import { WindowWidthDirective } from '../../shared/directives/window-width/windo
 })
 export class EmojiPickerComponent implements OnInit, OnDestroy, OnChanges {
   private windowWidthDirectives = inject(WindowWidthDirective)
-  private elementRef = inject(ElementRef);
   public pickerPosition = { top: '0', left: '0' };
-  private picker: any;
   @Input() buttonRect!: DOMRect;
   @Output() emojiSelected = new EventEmitter<string | any>();
 

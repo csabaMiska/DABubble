@@ -13,6 +13,7 @@ import { WindowWidthDirective } from '../../shared/directives/window-width/windo
 import { DirectMessagesUserListComponent } from './direct-messages-user-list/direct-messages-user-list.component';
 import { ChannelsListComponent } from './channels-list/channels-list.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
+import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
 
 @Component({
   selector: 'app-home',
@@ -42,11 +43,16 @@ import { WorkspaceComponent } from './workspace/workspace.component';
 export class HomeComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   private dashboardService = inject(DashboardService);
+  private firebaseUserService = inject(FirebaseUserService);
 
   sideNavIsOpen: boolean = true;
   toggleButtonText: 'schließen' | 'öffnen' = 'schließen';
 
   ngOnInit() {
+   this.checkSideNavPosition();
+  }
+
+  checkSideNavPosition() {
     this.dashboardService.sideNavIsOpen$.subscribe(isOpen => {
       this.sideNavIsOpen = isOpen;
     });

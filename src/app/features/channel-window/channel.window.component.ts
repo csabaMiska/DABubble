@@ -46,11 +46,6 @@ export class ChannelWindowComponent implements OnInit {
     this.getChannelMembers();
     this.setChannelMembers();
     this.getChatData();
-    this.getAllUsers();
-  }
-
-  getAllUsers() {
-    this.channelService.users$ = this.firebaseUserService.getUsers();
   }
 
   getChannelData() {

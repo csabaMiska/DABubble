@@ -57,7 +57,7 @@ export class AddUserInputComponent {
       const rect = element.getBoundingClientRect();
       this.inputRects = rect;
       this.objectSelectorIsOpen = true;
-      this.searchUse(text)
+      this.searchUser(text)
     } else if (text.length === 0 && this.objectSelectorIsOpen) {
       this.objectSelectorIsOpen = false;
     }
@@ -65,17 +65,15 @@ export class AddUserInputComponent {
 
   calculateObjectSelectorPosition(inputRect: DOMRect) {
     if (!inputRect) return {};
-    let left = inputRect.left + 20;
-    let top = inputRect.bottom - 10;
 
     return {
       position: 'fixed',
-      top: `${Math.max(0, inputRect.bottom - 10)}px`,
+      top: `${Math.max(0, inputRect.bottom - 16)}px`,
       left: `${Math.max(0, inputRect.left + 20)}px`
     };
   }
 
-  searchUse(text: string) {
+  searchUser(text: string) {
     if (text.trim().length === 0) {
       this.filteredUsers = [];
       return;
@@ -84,7 +82,7 @@ export class AddUserInputComponent {
     const searchTerm = text.toLowerCase();
   
     combineLatest([
-      this.channelService.users$.pipe(take(1)),
+      this.firebaseUserService.getUsers().pipe(take(1)),
       this.channelNowCreated ? of([]) : this.channelService.channelMembers$.pipe(take(1)),
       this.channelService.selectedUsers$.pipe(take(1))
     ]).subscribe(([allUsers, members, selectedUids]) => {

@@ -12,7 +12,6 @@ export class ChannelService {
   private firestore = inject(Firestore);
   private collectionChannelRef = collection(this.firestore, 'channels');
 
-  users$!: Observable<User[]>;
   selectedUsers$ = new BehaviorSubject<string[]>([]);
   channelMembers$!: Observable<User[]>;
 

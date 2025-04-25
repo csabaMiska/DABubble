@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, deleteDoc, deleteField, doc, Firestore, onSnapshot, orderBy, query, setDoc, updateDoc } from '@angular/fire/firestore';
-import { BehaviorSubject, from, Observable } from 'rxjs';
+import { addDoc, collection, deleteDoc, deleteField, doc, Firestore, getDoc, onSnapshot, orderBy, query, setDoc, updateDoc } from '@angular/fire/firestore';
+import { BehaviorSubject, catchError, from, map, Observable, of } from 'rxjs';
 import { Channel } from '../../../interface/channal.model';
 import { Message } from '../../../interface/message.model';
 import { User } from '../../../interface/user.model';
@@ -47,6 +47,24 @@ export class ChannelService {
       });
       return () => unsubscribe();
     });
+  }
+
+  getChannelByIdToSearchValidation(channelId: string): Observable<Channel> {
+    const channelRef = doc(this.firestore, 'channels', channelId);
+
+  return from(getDoc(channelRef)).pipe(
+    map(docSnap => {
+      if (docSnap.exists()) {
+        const data = docSnap.data() as Channel;
+        return { ...data, channelId: docSnap.id };
+      } else {
+        return {} as Channel;
+      }
+    }),
+    catchError(error => {
+      return of({} as Channel);
+    })
+  );
   }
 
   createChannel(channel: Partial<Channel>, channelId: string) {

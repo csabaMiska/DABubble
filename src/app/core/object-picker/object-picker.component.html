@@ -9,30 +9,35 @@
         </div>
 
         <div *ngIf="content.type === 'channel-description'" (click)="selectUser(content.data.channelId)">
+            <span class="obiject-picker-element-header">#{{ content.data.title }}/description</span>
             <div class="object-picker-text">
                 {{ content.data.description }}
             </div>
         </div>
 
         <div *ngIf="content.type === 'channel-message'" (click)="selectUser(content.data.messageId)">
+            <span class="obiject-picker-element-header">#{{ content.data.path }}</span>
             <div class="object-picker-text">
                 {{ content.data.content }}
             </div>
         </div>
 
         <div *ngIf="content.type === 'channel-answer'" (click)="selectUser(content.data.messageId)">
+            <span class="obiject-picker-element-header">#{{ content.data.path }}</span>
             <div class="object-picker-text">
                 {{ content.data.content }}
             </div>
         </div>
 
         <div *ngIf="content.type === 'chat-message'" (click)="selectUser(content.data.messageId)">
+            <span class="obiject-picker-element-header">#{{ content.data.path }}</span>
             <div class="object-picker-text">
                 {{ content.data.content }}
             </div>
         </div>
 
         <div *ngIf="content.type === 'chat-answer'" (click)="selectUser(content.data.messageId)">
+            <span class="obiject-picker-element-header">#{{ content.data.path }}</span>
             <div class="object-picker-text">
                 {{ content.data.content }}
             </div>

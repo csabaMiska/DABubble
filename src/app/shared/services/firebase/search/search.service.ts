@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { collection, collectionGroup, Firestore, getDocs } from '@angular/fire/firestore';
-import { combineLatest, from, map, Observable, of, take } from 'rxjs';
+import { catchError, combineLatest, filter, forkJoin, from, map, Observable, of, switchMap, take, tap } from 'rxjs';
 import { FirebaseUserService } from '../user/firebase.user.service';
 import { ChannelService } from '../channel/channel.service';
 import { Channel } from '../../../interface/channal.model';
@@ -44,7 +44,7 @@ export class SearchService {
       return this.channelService.getChannels().pipe(
         take(1),
         map(channels => channels
-          .filter(channel => 
+          .filter(channel =>
             channel.members?.[currentUserUid] &&
             channel.title.toLowerCase().includes(channelSearchTerm))
           .map(channel => ({
@@ -67,10 +67,10 @@ export class SearchService {
       map(([descriptions, messages, answers]) => [...descriptions, ...messages, ...answers])
     );
   }
-  
+
   private searchInChannelDescriptions(term: string, currentUserUid: string): Observable<any[]> {
     const lowerTerm = term.toLowerCase();
-  
+
     return from(getDocs(collection(this.firestore, 'channels'))).pipe(
       map(snapshot =>
         snapshot.docs
@@ -89,10 +89,10 @@ export class SearchService {
       )
     );
   }
-  
+
   private searchInMessages(term: string, currentUserUid: string): Observable<any[]> {
     const lowerTerm = term.toLowerCase();
-  
+
     return combineLatest([
       this.searchInChannelMessages(term, currentUserUid),
       this.searchInChatMessages(term, currentUserUid)
@@ -100,37 +100,49 @@ export class SearchService {
       map(([channelMessages, chatMessages]) => [...channelMessages, ...chatMessages])
     );
   }
-  
+
   private searchInChannelMessages(term: string, currentUserUid: string): Observable<any[]> {
     const lowerTerm = term.toLowerCase();
   
     return from(getDocs(collectionGroup(this.firestore, 'messages'))).pipe(
-      map(snapshot =>
-        snapshot.docs
-          .map(doc => {
-            const data = doc.data() as Message;
-            return { ...data, id: doc.id, path: doc.ref.path };
-          })
-          .filter(message => {
-            const pathSegments = message.path.split('/');
-            if (pathSegments[0] === 'channels') {
-              const channelId = pathSegments[1];
-              return this.isUserInChannel(channelId, currentUserUid) &&
-                message.content?.toLowerCase().includes(lowerTerm);
-            }
-            return false;
-          })
-          .map(message => ({
+      switchMap(snapshot => {
+        const messages = snapshot.docs.map(doc => {
+          const data = doc.data() as Message;
+          return { ...data, id: doc.id, path: doc.ref.path };
+        });
+  
+        const checks$ = messages.map(message => {
+          const pathSegments = message.path.split('/');
+          const isChannel = pathSegments[0] === 'channels';
+          if (isChannel) {
+            const channelId = pathSegments[1];
+            return this.isUserInChannel(channelId, currentUserUid).pipe(
+              map(isInChannel => ({
+                message,
+                isInChannel
+              }))
+            );
+          }
+          return of({ message, isInChannel: false });
+        });
+  
+        return forkJoin(checks$);
+      }),
+      map(results =>
+        results
+          .filter(res => res.isInChannel && res.message.content?.toLowerCase().includes(term.toLowerCase()))
+          .map(res => ({
             type: 'channel-message',
-            data: message
+            data: res.message
           }))
       )
     );
   }
   
+
   private searchInChatMessages(term: string, currentUserUid: string): Observable<any[]> {
     const lowerTerm = term.toLowerCase();
-  
+
     return from(getDocs(collectionGroup(this.firestore, 'messages'))).pipe(
       map(snapshot =>
         snapshot.docs
@@ -154,11 +166,11 @@ export class SearchService {
       )
     );
   }
-  
-  
+
+
   private searchInAnswers(term: string, currentUserUid: string): Observable<any[]> {
     const lowerTerm = term.toLowerCase();
-  
+
     return combineLatest([
       this.searchInChannelAnswers(term, currentUserUid),
       this.searchInChatAnswers(term, currentUserUid)
@@ -166,36 +178,48 @@ export class SearchService {
       map(([channelAnswers, chatAnswers]) => [...channelAnswers, ...chatAnswers])
     );
   }
-  
+
   private searchInChannelAnswers(term: string, currentUserUid: string): Observable<any[]> {
     const lowerTerm = term.toLowerCase();
   
     return from(getDocs(collectionGroup(this.firestore, 'answers'))).pipe(
-      map(snapshot =>
-        snapshot.docs
-          .map(doc => {
-            const data = doc.data() as Message;
-            return { ...data, id: doc.id, path: doc.ref.path };
-          })
-          .filter(answer => {
-            const pathSegments = answer.path.split('/');
-            const isChannel = pathSegments[0] === 'channels';
-            const channelId = pathSegments[1];
-            return isChannel &&
-              this.isUserInChannel(channelId, currentUserUid) &&
-              answer.content?.toLowerCase().includes(lowerTerm);
-          })
-          .map(answer => ({
-            type: 'channel-answer',
-            data: answer
-          }))
-      )
+      switchMap(snapshot => {
+        const messages = snapshot.docs.map(doc => {
+          const data = doc.data() as Message;
+          return { ...data, id: doc.id, path: doc.ref.path };
+        });
+  
+        const filtered$ = messages.map(answer => {
+          const pathSegments = answer.path.split('/');
+          const isChannel = pathSegments[0] === 'channels';
+          const channelId = pathSegments[1];
+  
+          if (!isChannel || !channelId) return of(null);
+  
+          return this.isUserInChannel(channelId, currentUserUid).pipe(
+            map(isInChannel => {
+              if (isInChannel && answer.content?.toLowerCase().includes(lowerTerm)) {
+                return {
+                  type: 'channel-answer',
+                  data: answer
+                };
+              }
+              return null;
+            })
+          );
+        });
+  
+        return forkJoin(filtered$).pipe(
+          map(results => results.filter(result => result !== null))
+        );
+      })
     );
   }
   
+
   private searchInChatAnswers(term: string, currentUserUid: string): Observable<any[]> {
     const lowerTerm = term.toLowerCase();
-  
+
     return from(getDocs(collectionGroup(this.firestore, 'answers'))).pipe(
       map(snapshot =>
         snapshot.docs
@@ -218,15 +242,16 @@ export class SearchService {
       )
     );
   }
-  
+
   private isUserInChat(chatId: string, currentUserUid: string): boolean {
     const [senderUid, receiverUid] = chatId.split('_');
     return senderUid === currentUserUid || receiverUid === currentUserUid;
   }
-  
+
   private isUserInChannel(channelId: string, currentUserUid: string): Observable<boolean> {
-    return this.channelService.getChannelById(channelId).pipe(
-      map(channel => channel.members[currentUserUid] !== undefined)
+    return this.channelService.getChannelByIdToSearchValidation(channelId).pipe(
+      map(channel => !!channel.members && !!channel.members[currentUserUid])
     );
   }
+
 }

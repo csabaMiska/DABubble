@@ -2,58 +2,52 @@
 @use '@angular/material' as mat;
 
 .search-input-container {
-    @include dFlex($jc: start);
+    @include dFlex();
+    position: relative;
     width: 100%;
-    flex-grow: 1;
+    height: 70px;
 
-    .input-container {
+    .search-input {
         width: 100%;
-        max-width: 989px;
-        margin-right: 149px;
-        margin-left: 118px;
         height: 70px;
         background-color: $white;
         border-radius: 42px;
-        align-items: center;
-        text-align: center;
+        outline: none;
+        border: none;
+        font-family: "Nunito";
+        font-size: 24px;
+        font-weight: 400;
+        padding: 0 95px 0 45px;
 
-        button {
-            height: 47px;
-            width: 47px;
-            margin-right: 45px;
-            @include dFlex();
-            border-radius: 50px;
-            border: none;
-            background-color: $white;
+        &:empty::before {
+            content: attr(placeholder);
+            color: $text-gray;
+        }
+    }
 
-            mat-icon {
-                color: $text-gray;
-                font-size: 35px;
-                width: 35px;
-                height: 35px;
-            }
+    .search-input-button {
+        position: absolute;
+        right: 45px;
+        width: 40px;
+        height: 40px;
+        @include dFlex();
+        background-color: $white;
+        color: $text-gray;
 
-            &:hover {
-                cursor: pointer;
-                background-color: $bgcolor;
-
-                mat-icon {
-                    color: $purple-1;
-                }
-            }
+        &:hover {
+            color: $purple-3;
         }
 
-        @include mat.form-field-overrides((outlined-container-shape: 42px,
-                outlined-outline-color: $white,
-                outlined-focus-outline-color: $white,
-                outlined-hover-outline-color: $white,
-                outlined-input-text-placeholder-color: $text-gray,
-                container-text-size: 24px,
-                container-text-font: "Nunito",
-            ));
+        mat-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 35px;
+            @include dFlex();
+        }
     }
 }
 
-::ng-deep .mdc-text-field {
-    align-items: center !important;
+app-object-picker {
+    position: relative;
+    z-index: 3000;
 }

@@ -2,7 +2,7 @@
     <div class="add-user-dialog-input-container">
         <div class="user-tags-container" *ngIf="(selectedUsersData$ | async)!.length > 0">
             <span *ngFor="let user of selectedUsersData$ | async" class="user-tag">
-                <app-user-card [user]="user" [isSelectedUser]="true"
+                <app-user-card [user]="user.data" [isSelectedUser]="true"
                     (userRemoved)="removeUserFromSelectedUsers($event.userUid)"></app-user-card>
             </span>
         </div>

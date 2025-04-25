@@ -1,11 +1,41 @@
 <section class="object-picker-container">
     <div *ngFor="let content of contents">
-        <div *ngIf="content.type === 'User'" (click)="selectUser(content.uid)">
-            <app-user-card [user]="content"></app-user-card>
+        <div *ngIf="content.type === 'user'" (click)="selectUser(content.data.uid)">
+            <app-user-card [user]="content.data"></app-user-card>
         </div>
 
-        <div *ngIf="content.type === 'Channel'" (click)="selectUser(content.channelId)">
-            <app-channel-card [channel]="content"></app-channel-card>
+        <div *ngIf="content.type === 'channel'" (click)="selectUser(content.data.channelId)">
+            <app-channel-card [channel]="content.data"></app-channel-card>
+        </div>
+
+        <div *ngIf="content.type === 'channel-description'" (click)="selectUser(content.data.channelId)">
+            <div class="object-picker-text">
+                {{ content.data.description }}
+            </div>
+        </div>
+
+        <div *ngIf="content.type === 'channel-message'" (click)="selectUser(content.data.messageId)">
+            <div class="object-picker-text">
+                {{ content.data.content }}
+            </div>
+        </div>
+
+        <div *ngIf="content.type === 'channel-answer'" (click)="selectUser(content.data.messageId)">
+            <div class="object-picker-text">
+                {{ content.data.content }}
+            </div>
+        </div>
+
+        <div *ngIf="content.type === 'chat-message'" (click)="selectUser(content.data.messageId)">
+            <div class="object-picker-text">
+                {{ content.data.content }}
+            </div>
+        </div>
+
+        <div *ngIf="content.type === 'chat-answer'" (click)="selectUser(content.data.messageId)">
+            <div class="object-picker-text">
+                {{ content.data.content }}
+            </div>
         </div>
     </div>
 

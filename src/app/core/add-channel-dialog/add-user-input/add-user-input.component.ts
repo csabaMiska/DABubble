@@ -31,8 +31,8 @@ export class AddUserInputComponent {
   objectSelectorIsOpen: boolean = false;
   inputRects: DOMRect = {} as DOMRect;
 
-  filteredUsers: User[] = [];
-  selectedUsersData$: Observable<User[]> = of([]);
+  filteredUsers: any[] = [];
+  selectedUsersData$: Observable<any[]> = of([]);
 
   ngOnInit(): void {
     this.getSelectedUsersByIds();
@@ -42,10 +42,16 @@ export class AddUserInputComponent {
     this.selectedUsersData$ = this.channelService.selectedUsers$.pipe(
       switchMap(userIds => {
         if (userIds.length === 0) return of([]);
-        const userObservables = userIds.map(uid => this.firebaseUserService.getUserRealTime(uid));
+        const userObservables = userIds.map(uid =>
+          this.firebaseUserService.getUserRealTime(uid)
+        );
         return combineLatest(userObservables);
       }),
-      map(users => users.filter(Boolean) as User[])
+      map(users =>
+        users
+          .filter(Boolean)
+          .map(user => ({ type: 'user', data: user }))
+      )
     );
   }
 
@@ -93,7 +99,11 @@ export class AddUserInputComponent {
         user.name.toLowerCase().includes(searchTerm) &&
         user.uid !== this.creatorUid &&
         !allExcludedUids.has(user.uid)
-      );
+      )
+      .map(user => ({
+        type: 'user',
+        data: user
+      }));
     });
   }
 

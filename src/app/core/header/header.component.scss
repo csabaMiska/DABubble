@@ -68,9 +68,12 @@
 .header-input-container {
     @include dFlex();
     width: 100%;
+    padding: 0 140px 0 118px;
 
     app-header-search-bar {
         width: 100%;
+        max-width: 989px;
+        @include dFlex();
 
         @media (max-width: 1140px) {
             display: none;

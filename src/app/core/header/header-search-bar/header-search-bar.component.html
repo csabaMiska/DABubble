@@ -1,11 +1,9 @@
-<form class="search-input-container">
-    <mat-form-field class="input-container" appearance="outline">
-        <input type="text" matInput placeholder="Devspace duchsuchen" [(ngModel)]="searchTerm" (input)="onSearch()"
-            name="search">
-        <button matSuffix>
+<section class="search-input-container">
+        <input [(ngModel)]="searchTerm"  class="search-input" placeholder="Devspace durchsuchen"
+        (input)="onSearchChange()">
+        <button class="search-input-button">
             <mat-icon>search</mat-icon>
         </button>
         <app-object-picker *ngIf="objectSelectorIsOpen" [ngStyle]="calculateObjectSelectorPosition(inputRects)"
         [contents]="filteredObjects" (selectedObject)="selectedObject($event.objectId)"></app-object-picker>
-    </mat-form-field>
-</form>
+</section>

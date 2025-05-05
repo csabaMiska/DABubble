@@ -33,8 +33,10 @@ export class HeaderSearchBarComponent {
 
   searchTerm: string = '';
   filteredObjects: any[] = [];
+  isLoading!: boolean;
 
   onSearchChange() {
+    this.isLoading = true;
     const term = this.searchTerm.trim();
   
     if (term.length > 0) {
@@ -56,6 +58,8 @@ export class HeaderSearchBarComponent {
         })
       ).subscribe(([userResults, channelResult, contentResults]) => {
         this.filteredObjects = [...userResults, ...channelResult, ...contentResults];
+        console.log(this.filteredObjects);
+        this.isLoading = false;
       });
     } else {
       this.objectSelectorIsOpen = false;

@@ -1,4 +1,8 @@
 <section class="object-picker-container">
+    <div class="progress-bar-container" *ngIf="isLoading">
+        <mat-progress-bar mode="query"></mat-progress-bar>
+    </div>
+
     <div *ngFor="let content of contents">
         <div *ngIf="content.type === 'user'" (click)="selectUser(content.data.uid)">
             <app-user-card [user]="content.data"></app-user-card>
@@ -16,35 +20,35 @@
         </div>
 
         <div *ngIf="content.type === 'channel-message'" (click)="selectUser(content.data.messageId)">
-            <span class="obiject-picker-element-header">#{{ content.data.path }}</span>
+            <span class="obiject-picker-element-header">#{{ channelTitles.get(content.data.receiverId) || '...'  }}/messages/</span>
             <div class="object-picker-text">
                 {{ content.data.content }}
             </div>
         </div>
 
         <div *ngIf="content.type === 'channel-answer'" (click)="selectUser(content.data.messageId)">
-            <span class="obiject-picker-element-header">#{{ content.data.path }}</span>
+            <span class="obiject-picker-element-header">#{{ channelTitles.get(answerFromMap.get(content.data.messageId) || '') || '...' }}/messages/answers/</span>
             <div class="object-picker-text">
                 {{ content.data.content }}
             </div>
         </div>
 
         <div *ngIf="content.type === 'chat-message'" (click)="selectUser(content.data.messageId)">
-            <span class="obiject-picker-element-header">#{{ content.data.path }}</span>
+            <span class="obiject-picker-element-header">&#64;{{ userNames.get(content.data.receiverId) || '...'  }}/messages/</span>
             <div class="object-picker-text">
                 {{ content.data.content }}
             </div>
         </div>
 
         <div *ngIf="content.type === 'chat-answer'" (click)="selectUser(content.data.messageId)">
-            <span class="obiject-picker-element-header">#{{ content.data.path }}</span>
+            <span class="obiject-picker-element-header">&#64;{{ userNames.get(answerFromMap.get(content.data.messageId) || '') || '...' }}/messages/answers/</span>
             <div class="object-picker-text">
                 {{ content.data.content }}
             </div>
         </div>
     </div>
 
-    <div *ngIf="contents.length <= 0">
+    <div *ngIf="!isLoading && contents.length <= 0">
         <div class="object-picker-text">
             Kein Inhalt gefunden
         </div>

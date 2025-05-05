@@ -4,6 +4,11 @@
         <button class="search-input-button">
             <mat-icon>search</mat-icon>
         </button>
-        <app-object-picker *ngIf="objectSelectorIsOpen" [ngStyle]="calculateObjectSelectorPosition(inputRects)"
-        [contents]="filteredObjects" (selectedObject)="selectedObject($event.objectId)"></app-object-picker>
+        <app-object-picker 
+            *ngIf="objectSelectorIsOpen" 
+            [ngStyle]="calculateObjectSelectorPosition(inputRects)"
+            [contents]="filteredObjects"
+            [isLoading]="isLoading"  
+            (selectedObject)="selectedObject($event.objectId)">
+        </app-object-picker>
 </section>

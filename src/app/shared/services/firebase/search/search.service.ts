@@ -103,14 +103,14 @@ export class SearchService {
 
   private searchInChannelMessages(term: string, currentUserUid: string): Observable<any[]> {
     const lowerTerm = term.toLowerCase();
-  
+
     return from(getDocs(collectionGroup(this.firestore, 'messages'))).pipe(
       switchMap(snapshot => {
         const messages = snapshot.docs.map(doc => {
           const data = doc.data() as Message;
           return { ...data, id: doc.id, path: doc.ref.path };
         });
-  
+
         const checks$ = messages.map(message => {
           const pathSegments = message.path.split('/');
           const isChannel = pathSegments[0] === 'channels';
@@ -125,12 +125,12 @@ export class SearchService {
           }
           return of({ message, isInChannel: false });
         });
-  
+
         return forkJoin(checks$);
       }),
       map(results =>
         results
-          .filter(res => res.isInChannel && res.message.content?.toLowerCase().includes(term.toLowerCase()))
+          .filter(res => res.isInChannel && res.message.content?.toLowerCase().includes(lowerTerm))
           .map(res => ({
             type: 'channel-message',
             data: res.message
@@ -138,36 +138,36 @@ export class SearchService {
       )
     );
   }
-  
 
   private searchInChatMessages(term: string, currentUserUid: string): Observable<any[]> {
     const lowerTerm = term.toLowerCase();
-
+  
     return from(getDocs(collectionGroup(this.firestore, 'messages'))).pipe(
-      map(snapshot =>
-        snapshot.docs
+      map(snapshot => {
+        return snapshot.docs
           .map(doc => {
             const data = doc.data() as Message;
             return { ...data, id: doc.id, path: doc.ref.path };
           })
           .filter(message => {
             const pathSegments = message.path.split('/');
-            if (pathSegments[0] === 'chats') {
-              const chatId = pathSegments[1];
-              return this.isUserInChat(chatId, currentUserUid) &&
-                message.content?.toLowerCase().includes(lowerTerm);
-            }
-            return false;
+            const isChat = pathSegments[0] === 'chats';
+            const chatId = pathSegments[1];
+  
+            return (
+              isChat &&
+              this.isUserInChat(chatId, currentUserUid) &&
+              message.content?.toLowerCase().includes(lowerTerm)
+            );
           })
           .map(message => ({
             type: 'chat-message',
             data: message
-          }))
-      )
+          }));
+      })
     );
   }
-
-
+   
   private searchInAnswers(term: string, currentUserUid: string): Observable<any[]> {
     const lowerTerm = term.toLowerCase();
 
@@ -181,21 +181,21 @@ export class SearchService {
 
   private searchInChannelAnswers(term: string, currentUserUid: string): Observable<any[]> {
     const lowerTerm = term.toLowerCase();
-  
+
     return from(getDocs(collectionGroup(this.firestore, 'answers'))).pipe(
       switchMap(snapshot => {
         const messages = snapshot.docs.map(doc => {
           const data = doc.data() as Message;
           return { ...data, id: doc.id, path: doc.ref.path };
         });
-  
+
         const filtered$ = messages.map(answer => {
           const pathSegments = answer.path.split('/');
           const isChannel = pathSegments[0] === 'channels';
           const channelId = pathSegments[1];
-  
+
           if (!isChannel || !channelId) return of(null);
-  
+
           return this.isUserInChannel(channelId, currentUserUid).pipe(
             map(isInChannel => {
               if (isInChannel && answer.content?.toLowerCase().includes(lowerTerm)) {
@@ -208,21 +208,20 @@ export class SearchService {
             })
           );
         });
-  
+
         return forkJoin(filtered$).pipe(
           map(results => results.filter(result => result !== null))
         );
       })
     );
   }
-  
 
   private searchInChatAnswers(term: string, currentUserUid: string): Observable<any[]> {
     const lowerTerm = term.toLowerCase();
-
+  
     return from(getDocs(collectionGroup(this.firestore, 'answers'))).pipe(
-      map(snapshot =>
-        snapshot.docs
+      map(snapshot => {
+        return snapshot.docs
           .map(doc => {
             const data = doc.data() as Message;
             return { ...data, id: doc.id, path: doc.ref.path };
@@ -231,18 +230,21 @@ export class SearchService {
             const pathSegments = answer.path.split('/');
             const isChat = pathSegments[0] === 'chats';
             const chatId = pathSegments[1];
-            return isChat &&
+  
+            return (
+              isChat &&
               this.isUserInChat(chatId, currentUserUid) &&
-              answer.content?.toLowerCase().includes(lowerTerm);
+              answer.content?.toLowerCase().includes(lowerTerm)
+            );
           })
           .map(answer => ({
             type: 'chat-answer',
             data: answer
-          }))
-      )
+          }));
+      })
     );
   }
-
+  
   private isUserInChat(chatId: string, currentUserUid: string): boolean {
     const [senderUid, receiverUid] = chatId.split('_');
     return senderUid === currentUserUid || receiverUid === currentUserUid;

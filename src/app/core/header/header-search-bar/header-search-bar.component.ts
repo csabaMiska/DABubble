@@ -58,7 +58,6 @@ export class HeaderSearchBarComponent {
         })
       ).subscribe(([userResults, channelResult, contentResults]) => {
         this.filteredObjects = [...userResults, ...channelResult, ...contentResults];
-        console.log(this.filteredObjects);
         this.isLoading = false;
       });
     } else {

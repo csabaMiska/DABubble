@@ -44,12 +44,19 @@ export class ObjectPickerComponent implements OnChanges {
         const answerFrom = pathSegments?.[1];
         const messageId = content.data?.messageId;
         if (messageId && answerFrom) {
-          this.answerFromMap.set(messageId, answerFrom);
           if (answerType === 'channels') {
             this.getChannelTitles(answerFrom);
+            this.answerFromMap.set(messageId, answerFrom);
           } else if (answerType === 'chats') {
-            console.log(answerFrom); // ez az ertek a chatId adja vissza nem a receivert azert nem add vissza usert.
-            this.getUserNames(answerFrom);
+            const pathSegments = answerFrom.split('_');
+            let receiverId: string = '';
+            if (pathSegments?.[0] === content.data.senderUid) {
+              receiverId = pathSegments?.[1];
+            } else {
+              receiverId = pathSegments?.[0];
+            }
+            this.answerFromMap.set(messageId, receiverId);
+            this.getUserNames(receiverId);
           }
         }
       }

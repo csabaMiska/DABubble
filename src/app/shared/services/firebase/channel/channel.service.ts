@@ -78,7 +78,7 @@ export class ChannelService {
     const channelRef = doc(this.collectionChannelRef, `${channelId}`);
     return from(setDoc(channelRef, channel)
       .then(() => {
-        return updateDoc(channelRef, { channalId: channelId });
+        return updateDoc(channelRef, { channelId: channelId });
       })
       .catch((error) => {
         console.error("Error creating new Channel:", error);

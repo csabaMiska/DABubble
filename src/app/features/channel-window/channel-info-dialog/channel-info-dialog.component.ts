@@ -165,7 +165,7 @@ export class ChannelInfoDialogComponent implements OnInit {
   };
 
   openProfileDialog(userUid: string) {
-    this.messageService.setUserIdOrChannelId(userUid);
+    this.channelService.setUserIdOrChannelId(userUid);
     const profilePopupDialogRef = this.dialog.open(ProfilePopupComponent, {
       autoFocus: false,
       hasBackdrop: true,

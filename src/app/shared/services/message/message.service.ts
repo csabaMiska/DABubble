@@ -10,8 +10,6 @@ export interface MessageInfo {
   providedIn: 'root'
 })
 export class MessageService {
-  private userIdOrChannelIdSubject = new BehaviorSubject<string>('');
-  userIdOrChannelId$ = this.userIdOrChannelIdSubject.asObservable();
   private messageEditModeSubject = new BehaviorSubject<string | null>(null);
   messageEditMode$ = this.messageEditModeSubject.asObservable();
   private deleteMessageIdSubject = new BehaviorSubject<string | null>(null);
@@ -20,10 +18,6 @@ export class MessageService {
   messageIsHoveredId$ = this.messageIsHoveredIdSubject.asObservable();
   private messageInfoIdSubject = new BehaviorSubject<MessageInfo | null>(null);
   messageInfoId$ = this.messageInfoIdSubject.asObservable();
-
-  setUserIdOrChannelId(uid: string) {
-    this.userIdOrChannelIdSubject.next(uid);
-  }
 
   setMessageEditMode(messageId: string | null) {
     this.messageEditModeSubject.next(messageId);

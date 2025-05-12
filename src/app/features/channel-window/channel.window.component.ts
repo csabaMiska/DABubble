@@ -49,7 +49,7 @@ export class ChannelWindowComponent implements OnInit {
   }
 
   getChannelData() {
-    this.channel$ = this.messageService.userIdOrChannelId$.pipe(
+    this.channel$ = this.channelService.userIdOrChannelId$.pipe(
       switchMap(channelId => this.channelService.getChannelById(channelId))
     );
   }
@@ -79,7 +79,7 @@ export class ChannelWindowComponent implements OnInit {
   }
 
   getChatData() {
-    this.chatData$ = this.messageService.userIdOrChannelId$
+    this.chatData$ = this.channelService.userIdOrChannelId$
       .pipe(
         switchMap((channalId) => {
           if (channalId) {
@@ -98,7 +98,7 @@ export class ChannelWindowComponent implements OnInit {
   addMessage(message: string) {
     combineLatest([
       this.firebaseAuthService.getCurrentUser(),
-      this.messageService.userIdOrChannelId$
+      this.channelService.userIdOrChannelId$
     ])
       .pipe(take(1))
       .subscribe(([user, channalId]) => {

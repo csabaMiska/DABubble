@@ -77,7 +77,7 @@ export class ChannelsListComponent implements OnInit {
   }
 
   openChannel(channalId: string, type: string) {
-    this.messageService.setUserIdOrChannelId(channalId);
+    this.channelService.setUserIdOrChannelId(channalId);
     this.messageService.setMessageInfoId(channalId, type);
     this.openChannelContainer();
   }

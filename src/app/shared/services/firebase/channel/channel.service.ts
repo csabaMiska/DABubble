@@ -12,8 +12,15 @@ export class ChannelService {
   private firestore = inject(Firestore);
   private collectionChannelRef = collection(this.firestore, 'channels');
 
+  private userIdOrChannelIdSubject = new BehaviorSubject<string>('');
+  userIdOrChannelId$ = this.userIdOrChannelIdSubject.asObservable();
+
   selectedUsers$ = new BehaviorSubject<string[]>([]);
   channelMembers$!: Observable<User[]>;
+
+  setUserIdOrChannelId(userIdOrChannelId: string) {
+    this.userIdOrChannelIdSubject.next(userIdOrChannelId);
+  }
 
   getChannels(): Observable<Channel[]> {
     return new Observable<Channel[]>((observer) => {

@@ -12,6 +12,7 @@ import { MessageEditComponent } from '../../message-edit/message-edit.component'
 import { MessageService } from '../../../shared/services/message/message.service';
 import { EmojiService } from '../../../shared/services/emoji/emoji-service/emoji-service';
 import { AnswerService } from '../../../shared/services/firebase/answer/answer.service';
+import { ChannelService } from '../../../shared/services/firebase/channel/channel.service';
 
 
 @Component({
@@ -33,6 +34,7 @@ export class ChatComponent implements OnInit {
   private chatService = inject(ChatService);
   private emojiService = inject(EmojiService);
   private messageService = inject(MessageService);
+  private channelService = inject(ChannelService);
   private answerService = inject(AnswerService);
 
   messagesWithUserData$!: Observable<Array<Message & { senderData?: any }>>;
@@ -54,7 +56,7 @@ export class ChatComponent implements OnInit {
   getMessagesDate() {
     this.messagesWithUserData$ = combineLatest([
       this.getCurrentUserUid(),
-      this.messageService.userIdOrChannelId$
+      this.channelService.userIdOrChannelId$
     ]).pipe(
       switchMap(([senderId, receiverId]) => {
         if (senderId && receiverId) {
@@ -170,7 +172,7 @@ export class ChatComponent implements OnInit {
   updateMessage(event: { messageId: string; message: string }) {
     combineLatest([
       this.firebaseAuthService.getCurrentUser(),
-      this.messageService.userIdOrChannelId$
+      this.channelService.userIdOrChannelId$
     ])
       .pipe(take(1))
       .subscribe(([user, receiverId]) => {
@@ -186,7 +188,7 @@ export class ChatComponent implements OnInit {
     combineLatest([
       this.messageService.deleteMessageId$,
       this.firebaseAuthService.getCurrentUser(),
-      this.messageService.userIdOrChannelId$
+      this.channelService.userIdOrChannelId$
     ])
     .pipe(
       filter(([messageId, user, receiverId]) => !!messageId && !!user && !!receiverId),

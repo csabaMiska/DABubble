@@ -57,7 +57,7 @@ export class ChannelComponent implements OnInit {
   getMessagesDate() {
     this.messagesWithUserData$ = combineLatest([
       this.getCurrentUserUid(),
-      this.messageService.userIdOrChannelId$
+      this.channelService.userIdOrChannelId$
     ]).pipe(
       switchMap(([senderId, channalId]) => {
         if (senderId && channalId) {
@@ -121,7 +121,7 @@ export class ChannelComponent implements OnInit {
   getReactions() {
     combineLatest([
       this.messagesWithUserData$,
-      this.messageService.userIdOrChannelId$
+      this.channelService.userIdOrChannelId$
     ]).subscribe(([messages, channalId]) => {
       if (!messages || messages.length === 0) return;
       const reactionsMap: { [key: string]: any } = {};
@@ -141,7 +141,7 @@ export class ChannelComponent implements OnInit {
   getAnswers() {
     combineLatest([
       this.messagesWithUserData$,
-      this.messageService.userIdOrChannelId$
+      this.channelService.userIdOrChannelId$
     ]).subscribe(([messages, channalId]) => {
       if (!messages || messages.length === 0) return;
       const answersMap: { [key: string]: any } = {};
@@ -168,7 +168,7 @@ export class ChannelComponent implements OnInit {
   }
 
   updateMessage(event: { messageId: string; message: string }) {
-      this.messageService.userIdOrChannelId$
+      this.channelService.userIdOrChannelId$
       .pipe(take(1))
       .subscribe((channalId) => {
         if (channalId) {
@@ -182,7 +182,7 @@ export class ChannelComponent implements OnInit {
   deleteMessage() {
     combineLatest([
       this.messageService.deleteMessageId$,
-      this.messageService.userIdOrChannelId$
+      this.channelService.userIdOrChannelId$
     ])
       .pipe(
         filter(([messageId, channalId]) => !!messageId && !!channalId),

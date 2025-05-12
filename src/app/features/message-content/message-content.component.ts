@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MessageService } from '../../shared/services/message/message.service';
 import { EmojiService } from '../../shared/services/emoji/emoji-service/emoji-service';
 import { AnswerService } from '../../shared/services/firebase/answer/answer.service';
+import { ChannelService } from '../../shared/services/firebase/channel/channel.service';
 
 @Component({
   selector: 'app-message-content',
@@ -33,6 +34,7 @@ export class MessageContentComponent implements OnInit {
 
   private firebaseAuthService = inject(FirebaseAuthService);
   private chatService = inject(ChatService);
+  private channelService = inject(ChannelService);
   private elementRef = inject(ElementRef);
   private messageService = inject(MessageService);
   private emojiService = inject(EmojiService);
@@ -110,7 +112,7 @@ export class MessageContentComponent implements OnInit {
   addEmojiSelection(selectedEmoji: Emoji, messageId: string, messageFrom: string) {
     this.getCurrentUserUid().pipe(
       switchMap(senderUid => {
-        return this.messageService.userIdOrChannelId$.pipe(
+        return this.channelService.userIdOrChannelId$.pipe(
           take(1),
           switchMap(emojiReceiver => {
             if (senderUid) {
@@ -156,7 +158,7 @@ export class MessageContentComponent implements OnInit {
     this.getCurrentUserUid().pipe(
       take(1),
       switchMap(senderUid => {
-        return this.messageService.userIdOrChannelId$.pipe(
+        return this.channelService.userIdOrChannelId$.pipe(
           take(1),
           switchMap(emojiReceiver => {
             if (senderUid) {

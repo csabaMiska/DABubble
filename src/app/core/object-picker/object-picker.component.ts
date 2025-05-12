@@ -23,7 +23,7 @@ import { FirebaseUserService } from '../../shared/services/firebase/user/firebas
 export class ObjectPickerComponent implements OnChanges {
   @Input() isLoading!: boolean;
   @Input() contents!: any[];
-  @Output() selectedObject = new EventEmitter<{ objectId: string }>();
+  @Output() selectedObject = new EventEmitter<{ objectId: string, objectType: string }>();
 
   private channelService = inject(ChannelService);
   private firebaseUserService = inject(FirebaseUserService);
@@ -83,7 +83,7 @@ export class ObjectPickerComponent implements OnChanges {
     }
   }
 
-  selectUser(objectId: string) {
-    this.selectedObject.emit({ objectId });
+  selectObject(objectId: string, objectType: string) {
+    this.selectedObject.emit({ objectId, objectType });
   }
 }

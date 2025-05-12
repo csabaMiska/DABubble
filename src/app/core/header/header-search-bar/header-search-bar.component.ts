@@ -66,14 +66,18 @@ export class HeaderSearchBarComponent {
     }
   }
   
-  selectedObject(objectId: string) {
-    console.log(objectId);
+  selectedObject(objectId: string, objectType: string) {
+    console.log(objectId, objectType);
+    
+    this.resetSearch();
+  }
+
+  resetSearch() { 
     if (this.searchTerm) {
       this.searchTerm = '';
     }
     this.filteredObjects = [];
     this.objectSelectorIsOpen = false;
-
   }
 
   calculateObjectSelectorPosition(inputRect: DOMRect) {

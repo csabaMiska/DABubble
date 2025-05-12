@@ -62,7 +62,7 @@ export class AnswerWindowComponent implements OnInit {
   onMessageReceived(answer: string) {
     combineLatest([
       this.firebaseAuthService.getCurrentUser(),
-      this.messageService.userIdOrChannelId$,
+      this.channelService.userIdOrChannelId$,
       this.answerService.messageAnswares$
     ])
       .pipe(take(1))

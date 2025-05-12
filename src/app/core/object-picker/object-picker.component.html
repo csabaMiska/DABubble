@@ -4,43 +4,43 @@
     </div>
 
     <div *ngFor="let content of contents">
-        <div *ngIf="content.type === 'user'" (click)="selectUser(content.data.uid)">
+        <div *ngIf="content.type === 'user'" (click)="selectObject(content.data.uid, content.date.type)">
             <app-user-card [user]="content.data"></app-user-card>
         </div>
 
-        <div *ngIf="content.type === 'channel'" (click)="selectUser(content.data.channelId)">
+        <div *ngIf="content.type === 'channel'" (click)="selectObject(content.data.channelId, content.date.type)">
             <app-channel-card [channel]="content.data"></app-channel-card>
         </div>
 
-        <div *ngIf="content.type === 'channel-description'" (click)="selectUser(content.data.channelId)">
+        <div *ngIf="content.type === 'channel-description'" (click)="selectObject(content.data.channelId, content.date.type)">
             <span class="obiject-picker-element-header">#{{ content.data.title }}/description</span>
             <div class="object-picker-text">
                 {{ content.data.description }}
             </div>
         </div>
 
-        <div *ngIf="content.type === 'channel-message'" (click)="selectUser(content.data.messageId)">
+        <div *ngIf="content.type === 'channel-message'" (click)="selectObject(content.data.messageId, content.date.type)">
             <span class="obiject-picker-element-header">#{{ channelTitles.get(content.data.receiverId) || '...'  }}/messages/</span>
             <div class="object-picker-text">
                 {{ content.data.content }}
             </div>
         </div>
 
-        <div *ngIf="content.type === 'channel-answer'" (click)="selectUser(content.data.messageId)">
+        <div *ngIf="content.type === 'channel-answer'" (click)="selectObject(content.data.messageId, content.date.type)">
             <span class="obiject-picker-element-header">#{{ channelTitles.get(answerFromMap.get(content.data.messageId) || '') || '...' }}/messages/answers/</span>
             <div class="object-picker-text">
                 {{ content.data.content }}
             </div>
         </div>
 
-        <div *ngIf="content.type === 'chat-message'" (click)="selectUser(content.data.messageId)">
+        <div *ngIf="content.type === 'chat-message'" (click)="selectObject(content.data.messageId, content.date.type)">
             <span class="obiject-picker-element-header">&#64;{{ userNames.get(content.data.receiverId) || '...'  }}/messages/</span>
             <div class="object-picker-text">
                 {{ content.data.content }}
             </div>
         </div>
 
-        <div *ngIf="content.type === 'chat-answer'" (click)="selectUser(content.data.messageId)">
+        <div *ngIf="content.type === 'chat-answer'" (click)="selectObject(content.data.messageId, content.date.type)">
             <span class="obiject-picker-element-header">&#64;{{ userNames.get(answerFromMap.get(content.data.messageId) || '') || '...' }}/messages/answers/</span>
             <div class="object-picker-text">
                 {{ content.data.content }}

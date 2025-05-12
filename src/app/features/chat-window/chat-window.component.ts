@@ -13,6 +13,8 @@ import { ChatComponent } from './chat/chat.component';
 import { MessageInputFieldComponent } from '../message-input-field/message-input-field.component';
 import { MessageInfoComponent } from '../message-info/message-info.component';
 import { MessageService } from '../../shared/services/message/message.service';
+import { ChannelService } from '../../shared/services/firebase/channel/channel.service';
+import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
 
 @Component({
   selector: 'app-chat-window',
@@ -24,6 +26,7 @@ import { MessageService } from '../../shared/services/message/message.service';
     MessageInputFieldComponent,
     MessageInfoComponent
   ],
+  providers: [WindowWidthDirective],
   templateUrl: './chat-window.component.html',
   styleUrl: './chat-window.component.scss'
 })
@@ -31,7 +34,8 @@ export class ChatWindowComponent implements OnInit {
   private firebaseUserService = inject(FirebaseUserService);
   private firebaseAuthService = inject(FirebaseAuthService);
   private chatService = inject(ChatService);
-  private messageService = inject(MessageService);
+  private channelService = inject(ChannelService);
+  private windowWidthDirective = inject(WindowWidthDirective);
 
   readonly dialog = inject(MatDialog);
   private profilePopupDialogRef?: MatDialogRef<ProfilePopupComponent>;
@@ -46,15 +50,15 @@ export class ChatWindowComponent implements OnInit {
   }
 
   getUserData() {
-    this.user$ = this.messageService.userIdOrChannelId$.pipe(
+    this.user$ = this.channelService.userIdOrChannelId$.pipe(
       switchMap(uid => this.firebaseUserService.getUserRealTime(uid))
     );
   }
 
   getChatData() {
     this.chatData$ = combineLatest([
-      this.firebaseAuthService.getCurrentUser(),                         
-      this.messageService.userIdOrChannelId$
+      this.firebaseAuthService.getCurrentUser(),
+      this.channelService.userIdOrChannelId$
     ]).pipe(
       switchMap(([currentUser, receiverId]) => {
         const senderId = currentUser?.uid;
@@ -66,7 +70,7 @@ export class ChatWindowComponent implements OnInit {
       })
     );
   }
-  
+
 
   onMessageReceived(message: string) {
     this.addMessage(message);
@@ -75,7 +79,7 @@ export class ChatWindowComponent implements OnInit {
   addMessage(message: string): void {
     combineLatest([
       this.firebaseAuthService.getCurrentUser(),
-      this.messageService.userIdOrChannelId$
+      this.channelService.userIdOrChannelId$
     ])
       .pipe(take(1))
       .subscribe(([user, receiverId]) => {
@@ -95,11 +99,17 @@ export class ChatWindowComponent implements OnInit {
   }
 
   openProfileDialog(uid: string) {
-    this.messageService.setUserIdOrChannelId(uid);
-    this.profilePopupDialogRef = this.dialog.open(ProfilePopupComponent, {
-      autoFocus: false,
-      hasBackdrop: true,
-      data: this.showUserProfile
+    this.firebaseUserService.setUserIdToShowProfile(uid);
+    this.firebaseAuthService.getCurrentUser().pipe(
+      take(1)
+    ).subscribe(currentUser => {
+      const isOwnProfile = currentUser?.uid === uid;
+      this.profilePopupDialogRef = this.dialog.open(ProfilePopupComponent, {
+        position: isOwnProfile ? { top: '126px', right: '20px' } : undefined,
+        data: isOwnProfile ? undefined : this.showUserProfile,
+        autoFocus: false,
+        hasBackdrop: true,
+      });
     });
   }
 }

@@ -12,12 +12,14 @@ export class FirebaseUserService {
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   private usersSubject = new BehaviorSubject<User[]>([]);
+  private userIdToShowProfileSubject = new BehaviorSubject<string>('');
+  userIdToShowProfile$ = this.userIdToShowProfileSubject.asObservable();
 
   constructor() {
     this.firebaseAuthService.getCurrentUser().subscribe(user => {
       if (user) {
         this.getUserRealTime(user.uid).subscribe(userData => {
-          this.setCurrentUser(userData ?? null); 
+          this.setCurrentUser(userData ?? null);
         });
       } else {
         this.setCurrentUser(null);
@@ -25,10 +27,18 @@ export class FirebaseUserService {
     });
   }
 
+  setUserIdToShowProfile(uid: string) {
+    this.userIdToShowProfileSubject.next(uid);
+  }
+
+  removeUserIdToShowProfile() {
+    this.userIdToShowProfileSubject.next('');
+  }
+
   getCurrentUser(): Observable<User | null> {
     return this.currentUserSubject.asObservable();
   }
-  
+
   setCurrentUser(user: User | null): void {
     this.currentUserSubject.next(user);
   }
@@ -38,7 +48,7 @@ export class FirebaseUserService {
     return new Observable<User>((observer) => {
       const unsubscribe = onSnapshot(userDoc, (snapshot) => {
         if (snapshot.exists()) {
-          observer.next(snapshot.data() as User); 
+          observer.next(snapshot.data() as User);
         }
       });
       return () => unsubscribe();

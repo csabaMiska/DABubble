@@ -9,6 +9,6 @@
             [ngStyle]="calculateObjectSelectorPosition(inputRects)"
             [contents]="filteredObjects"
             [isLoading]="isLoading"  
-            (selectedObject)="selectedObject($event.objectId)">
+            (selectedObject)="selectedObject($event.objectId, $event.objectType)">
         </app-object-picker>
 </section>

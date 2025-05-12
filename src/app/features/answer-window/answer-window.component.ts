@@ -99,10 +99,12 @@ export class AnswerWindowComponent implements OnInit {
   }
 
 
-  closeAnswerWindow() {
+  closeAnswerWindow(messageInfoType: 'User' | 'Channel' | null) {
     this.dashboardService.closeAnswerWindow();
-    if (this.windowWidthDirective.tabletViewOn) {
+    if (this.windowWidthDirective.tabletViewOn && messageInfoType === 'Channel') {
       this.dashboardService.openChannelWindow();
+    } else {
+      this.dashboardService.openChatWindow();
     }
   }
 }

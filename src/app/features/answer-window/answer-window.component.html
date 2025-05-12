@@ -10,10 +10,10 @@
                     <h3>Thread</h3>
                     <span># {{ messageInfo.title }}</span>
                 </div>
-            </ng-container>
-            <button (click)="closeAnswerWindow()">
+            <button (click)="closeAnswerWindow(messageInfoType)">
                 <mat-icon>close</mat-icon>
             </button>
+        </ng-container>
         </div>
         <div class="answer-window-message-container">
             <div class="answer-window-message-content">

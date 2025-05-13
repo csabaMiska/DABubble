@@ -14,6 +14,7 @@ import { MessageService } from '../../../shared/services/message/message.service
 import { WindowWidthDirective } from '../../../shared/directives/window-width/window-width.directive';
 import { MatDialog } from '@angular/material/dialog';
 import { ChannelInfoDialogComponent } from '../../../features/channel-window/channel-info-dialog/channel-info-dialog.component';
+import { ScrollService } from '../../../shared/services/scroll-service/scroll-service';
 
 @Component({
   selector: 'app-header-search-bar',
@@ -37,6 +38,7 @@ export class HeaderSearchBarComponent {
   private messageService = inject(MessageService);
   private dashboardService = inject(DashboardService);
   private windowWidthDirective = inject(WindowWidthDirective);
+  private scrollService = inject(ScrollService);
   readonly dialog = inject(MatDialog);
 
   editableContentEmpty: boolean = true;
@@ -86,12 +88,12 @@ export class HeaderSearchBarComponent {
     } else if (objectType === 'channel-description') {
       this.openChatOrChannelWindow(objectId, 'Channel');
       this.openChannelInfoDialog(objectId);
-    } else if (objectType === 'channel-message') { 
+    } else if (objectType === 'channel-message') {
       const pathSegments = objectId.split('/');
       const channelId = pathSegments?.[1];
-      const messageId = pathSegments?.[2];
+      const messageId = pathSegments?.[3];
+      this.scrollService.setScrollToMessageId(messageId);
       this.openChatOrChannelWindow(channelId, 'Channel');
-      this.scrollToMessage(messageId);
     }
 
     this.resetSearch();
@@ -108,14 +110,14 @@ export class HeaderSearchBarComponent {
   }
 
   openChannelInfoDialog(channelId: string) {
-      const dialogRef = this.dialog.open(ChannelInfoDialogComponent, {
-        width: '100vw',
-        maxWidth: '872px',
-        height: '100vh',
-        maxHeight: '616px',
-        data:{ channelId },
-      });
-    }
+    const dialogRef = this.dialog.open(ChannelInfoDialogComponent, {
+      width: '100vw',
+      maxWidth: '872px',
+      height: '100vh',
+      maxHeight: '616px',
+      data: { channelId },
+    });
+  }
 
   resetSearch() {
     if (this.searchTerm) {
@@ -141,15 +143,6 @@ export class HeaderSearchBarComponent {
     if (this.windowWidthDirective.mobilViewOn) {
       this.dashboardService.toggleSideNav();
     }
-  }
-
-  scrollToMessage(messageId: string): void {
-    setTimeout(() => {
-      const element = document.getElementById('message-' + messageId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 1000);
   }
 
   calculateObjectSelectorPosition(inputRect: DOMRect) {

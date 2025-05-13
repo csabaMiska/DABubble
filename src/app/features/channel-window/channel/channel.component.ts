@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, Input, OnInit } from '@angular/core';
 import { combineLatest, filter, map, Observable, of, switchMap, take } from 'rxjs';
 import { Message } from '../../../shared/interface/message.model';
 import { FirebaseAuthService } from '../../../shared/services/firebase/auth/firebase.auth.service';
@@ -11,6 +11,8 @@ import { MessageContentComponent } from '../../message-content/message-content.c
 import { MessageEditComponent } from '../../message-edit/message-edit.component';
 import { EmojiService } from '../../../shared/services/emoji/emoji-service/emoji-service';
 import { AnswerService } from '../../../shared/services/firebase/answer/answer.service';
+import { ScrollService } from '../../../shared/services/scroll-service/scroll-service';
+import { set } from 'firebase/database';
 
 @Component({
   selector: 'app-channel',
@@ -24,13 +26,16 @@ import { AnswerService } from '../../../shared/services/firebase/answer/answer.s
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss'
 })
-export class ChannelComponent implements OnInit {
+export class ChannelComponent implements OnInit, AfterViewInit {
   private firebaseAuthService = inject(FirebaseAuthService);
   private firebaseUserService = inject(FirebaseUserService);
   private messageService = inject(MessageService);
   private channelService = inject(ChannelService);
   private emojiService = inject(EmojiService);
   private answerService = inject(AnswerService);
+  private scrollService = inject(ScrollService);
+
+  @Input() scrollContainer!: ElementRef<HTMLDivElement>;
 
   messagesWithUserData$!: Observable<Array<Message & { senderData?: any }>>;
   messagesWithUserDataArray: Array<Message & { senderData?: any }> = [];
@@ -46,6 +51,13 @@ export class ChannelComponent implements OnInit {
     this.getAnswers();
     this.checkMessageEditMode();
     this.deleteMessage();
+    this.scrollToMessage();
+  }
+
+  ngAfterViewInit() {
+    this.messagesWithUserData$.pipe(take(1)).subscribe(() => {
+      this.scrollService.scrollToBottom(this.scrollContainer);
+    });
   }
 
   getCurrentUserUid() {
@@ -168,7 +180,7 @@ export class ChannelComponent implements OnInit {
   }
 
   updateMessage(event: { messageId: string; message: string }) {
-      this.channelService.userIdOrChannelId$
+    this.channelService.userIdOrChannelId$
       .pipe(take(1))
       .subscribe((channalId) => {
         if (channalId) {
@@ -197,5 +209,16 @@ export class ChannelComponent implements OnInit {
 
   trackByMessageId(index: number, message: Message): string {
     return message.messageId;
+  }
+
+  scrollToMessage() {
+    this.scrollService.scrollToMessage$
+      .pipe(take(1))
+      .subscribe(messageId => {
+        if (messageId) {
+          console.log('scrollToMessageId:', messageId);
+          this.scrollService.scrollToMessage(messageId, this.scrollContainer);
+        }
+      });
   }
 }

@@ -1,6 +1,6 @@
 <section class="channel-container" *ngIf="(messagesWithUserData$ | async) as messages">
     <div class="channel-content" *ngFor="let message of messages; trackBy: trackByMessageId; let i = index; let isLast = last">
-        <div [id]="isLast ? 'lastMessage' : null">
+        <div [id]="'message-' + message.messageId">
             <app-message-timestamp *ngIf="shouldShowTimestamp(message, i)"
                 [timestamp]="message.timestamp"></app-message-timestamp>
             <app-message-content *ngIf="!messageEditMode[message.messageId]" [message]="message"

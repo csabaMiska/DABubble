@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { combineLatest, map, Observable, of, switchMap, take } from 'rxjs';
@@ -35,6 +35,7 @@ export class ChannelWindowComponent implements OnInit {
   private firebaseUserService = inject(FirebaseUserService);
   private firebaseAuthService = inject(FirebaseAuthService);
   readonly dialog = inject(MatDialog);
+  @ViewChild('scrollContainer') scrollContainerRef!: ElementRef<HTMLDivElement>;
 
   channel$!: Observable<Channel | undefined>;
   channelMembers$!: Observable<User[]>;

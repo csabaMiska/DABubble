@@ -26,7 +26,7 @@ import { set } from 'firebase/database';
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss'
 })
-export class ChannelComponent implements OnInit, AfterViewInit {
+export class ChannelComponent implements OnInit {
   private firebaseAuthService = inject(FirebaseAuthService);
   private firebaseUserService = inject(FirebaseUserService);
   private messageService = inject(MessageService);
@@ -52,12 +52,6 @@ export class ChannelComponent implements OnInit, AfterViewInit {
     this.checkMessageEditMode();
     this.deleteMessage();
     this.scrollToMessage();
-  }
-
-  ngAfterViewInit() {
-    this.messagesWithUserData$.pipe(take(1)).subscribe(() => {
-      this.scrollService.scrollToBottom(this.scrollContainer);
-    });
   }
 
   getCurrentUserUid() {
@@ -216,7 +210,6 @@ export class ChannelComponent implements OnInit, AfterViewInit {
       .pipe(take(1))
       .subscribe(messageId => {
         if (messageId) {
-          console.log('scrollToMessageId:', messageId);
           this.scrollService.scrollToMessage(messageId, this.scrollContainer);
         }
       });

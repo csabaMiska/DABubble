@@ -22,19 +22,14 @@ export class ScrollService {
         const offset = targetTop - containerTop + container.scrollTop;
 
         container.scrollTo({ top: offset, behavior: 'smooth' });
-      } else {
-        console.warn(`Nem található DOM elem: message-${messageId}`);
-        return;
       }
     }, 100);
   }
 
   scrollToBottom(scrollContainer: ElementRef<HTMLDivElement>) {
-    setTimeout(() => {
-      const container = scrollContainer?.nativeElement;
-      if (container) {
-        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
-      }
-    }, 0); // vagy 100-200 ms, ha aszinkron betöltés lassú
+    const container = scrollContainer?.nativeElement;
+    if (container) {
+      container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    }
   }
 }

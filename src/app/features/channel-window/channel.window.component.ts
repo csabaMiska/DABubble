@@ -15,6 +15,7 @@ import { MessageInfoComponent } from '../message-info/message-info.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ChannelInfoDialogComponent } from './channel-info-dialog/channel-info-dialog.component';
 import { ChannelUsersListDialogComponent } from './channel-users-list-dialog/channel-users-list-dialog.component';
+import { ScrollService } from '../../shared/services/scroll-service/scroll-service';
 
 @Component({
   selector: 'app-channel-window',
@@ -34,6 +35,8 @@ export class ChannelWindowComponent implements OnInit {
   private channelService = inject(ChannelService);
   private firebaseUserService = inject(FirebaseUserService);
   private firebaseAuthService = inject(FirebaseAuthService);
+  private scrollService = inject(ScrollService);
+
   readonly dialog = inject(MatDialog);
   @ViewChild('scrollContainer') scrollContainerRef!: ElementRef<HTMLDivElement>;
 
@@ -47,6 +50,7 @@ export class ChannelWindowComponent implements OnInit {
     this.getChannelMembers();
     this.setChannelMembers();
     this.getChatData();
+    this.scrollToBottom();
   }
 
   getChannelData() {
@@ -149,6 +153,14 @@ export class ChannelWindowComponent implements OnInit {
       height: 'fit-content',
       maxHeight: '630px',
       data:{ channelId, addUsersMode },
+    });
+  }
+
+  scrollToBottom() {
+    this.channel$.subscribe(() => {
+      setTimeout(() => {
+        this.scrollService.scrollToBottom(this.scrollContainerRef);
+    }, 100);
     });
   }
 }

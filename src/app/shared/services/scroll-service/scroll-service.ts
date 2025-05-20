@@ -1,35 +1,50 @@
 import { ElementRef, Injectable } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ScrollService {
-  private scrollToMessageSubject = new ReplaySubject<string>(1);
+  private scrollToMessageSubject = new BehaviorSubject<string | null>(null);
   scrollToMessage$ = this.scrollToMessageSubject.asObservable();
 
-  setScrollToMessageId(messageId: string) {
+  setScrollToMessageId(messageId: string | null) {
     this.scrollToMessageSubject.next(messageId);
   }
 
-  scrollToMessage(messageId: string, scrollContainer: ElementRef<HTMLDivElement>) {
-    setTimeout(() => {
-      const container = scrollContainer.nativeElement as HTMLElement;
-      const target = container.querySelector(`#message-${messageId}`) as HTMLElement;
-      if (target) {
-        const containerTop = container.getBoundingClientRect().top;
-        const targetTop = target.getBoundingClientRect().top;
-        const offset = targetTop - containerTop + container.scrollTop;
-
-        container.scrollTo({ top: offset, behavior: 'smooth' });
-      }
-    }, 100);
+  clearScrollTarget() {
+    this.scrollToMessageSubject.next(null);
   }
 
+  scrollToMessage(messageId: string, scrollContainer: ElementRef<HTMLDivElement>) {
+    const container = scrollContainer.nativeElement as HTMLElement;
+
+    const tryScroll = (attemptsLeft = 20) => {
+      const target = container.querySelector(`#message-${messageId}`) as HTMLElement;
+  
+      if (target && target.offsetTop > 0) {
+        container.scrollTo({ top: target.offsetTop - 150, behavior: 'smooth' });
+      } else if (attemptsLeft > 0) {
+        setTimeout(() => tryScroll(attemptsLeft - 1), 100);
+      } else {
+        console.warn(`Message not found: #message-${messageId}`);
+      }
+    };
+  
+    tryScroll();
+  }
+  
   scrollToBottom(scrollContainer: ElementRef<HTMLDivElement>) {
     const container = scrollContainer?.nativeElement;
     if (container) {
       container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    }
+  }
+
+  scrollToBottomInstant(scrollContainer: ElementRef<HTMLDivElement>) {
+    const container = scrollContainer?.nativeElement;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
     }
   }
 }

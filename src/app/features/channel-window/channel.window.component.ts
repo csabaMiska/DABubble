@@ -50,7 +50,6 @@ export class ChannelWindowComponent implements OnInit {
     this.getChannelMembers();
     this.setChannelMembers();
     this.getChatData();
-    this.scrollToBottom();
   }
 
   getChannelData() {
@@ -116,6 +115,9 @@ export class ChannelWindowComponent implements OnInit {
             content: message,
           };
           this.channelService.addMessageToChannel(channalId, newMessage);
+          setTimeout(() => {
+            this.scrollService.scrollToBottom(this.scrollContainerRef);
+        }, 100);
         } else {
           console.error('User or  channelId is undefined');
         }
@@ -153,14 +155,6 @@ export class ChannelWindowComponent implements OnInit {
       height: 'fit-content',
       maxHeight: '630px',
       data:{ channelId, addUsersMode },
-    });
-  }
-
-  scrollToBottom() {
-    this.channel$.subscribe(() => {
-      setTimeout(() => {
-        this.scrollService.scrollToBottom(this.scrollContainerRef);
-    }, 100);
     });
   }
 }

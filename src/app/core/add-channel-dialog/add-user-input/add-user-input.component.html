@@ -11,5 +11,5 @@
         </div>
     </div>
     <app-object-picker *ngIf="objectSelectorIsOpen" [ngStyle]="calculateObjectSelectorPosition(inputRects)"
-        [contents]="filteredUsers" (selectedObject)="addUserToSelectedUsers($event.objectId)"></app-object-picker>
+        [contents]="filteredUsers" (selectedObject)="addUserToSelectedUsers($event.object.uid)"></app-object-picker>
 </section>

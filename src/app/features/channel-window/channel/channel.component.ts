@@ -51,7 +51,9 @@ export class ChannelComponent implements OnInit {
     this.getAnswers();
     this.checkMessageEditMode();
     this.deleteMessage();
-    this.scrollToMessage();
+    this.messagesWithUserData$.subscribe(
+      () => this.scrollTo()
+    )
   }
 
   getCurrentUserUid() {
@@ -205,12 +207,16 @@ export class ChannelComponent implements OnInit {
     return message.messageId;
   }
 
-  scrollToMessage() {
+  scrollTo() {
     this.scrollService.scrollToMessage$
-      .pipe(take(1))
+      .pipe()
       .subscribe(messageId => {
         if (messageId) {
           this.scrollService.scrollToMessage(messageId, this.scrollContainer);
+        } else if (messageId === null) {
+          setTimeout(() => {
+            this.scrollService.scrollToBottomInstant(this.scrollContainer);
+          }, 100);
         }
       });
   }

@@ -116,6 +116,7 @@
 .channel-window-message-container {
     width: 100%;
     flex-grow: 1;
+    flex-direction: column-reverse;
     @include dFlex();
     overflow-y: auto;
 

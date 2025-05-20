@@ -15,6 +15,8 @@ import { WindowWidthDirective } from '../../../shared/directives/window-width/wi
 import { MatDialog } from '@angular/material/dialog';
 import { ChannelInfoDialogComponent } from '../../../features/channel-window/channel-info-dialog/channel-info-dialog.component';
 import { ScrollService } from '../../../shared/services/scroll-service/scroll-service';
+import { set } from 'firebase/database';
+import { AnswerService } from '../../../shared/services/firebase/answer/answer.service';
 
 @Component({
   selector: 'app-header-search-bar',
@@ -39,6 +41,7 @@ export class HeaderSearchBarComponent {
   private dashboardService = inject(DashboardService);
   private windowWidthDirective = inject(WindowWidthDirective);
   private scrollService = inject(ScrollService);
+  private answerService = inject(AnswerService);
   readonly dialog = inject(MatDialog);
 
   editableContentEmpty: boolean = true;
@@ -80,20 +83,33 @@ export class HeaderSearchBarComponent {
     }
   }
 
-  selectedObject(objectId: string, objectType: string) {
+  selectedObject(object: any, objectType: string) {
     if (objectType === 'user') {
-      this.openChatOrChannelWindow(objectId, 'User');
+      this.openChatOrChannelWindow(object.uid, 'User');
     } else if (objectType === 'channel') {
-      this.openChatOrChannelWindow(objectId, 'Channel');
+      this.openChatOrChannelWindow(object.channelId, 'Channel');
     } else if (objectType === 'channel-description') {
-      this.openChatOrChannelWindow(objectId, 'Channel');
-      this.openChannelInfoDialog(objectId);
+      this.openChatOrChannelWindow(object.channelId, 'Channel');
+      this.openChannelInfoDialog(object.channelId);
     } else if (objectType === 'channel-message') {
-      const pathSegments = objectId.split('/');
+      const pathSegments = object.path.split('/');
       const channelId = pathSegments?.[1];
       const messageId = pathSegments?.[3];
       this.scrollService.setScrollToMessageId(messageId);
       this.openChatOrChannelWindow(channelId, 'Channel');
+    } else if (objectType === 'channel-answer') {
+      const pathSegments = object.path.split('/');
+      const channelId = pathSegments?.[1];
+      const messageId = pathSegments?.[3];
+      setTimeout(() => {
+        this.scrollService.setScrollToMessageId(messageId);
+        this.openChatOrChannelWindow(channelId, 'Channel');
+      }, 200);
+      setTimeout(() => {
+        this.answerService.setMessageAnswerInfo(messageId, channelId, channelId, object.senderId, 'channels');
+        this.openAnswerWindow();
+        this.scrollService.setScrollToMessageId(object.messageId);
+      }, 200);
     }
 
     this.resetSearch();
@@ -144,6 +160,19 @@ export class HeaderSearchBarComponent {
       this.dashboardService.toggleSideNav();
     }
   }
+
+  openAnswerWindow() {
+    this.dashboardService.openAnswerWindow();
+    if (this.windowWidthDirective.tabletViewOn) {
+      this.dashboardService.closeChannelWindow();
+      this.dashboardService.closeChatWindow();
+    }
+    if (this.windowWidthDirective.mobilViewOn) {
+      this.dashboardService.closeChannelWindow();
+      this.dashboardService.closeChatWindow();
+    }
+  }
+
 
   calculateObjectSelectorPosition(inputRect: DOMRect) {
     if (!inputRect) return {};

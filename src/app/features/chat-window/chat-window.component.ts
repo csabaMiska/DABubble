@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon'
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
-import { combineLatest, Observable, of, switchMap, take } from 'rxjs';
+import { combineLatest, Observable, of, switchMap, take, tap } from 'rxjs';
 import { User } from '../../shared/interface/user.model';
 import { ChatService } from '../../shared/services/firebase/chat/chat.service';
 import { ProfilePopupComponent } from '../profile-popup/profile-popup.component';
@@ -15,6 +15,8 @@ import { MessageInfoComponent } from '../message-info/message-info.component';
 import { MessageService } from '../../shared/services/message/message.service';
 import { ChannelService } from '../../shared/services/firebase/channel/channel.service';
 import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ScrollService } from '../../shared/services/scroll-service/scroll-service';
 
 @Component({
   selector: 'app-chat-window',
@@ -24,7 +26,8 @@ import { WindowWidthDirective } from '../../shared/directives/window-width/windo
     MatIconModule,
     ChatComponent,
     MessageInputFieldComponent,
-    MessageInfoComponent
+    MessageInfoComponent,
+    MatProgressSpinnerModule
   ],
   providers: [WindowWidthDirective],
   templateUrl: './chat-window.component.html',
@@ -36,13 +39,17 @@ export class ChatWindowComponent implements OnInit {
   private chatService = inject(ChatService);
   private channelService = inject(ChannelService);
   private windowWidthDirective = inject(WindowWidthDirective);
+  private scrollService = inject(ScrollService);
 
   readonly dialog = inject(MatDialog);
   private profilePopupDialogRef?: MatDialogRef<ProfilePopupComponent>;
+  @ViewChild('scrollContainer') scrollContainerRef!: ElementRef<HTMLDivElement>;
+
 
   user$!: Observable<User | undefined>;
   chatData$!: Observable<Message[]>;
   showUserProfile: boolean = true;
+  chatIsLoading!: boolean;
 
   ngOnInit(): void {
     this.getUserData();
@@ -50,6 +57,7 @@ export class ChatWindowComponent implements OnInit {
   }
 
   getUserData() {
+    this.chatIsLoading = true;
     this.user$ = this.channelService.userIdOrChannelId$.pipe(
       switchMap(uid => this.firebaseUserService.getUserRealTime(uid))
     );
@@ -63,8 +71,13 @@ export class ChatWindowComponent implements OnInit {
       switchMap(([currentUser, receiverId]) => {
         const senderId = currentUser?.uid;
         if (senderId && receiverId) {
-          return this.chatService.getMessages(senderId, receiverId);
+          return this.chatService.getMessages(senderId, receiverId).pipe(
+            tap(() => {
+              this.chatIsLoading = false;
+            })
+          );
         } else {
+          this.chatIsLoading = false;
           return of([]);
         }
       })
@@ -92,6 +105,9 @@ export class ChatWindowComponent implements OnInit {
             content: message,
           };
           this.chatService.sendMessage(user.uid, receiverId, newMessage);
+          setTimeout(() => {
+            this.scrollService.scrollToBottom(this.scrollContainerRef);
+          }, 100);
         } else {
           console.error('User or receiver ID is undefined');
         }

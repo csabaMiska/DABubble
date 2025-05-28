@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, inject, Input, OnInit } from '@angular/core';
-import { combineLatest, filter, map, Observable, of, switchMap, take } from 'rxjs';
+import { combineLatest, filter, map, Observable, of, switchMap, take, tap } from 'rxjs';
 import { Message } from '../../../shared/interface/message.model';
 import { FirebaseAuthService } from '../../../shared/services/firebase/auth/firebase.auth.service';
 import { MessageService } from '../../../shared/services/message/message.service';
@@ -43,6 +43,8 @@ export class ChannelComponent implements OnInit {
   messageAnswers: { [key: string]: any } = {};
   messageEditMode: { [key: string]: boolean } = {};
   viewContext: 'message' | 'answer' = 'message';
+  lastChannelId: string | null = null;
+  scrollToEnd!: boolean;
 
   ngOnInit(): void {
     this.getMessagesDate();
@@ -51,9 +53,10 @@ export class ChannelComponent implements OnInit {
     this.getAnswers();
     this.checkMessageEditMode();
     this.deleteMessage();
-    this.messagesWithUserData$.subscribe(
-      () => this.scrollTo()
-    )
+    this.messagesWithUserData$
+      .subscribe(() => {
+        this.scrollTo()
+      });
   }
 
   getCurrentUserUid() {
@@ -67,9 +70,15 @@ export class ChannelComponent implements OnInit {
       this.getCurrentUserUid(),
       this.channelService.userIdOrChannelId$
     ]).pipe(
-      switchMap(([senderId, channalId]) => {
-        if (senderId && channalId) {
-          return this.getMessagesWithUserData(senderId, channalId);
+      tap(([_, channelId]) => {
+        if (channelId && channelId !== this.lastChannelId) {
+          this.scrollToEnd = true;
+          this.lastChannelId = channelId;
+        }
+      }),
+      switchMap(([senderId, channelId]) => {
+        if (senderId && channelId) {
+          return this.getMessagesWithUserData(senderId, channelId);
         } else {
           return of([]);
         }
@@ -209,15 +218,19 @@ export class ChannelComponent implements OnInit {
 
   scrollTo() {
     this.scrollService.scrollToMessage$
-      .pipe()
+      .pipe(take(1))
       .subscribe(messageId => {
         if (messageId) {
           this.scrollService.scrollToMessage(messageId, this.scrollContainer);
-        } else if (messageId === null) {
+        } else if (messageId === null && this.scrollToEnd) {
           setTimeout(() => {
             this.scrollService.scrollToBottomInstant(this.scrollContainer);
           }, 100);
         }
+        setTimeout(() => {
+          this.scrollService.clearMessageTarget();
+          this.scrollToEnd = false;
+        }, 200);
       });
   }
 }

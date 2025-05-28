@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { DashboardService } from '../../shared/services/dashboard/dashboard.service';
 import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
 import { MessageInputFieldComponent } from '../message-input-field/message-input-field.component';
@@ -15,6 +15,8 @@ import { ChatService } from '../../shared/services/firebase/chat/chat.service';
 import { ChannelService } from '../../shared/services/firebase/channel/channel.service';
 import { User } from '../../shared/interface/user.model';
 import { Channel } from '../../shared/interface/channal.model';
+import { ScrollService } from '../../shared/services/scroll-service/scroll-service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-answer-window',
@@ -24,6 +26,7 @@ import { Channel } from '../../shared/interface/channal.model';
     MatIconModule,
     MessageInputFieldComponent,
     AnswerComponent,
+    MatProgressSpinnerModule
   ],
   providers: [WindowWidthDirective],
   templateUrl: './answer-window.component.html',
@@ -38,9 +41,13 @@ export class AnswerWindowComponent implements OnInit {
   private messageService = inject(MessageService);
   private chatService = inject(ChatService);
   private channelService = inject(ChannelService);
+  private scrollService = inject(ScrollService);
+
+  @ViewChild('scrollContainer') scrollContainerRef!: ElementRef<HTMLDivElement>;
 
   messageInfos$!: Observable<any>;
   messageInfoType: 'User' | 'Channel' | null = null;
+  chatIsLoading!: boolean;
 
   ngOnInit(): void {
     this.messageService.messageInfoId$.subscribe(messageInfo => {
@@ -93,11 +100,13 @@ export class AnswerWindowComponent implements OnInit {
     };
     if (newAnswer.senderId && newAnswer.receiverId && newAnswer.content) {
       this.answerService.addAnswer(chatIdOrChannelId, messageId, messageFrom, newAnswer);
+      setTimeout(() => {
+        this.scrollService.scrollToBottom(this.scrollContainerRef);
+    }, 100);
     } else {
       console.error('Invalid answer data', newAnswer);
     }
   }
-
 
   closeAnswerWindow(messageInfoType: 'User' | 'Channel' | null) {
     this.dashboardService.closeAnswerWindow();

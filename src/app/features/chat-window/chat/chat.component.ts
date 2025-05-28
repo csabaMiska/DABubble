@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, ElementRef, inject, Input, OnInit } from '@angular/core';
 import { FirebaseAuthService } from '../../../shared/services/firebase/auth/firebase.auth.service';
 import { ChatService } from '../../../shared/services/firebase/chat/chat.service';
-import { combineLatest, filter, map, Observable, of, switchMap, take } from 'rxjs';
+import { combineLatest, filter, map, Observable, of, switchMap, take, tap } from 'rxjs';
 import { Message } from '../../../shared/interface/message.model';
 import { MatIconModule } from '@angular/material/icon';
 import { FirebaseUserService } from '../../../shared/services/firebase/user/firebase.user.service';
@@ -13,6 +13,7 @@ import { MessageService } from '../../../shared/services/message/message.service
 import { EmojiService } from '../../../shared/services/emoji/emoji-service/emoji-service';
 import { AnswerService } from '../../../shared/services/firebase/answer/answer.service';
 import { ChannelService } from '../../../shared/services/firebase/channel/channel.service';
+import { ScrollService } from '../../../shared/services/scroll-service/scroll-service';
 
 
 @Component({
@@ -36,6 +37,9 @@ export class ChatComponent implements OnInit {
   private messageService = inject(MessageService);
   private channelService = inject(ChannelService);
   private answerService = inject(AnswerService);
+  private scrollService = inject(ScrollService);
+
+  @Input() scrollContainer!: ElementRef<HTMLDivElement>;
 
   messagesWithUserData$!: Observable<Array<Message & { senderData?: any }>>;
   messagesWithUserDataArray: Array<Message & { senderData?: any }> = [];
@@ -43,6 +47,8 @@ export class ChatComponent implements OnInit {
   messageAnswers: { [key: string]: any } = {};
   messageEditMode: { [key: string]: boolean } = {};
   viewContext: 'message' | 'answer' = 'message';
+  lastReceiverId: string | null = null;
+  scrollToEnd!: boolean;
 
   ngOnInit(): void {
     this.getMessagesDate();
@@ -51,6 +57,10 @@ export class ChatComponent implements OnInit {
     this.getAnswers();
     this.checkMessageEditMode();
     this.deleteMessage();
+    this.messagesWithUserData$
+      .subscribe(() => {
+        this.scrollTo()
+      });
   }
 
   getMessagesDate() {
@@ -58,6 +68,12 @@ export class ChatComponent implements OnInit {
       this.getCurrentUserUid(),
       this.channelService.userIdOrChannelId$
     ]).pipe(
+      tap(([_, receiverId]) => {
+        if (receiverId && receiverId !== this.lastReceiverId) {
+          this.scrollToEnd = true;
+          this.lastReceiverId = receiverId;
+        }
+      }),
       switchMap(([senderId, receiverId]) => {
         if (senderId && receiverId) {
           return this.getMessagesWithUserData(senderId, receiverId);
@@ -137,18 +153,18 @@ export class ChatComponent implements OnInit {
   getAnswers() {
     this.messagesWithUserData$.subscribe(messages => {
       const answersMap: { [key: string]: any } = {};
-  
+
       messages.forEach(message => {
         const chatIdOrChannelId = this.chatService.getChatId(message.senderId, message.receiverId);
         const messageId = message.messageId;
-  
+
         this.answerService.subscribeToAnswers(chatIdOrChannelId, messageId, message.messageFrom);
-  
+
         this.answerService.answers$.subscribe(answers => {
           answersMap[messageId] = answers[messageId] || [];
         });
       });
-  
+
       this.messageAnswers = answersMap;
     });
   }
@@ -190,18 +206,36 @@ export class ChatComponent implements OnInit {
       this.firebaseAuthService.getCurrentUser(),
       this.channelService.userIdOrChannelId$
     ])
-    .pipe(
-      filter(([messageId, user, receiverId]) => !!messageId && !!user && !!receiverId),
-    )
-    .subscribe(([messageId, user, receiverId]) => {
-      if (typeof messageId === 'string') {
-        this.chatService.deleteMessage(user!.uid, receiverId!, messageId);
-        this.messageService.setMessageDeleteId(null);
-      }
-    });
+      .pipe(
+        filter(([messageId, user, receiverId]) => !!messageId && !!user && !!receiverId),
+      )
+      .subscribe(([messageId, user, receiverId]) => {
+        if (typeof messageId === 'string') {
+          this.chatService.deleteMessage(user!.uid, receiverId!, messageId);
+          this.messageService.setMessageDeleteId(null);
+        }
+      });
   }
 
   trackByMessageId(index: number, message: Message): string {
     return message.messageId;
+  }
+
+  scrollTo() {
+    this.scrollService.scrollToMessage$
+      .pipe(take(1))
+      .subscribe(messageId => {
+        if (messageId) {
+          this.scrollService.scrollToMessage(messageId, this.scrollContainer);
+        } else if (messageId === null && this.scrollToEnd) {
+          setTimeout(() => {
+            this.scrollService.scrollToBottomInstant(this.scrollContainer);
+          }, 100);
+        }
+        setTimeout(() => {
+          this.scrollService.clearMessageTarget();
+          this.scrollToEnd = false;
+        }, 200);
+      });
   }
 }

@@ -9,10 +9,13 @@
                 <span class="chat-window-user-name">{{ user.name }}</span>
             </div>
         </div>
-        <div class="chat-window-chat-container">
+        <div #scrollContainer  class="chat-window-chat-container">
             <div class="chat-window-chat-content" *ngIf="chatData$ | async as messages">
-                <app-chat class="app-chat" *ngIf="messages.length > 0"></app-chat>
+                <app-chat class="app-chat" [scrollContainer]="scrollContainerRef" *ngIf="messages.length > 0"></app-chat>
                 <app-message-info *ngIf="messages.length === 0"></app-message-info>
+            </div>
+            <div class="channel-window-message-loading" *ngIf="chatIsLoading">
+                <mat-spinner></mat-spinner>
             </div>
         </div>
        <app-message-input-field [content]="user" (messageSent)="onMessageReceived($event)"></app-message-input-field>

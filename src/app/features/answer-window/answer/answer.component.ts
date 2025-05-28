@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, ElementRef, inject, Input, OnInit } from '@angular/core';
 import { MessageContentComponent } from '../../message-content/message-content.component';
 import { combineLatest, filter, map, Observable, of, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
 import { Message } from '../../../shared/interface/message.model';
@@ -10,6 +10,7 @@ import { FirebaseAuthService } from '../../../shared/services/firebase/auth/fire
 import { EmojiService } from '../../../shared/services/emoji/emoji-service/emoji-service';
 import { MessageEditComponent } from '../../message-edit/message-edit.component';
 import { MessageService } from '../../../shared/services/message/message.service';
+import { ScrollService } from '../../../shared/services/scroll-service/scroll-service';
 
 @Component({
   selector: 'app-answer',
@@ -29,6 +30,9 @@ export class AnswerComponent implements OnInit {
   private firebaseUserService = inject(FirebaseUserService);
   private firebaseAuthService = inject(FirebaseAuthService);
   private destroyed$ = new Subject<void>();
+  private scrollService = inject(ScrollService);
+
+  @Input() scrollContainer!: ElementRef<HTMLDivElement>;
 
   messageWithUserData$!: Observable<Message & { senderData?: any }>;
   messageAnswers$!: Observable<Array<Message & { senderData?: any }>>;
@@ -36,6 +40,7 @@ export class AnswerComponent implements OnInit {
   sortedReactionsToAnswers: { [key: string]: any } = {};
   answerEditMode: { [key: string]: boolean } = {};
   viewContext: 'message' | 'answer' = 'answer';
+  scrollToEnd!: boolean;
 
   ngOnInit(): void {
     this.getMessage();
@@ -44,11 +49,18 @@ export class AnswerComponent implements OnInit {
     this.getReactionsToAnswers();
     this.checkAnswerEditMode();
     this.deleteAnswer();
+    this.messageWithUserData$
+      .subscribe(() => {
+        this.scrollTo()
+      });
   }
 
   getMessage() {
     this.messageWithUserData$ = this.answerService.messageAnswares$.pipe(
       filter((info): info is AnswerInfo => !!info),
+      tap(info => {
+          this.scrollToEnd = true;
+      }),
       switchMap((info) =>
         combineLatest([
           this.answerService.getMessage(info.chatIdOrChannelId, info.messageId, info.messageFrom),
@@ -105,7 +117,7 @@ export class AnswerComponent implements OnInit {
                 }))
               )
             );
-
+  
             return combineLatest(enrichedAnswers$);
           })
         )
@@ -142,7 +154,7 @@ export class AnswerComponent implements OnInit {
     this.destroyed$.next();
     this.destroyed$.complete();
   }
-  
+
   checkAnswerEditMode() {
     this.messageService.messageEditMode$.subscribe(messageId => {
       this.answerEditMode = {};
@@ -161,7 +173,7 @@ export class AnswerComponent implements OnInit {
       .subscribe(([user, answerInfo]) => {
         if (user && answerInfo) {
           this.answerService.updateAnswer(
-            answerInfo.chatIdOrChannelId, 
+            answerInfo.chatIdOrChannelId,
             answerInfo.messageId,
             event.messageId,
             answerInfo.messageFrom,
@@ -177,20 +189,38 @@ export class AnswerComponent implements OnInit {
       this.messageService.deleteMessageId$,
       this.answerService.messageAnswares$
     ])
-    .pipe(
-      filter(([answerId, answerInfo]) => !!answerId && !!answerInfo),
-    )
-    .subscribe(([answerId, answerInfo]) => {
+      .pipe(
+        filter(([answerId, answerInfo]) => !!answerId && !!answerInfo),
+      )
+      .subscribe(([answerId, answerInfo]) => {
         this.answerService.deleteAnswer(
-          answerInfo!.chatIdOrChannelId, 
+          answerInfo!.chatIdOrChannelId,
           answerInfo!.messageId,
           answerId!,
           answerInfo!.messageFrom);
         this.messageService.setMessageDeleteId(null);
-    });
+      });
   }
 
   trackByMessageId(index: number, message: Message): string {
     return message.messageId;
+  }
+
+  scrollTo() {
+    this.scrollService.scrollToAnswer$
+      .pipe(take(1))
+      .subscribe(answerId => {
+        if (answerId) {
+          this.scrollService.scrollToAnswer(answerId, this.scrollContainer);
+        } else if (answerId === null && this.scrollToEnd) {
+          setTimeout(() => {
+            this.scrollService.scrollToBottomInstant(this.scrollContainer);
+          }, 100);
+        }
+        setTimeout(() => {
+          this.scrollService.clearAnswerTarget();
+          this.scrollToEnd = false;
+        }, 200);
+      });
   }
 }

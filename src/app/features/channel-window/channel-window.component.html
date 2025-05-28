@@ -25,6 +25,9 @@
                 <app-channel class="app-chat" [scrollContainer]="scrollContainerRef" *ngIf="messages.length > 0"></app-channel>
                 <app-message-info *ngIf="messages.length === 0"></app-message-info>
             </div>
+            <div class="channel-window-message-loading" *ngIf="chatIsLoading">
+                <mat-spinner></mat-spinner>
+            </div>
         </div>
         <app-message-input-field [content]="channel" (messageSent)="onMessageReceived($event)"></app-message-input-field>
     </div>

@@ -92,27 +92,76 @@ export class HeaderSearchBarComponent {
       this.openChatOrChannelWindow(object.channelId, 'Channel');
       this.openChannelInfoDialog(object.channelId);
     } else if (objectType === 'channel-message') {
-      const pathSegments = object.path.split('/');
-      const channelId = pathSegments?.[1];
-      const messageId = pathSegments?.[3];
-      this.scrollService.setScrollToMessageId(messageId);
-      this.openChatOrChannelWindow(channelId, 'Channel');
+      this.selectChannelMessage(object);
     } else if (objectType === 'channel-answer') {
-      const pathSegments = object.path.split('/');
-      const channelId = pathSegments?.[1];
-      const messageId = pathSegments?.[3];
-      setTimeout(() => {
-        this.scrollService.setScrollToMessageId(messageId);
-        this.openChatOrChannelWindow(channelId, 'Channel');
-      }, 200);
-      setTimeout(() => {
-        this.answerService.setMessageAnswerInfo(messageId, channelId, channelId, object.senderId, 'channels');
-        this.openAnswerWindow();
-        this.scrollService.setScrollToMessageId(object.messageId);
-      }, 200);
+      this.selectChannelAnswer(object);
+    } else if (objectType === 'chat-message') {
+      this.selectChatMessage(object);
+    } else if (objectType === 'chat-answer') {
+      this.selectChatAnswer(object);
     }
 
     this.resetSearch();
+  }
+
+  selectChannelMessage(object: any) {
+    const pathSegments = object.path.split('/');
+    const channelId = pathSegments?.[1];
+    const messageId = pathSegments?.[3];
+    this.scrollService.setScrollToMessageId(messageId);
+    this.openChatOrChannelWindow(channelId, 'Channel');
+  }
+
+  selectChannelAnswer(object: any) {
+    const pathSegments = object.path.split('/');
+    const channelId = pathSegments?.[1];
+    const messageId = pathSegments?.[3];
+    const answerId = pathSegments?.[5];
+    setTimeout(() => {
+      this.scrollService.setScrollToMessageId(messageId);
+      this.scrollService.setScrollToAnswerId(answerId);
+      this.openChatOrChannelWindow(channelId, 'Channel');
+    }, 200);
+    setTimeout(() => {
+      this.answerService.setMessageAnswerInfo(messageId, channelId, channelId, object.senderId, 'channels');
+      this.openAnswerWindow();
+    }, 200);
+  }
+
+  selectChatMessage(object: any) {
+    const pathSegments = object.path.split('/');
+    const chatId = pathSegments?.[1];
+    const messageId = pathSegments?.[3];
+    const [id1, id2] = chatId.split('_');
+    this.firebaseAuthService.getCurrentUser().subscribe(user => {
+      const currentUserId = user?.uid;
+      if (!currentUserId) return;
+      const partnerId = currentUserId === id1 ? id2 : id1;
+      this.scrollService.setScrollToMessageId(messageId);
+      this.openChatOrChannelWindow(partnerId, 'User');
+    });
+  }
+
+  selectChatAnswer(object: any) {
+    const pathSegments = object.path.split('/');
+    const chatId = pathSegments?.[1];
+    const messageId = pathSegments?.[3];
+    const answerId = pathSegments?.[5];
+    this.firebaseAuthService.getCurrentUser().subscribe(user => {
+      const currentUserId = user?.uid;
+      if (!currentUserId) return;
+      const [id1, id2] = chatId.split('_');
+      const partnerId = currentUserId === id1 ? id2 : id1;
+      setTimeout(() => {
+        this.scrollService.setScrollToMessageId(messageId);
+        this.scrollService.setScrollToAnswerId(answerId);
+        this.openChatOrChannelWindow(partnerId, 'User');
+      }, 200);
+      setTimeout(() => {
+        this.answerService.setMessageAnswerInfo(messageId, chatId, partnerId, object.senderId, 'chats');
+        this.openAnswerWindow();
+      }, 200);
+    });
   }
 
   openChatOrChannelWindow(uid: string, type: string) {

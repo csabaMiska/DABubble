@@ -1,7 +1,7 @@
 import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { combineLatest, map, Observable, of, switchMap, take } from 'rxjs';
+import { combineLatest, map, Observable, of, switchMap, take, tap } from 'rxjs';
 import { Channel } from '../../shared/interface/channal.model';
 import { MessageService } from '../../shared/services/message/message.service';
 import { ChannelService } from '../../shared/services/firebase/channel/channel.service';
@@ -13,6 +13,7 @@ import { Message } from '../../shared/interface/message.model';
 import { ChannelComponent } from './channel/channel.component';
 import { MessageInfoComponent } from '../message-info/message-info.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ChannelInfoDialogComponent } from './channel-info-dialog/channel-info-dialog.component';
 import { ChannelUsersListDialogComponent } from './channel-users-list-dialog/channel-users-list-dialog.component';
 import { ScrollService } from '../../shared/services/scroll-service/scroll-service';
@@ -25,7 +26,8 @@ import { ScrollService } from '../../shared/services/scroll-service/scroll-servi
     MatIconModule,
     MessageInputFieldComponent,
     ChannelComponent,
-    MessageInfoComponent
+    MessageInfoComponent,
+    MatProgressSpinnerModule
   ],
   templateUrl: './channel-window.component.html',
   styleUrl: './channel-window.component.scss'
@@ -43,6 +45,7 @@ export class ChannelWindowComponent implements OnInit {
   channel$!: Observable<Channel | undefined>;
   channelMembers$!: Observable<User[]>;
   chatData$!: Observable<Message[]>;
+  chatIsLoading!: boolean;
   buttonRects!: DOMRect;
 
   ngOnInit(): void {
@@ -53,6 +56,7 @@ export class ChannelWindowComponent implements OnInit {
   }
 
   getChannelData() {
+    this.chatIsLoading = true;
     this.channel$ = this.channelService.userIdOrChannelId$.pipe(
       switchMap(channelId => this.channelService.getChannelById(channelId))
     );
@@ -87,8 +91,13 @@ export class ChannelWindowComponent implements OnInit {
       .pipe(
         switchMap((channalId) => {
           if (channalId) {
-            return this.channelService.getChannelMessages(channalId);
+            return this.channelService.getChannelMessages(channalId).pipe(
+            tap(() => {
+              this.chatIsLoading = false;
+            })
+          );
           } else {
+            this.chatIsLoading = false;
             return of([]);
           }
         })

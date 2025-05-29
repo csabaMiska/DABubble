@@ -1,0 +1,67 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.answer-container {
+    width: 100%;
+
+    .answer-content {
+        background-color: $white;
+        height: 100%;
+        width: 100%;
+        border-radius: 30px;
+        @include dFlex($fd: column, $jc: start);
+    }
+}
+
+.original-message {
+    width: 100%;
+    height: fit-content;
+    position: sticky;
+    top: 0;
+    background-color: $white;
+
+    .answer-counter-container {
+        width: 100%;
+        @include dFlex($jc: start);
+        padding: 8px 32px;
+        gap: 20px;
+
+        span {
+            font-size: 18px;
+            font-weight: 400;
+            color: $light-purple-lines;
+        }
+
+        div {
+            flex-grow: 1;
+            border-bottom: 1px solid $light-purple-lines;
+        }
+    }
+}
+
+.answers-container {
+    width: 100%;
+    flex-grow: 1;
+    @include dFlex($fd: column, $jc: start);
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    .answers-content {
+        width: 100%;
+        height: 100%;
+        @include dFlex($ai: end, $jc: start);
+
+        app-message-content {
+            width: 100%;
+            height: 100%;
+        }
+
+        app-message-edit {
+            width: 100%;
+        }
+    }
+
+}

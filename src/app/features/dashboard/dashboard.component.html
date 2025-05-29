@@ -1,7 +1,8 @@
 <section class="dashboard-container">
     <div class="dashboard-content">
-        <app-channel class="app-channel" *ngIf="channelIsOpen"></app-channel>
-        <app-thread class="app-thread" *ngIf="threadIsOpen"></app-thread>
-        <app-new-message class="app-new-message" *ngIf="newMessageIsOpen"></app-new-message>
+        <app-channel-window class="app-channel-window" *ngIf="channelWindowIsOpen"></app-channel-window>
+        <app-chat-window class="app-chat-window" *ngIf="chatWindowIsOpen"></app-chat-window>
+
+        <app-answer-window class="app-answer-window" *ngIf="answerWindowIsOpen"></app-answer-window>
     </div>
 </section>

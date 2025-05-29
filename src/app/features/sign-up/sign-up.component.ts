@@ -16,6 +16,7 @@ import { OverlayComponent } from '../../core/overlay/overlay.component';
 import { AvatarsListService } from '../../shared/services/avatars-list/avatars-list.service';
 import { User } from "../../shared/interface/user.model";
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
+import { OverlayService } from '../../shared/services/overlay/overlay.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -26,8 +27,7 @@ import { FirebaseUserService } from '../../shared/services/firebase/user/firebas
     MatInputModule,
     MatIconModule,
     MatFormFieldModule,
-    MatCheckboxModule,
-    OverlayComponent
+    MatCheckboxModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sign-up.component.html',
@@ -38,15 +38,12 @@ export class SignUpComponent implements OnInit {
   private firebaseAuthService = inject(FirebaseAuthService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
-  public avatarsListService = inject(AvatarsListService)
+  public avatarsListService = inject(AvatarsListService);
   private firebaseUserService = inject(FirebaseUserService);
+  private overlayService = inject(OverlayService);
 
   signUpFormCard: FormGroup;
   hide = signal(true);
-
-  showOverlay: boolean = false;
-  textOverlay: string = '';
-  iconOvarlay: boolean = false;
 
   avatarsList: Array<string> = this.avatarsListService.avatarsList;
   formContainerSwitch: boolean = false;
@@ -102,6 +99,7 @@ export class SignUpComponent implements OnInit {
 
   addUser(uid: string, email: string, name:string) {
     const newUser: Partial<User> = {
+      type: 'User',
       uid: uid,
       name: name,
       email: email,
@@ -112,15 +110,7 @@ export class SignUpComponent implements OnInit {
   }
 
   showOverlayAfterSubmit() {
-    if (!this.showOverlay) {
-      this.showOverlay = true;
-      this.textOverlay = 'Konto erfolgreich erstellt!';
-      this.iconOvarlay = false;
-      setTimeout(() => {
-        this.showOverlay = false;
-        this.cdr.markForCheck();
-      }, 1800);
-    }
+    this.overlayService.showOverlay('Konto erfolgreich erstellt!', true, 'account_circle');
   }
 
   selectYourAvatar(avatar: string) {

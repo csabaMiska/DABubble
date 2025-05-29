@@ -1,0 +1,25 @@
+<section class="new-message-input-container">
+    <form class="new-message-input-content" (ngSubmit)="getCurrentMessage()">
+        <div class="new-message-input-field">
+            <textarea type="text" [(ngModel)]="messageContent" (keydown.enter)="handleEnter($event)"
+                placeholder="{{ placeholderText }} {{ messageReceiver }}" rows="4" #messageTextarea>
+        </textarea>
+        </div>
+        <div class="new-message-icons-container">
+            <div class="new-message-prefix-icons">
+                <button class="prefix-icon" type="button" (click)="openEmojiPicker($event, inputEmojiPickerId)">
+                    <mat-icon>sentiment_satisfied</mat-icon>
+                </button>
+                <button class="prefix-icon" type="button">
+                    <mat-icon>alternate_email</mat-icon>
+                </button>
+            </div>
+            <button class="sufix-icon" type="submit">
+                <mat-icon>send</mat-icon>
+            </button>
+        </div>
+    </form>
+</section>
+
+<app-emoji-picker *ngIf="showEmojiPicker[inputEmojiPickerId]" [buttonRect]="buttonRects[inputEmojiPickerId]"
+    (emojiSelected)="handleEmojiSelection($event)" class="emoji-picker"></app-emoji-picker>

@@ -1,0 +1,70 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.message-edit-container {
+    width: 100%;
+    height: fit-content;
+    background-color: $bgcolor;
+    @include dFlex();
+    padding: 10px 10px 10px 10px;
+
+    .message-edit-input-content {
+        @include dFlex($fd: column, $jc: space-between);
+        width: fit-content;
+        max-width: calc(100% - 10%);
+        min-width: calc(100% - 20%);
+        height: fit-content;
+        max-height: 300px;
+        min-height: 155px;
+        padding: 20px 20px 20px 20px;
+        border-radius: 20px;
+        border: 1px solid $light-purple-lines;
+        background-color: $white;
+
+        &:hover {
+            border-color: $purple-2;
+        }
+
+        &:focus {
+            border: 2px solid $purple-2 !important;
+        }
+
+        .message-edit-field {
+            width: 100%;
+            height: 100%;
+
+            textarea {
+                @include textareaStyle($max-height: fit-content);
+                min-height: 65px;
+            }
+        }
+
+        .message-edit-icons-container {
+            width: 100%;
+            height: fit-content;
+            @include dFlex($jc: space-between);
+
+            .message-edit-prefix-icons {
+                @include dFlex();
+                gap: 10px;
+
+                .icon-btn {
+                    @include iconBtnStyle($tc: $text-gray);
+                }
+            }
+
+            .message-edit-btn-container {
+                @include dFlex();
+                gap: 32px;
+
+                .secondary-btn {
+                    @include secondaryBtnStyle($w: 133px, $h: 49px);
+                }
+
+                .primary-btn {
+                    @include primaryBtnStyle($w: 133px, $h: 49px);
+                }
+            }
+        }
+    }
+}

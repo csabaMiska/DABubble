@@ -1,0 +1,56 @@
+<section class="object-picker-container">
+    <div class="progress-bar-container" *ngIf="isLoading">
+        <mat-progress-bar mode="query"></mat-progress-bar>
+    </div>
+
+    <div *ngFor="let content of contents">
+        <div *ngIf="content.type === 'user'" (click)="selectObject(content.data, content.type)">
+            <app-user-card [user]="content.data"></app-user-card>
+        </div>
+
+        <div *ngIf="content.type === 'channel'" (click)="selectObject(content.data, content.type)">
+            <app-channel-card [channel]="content.data"></app-channel-card>
+        </div>
+
+        <div *ngIf="content.type === 'channel-description'" (click)="selectObject(content.data, content.type)">
+            <span class="obiject-picker-element-header">#{{ content.data.title }}/description</span>
+            <div class="object-picker-text">
+                {{ content.data.description }}
+            </div>
+        </div>
+
+        <div *ngIf="content.type === 'channel-message'" (click)="selectObject(content.data, content.type)">
+            <span class="obiject-picker-element-header">#{{ channelTitles.get(content.data.receiverId) || '...'  }}/messages/</span>
+            <div class="object-picker-text">
+                {{ content.data.content }}
+            </div>
+        </div>
+
+        <div *ngIf="content.type === 'channel-answer'" (click)="selectObject(content.data, content.type)">
+            <span class="obiject-picker-element-header">#{{ channelTitles.get(answerFromMap.get(content.data.messageId) || '') || '...' }}/messages/answers/</span>
+            <div class="object-picker-text">
+                {{ content.data.content }}
+            </div>
+        </div>
+
+        <div *ngIf="content.type === 'chat-message'" (click)="selectObject(content.data, content.type)">
+            <span class="obiject-picker-element-header">&#64;{{ userNames.get(content.data.receiverId) || '...'  }}/messages/</span>
+            <div class="object-picker-text">
+                {{ content.data.content }}
+            </div>
+        </div>
+
+        <div *ngIf="content.type === 'chat-answer'" (click)="selectObject(content.data, content.type)">
+            <span class="obiject-picker-element-header">&#64;{{ userNames.get(answerFromMap.get(content.data.messageId) || '') || '...' }}/messages/answers/</span>
+            <div class="object-picker-text">
+                {{ content.data.content }}
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!isLoading && contents.length <= 0">
+        <div class="object-picker-text">
+            Kein Inhalt gefunden.
+        </div>
+    </div>
+</section>

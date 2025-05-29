@@ -1,0 +1,23 @@
+<section class="chat-window-container" *ngIf="user$ | async as user">
+    <div class="chat-window-content">
+        <div class="chat-window-header">
+            <div class="chat-window-user-container" (click)="openProfileDialog(user.uid)">
+                <div class="chat-window-user-img-container">
+                    <div class="chat-window-user-status {{ user.status }}"></div>
+                    <img class="chat-window-user-img" src="{{ user.avatar }}" alt="logo">
+                </div>
+                <span class="chat-window-user-name">{{ user.name }}</span>
+            </div>
+        </div>
+        <div #scrollContainer  class="chat-window-chat-container">
+            <div class="chat-window-chat-content" *ngIf="chatData$ | async as messages">
+                <app-chat class="app-chat" [scrollContainer]="scrollContainerRef" *ngIf="messages.length > 0"></app-chat>
+                <app-message-info *ngIf="messages.length === 0"></app-message-info>
+            </div>
+            <div class="channel-window-message-loading" *ngIf="chatIsLoading">
+                <mat-spinner></mat-spinner>
+            </div>
+        </div>
+       <app-message-input-field [content]="user" (messageSent)="onMessageReceived($event)"></app-message-input-field>
+    </div>
+</section>

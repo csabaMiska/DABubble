@@ -1,0 +1,75 @@
+<section class="channel-info-dialog-container" *ngIf="channel$ | async as channel">
+    <div class="channel-info-dialog-content">
+        <div class="channel-info-dialog-content-header">
+            <h3>
+                <mat-icon>numbers</mat-icon>
+                {{ channel.title }}
+            </h3>
+            <button (click)="closeDialog()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+        <div class="channel-info-dialog-content-container">
+            <form class="channel-info-dialog-content-form" [formGroup]="editChannelForm">
+                <div class="channel-name-container" [class.edit-container-style]="editChannelName">
+                    <div class="channel-name-container-header">
+                        <h4>Channel-Name</h4>
+                        <button type="button" (click)="toggleChannelNameEdit(channel.channelId)" *ngIf="isCreator">
+                            {{ editChannelName ? 'Speichern' : 'Bearbeiten' }}
+                        </button>
+                    </div>
+                    <div class="channel-name-container-input-container">
+                        <span *ngIf="!editChannelName">
+                            <mat-icon>numbers</mat-icon>
+                            {{ channel.title }}
+                        </span>
+                        <mat-form-field appearance="outline" class="channel-name-input" *ngIf="editChannelName">
+                            <input formControlName="channel" matInput placeholder="z.B. #marketing"
+                                [appChannelNameValidator]="channel.title">
+                            <mat-icon class="matPrefix" matPrefix>numbers</mat-icon>
+                            <mat-error *ngIf="editChannelForm.get('channel')?.hasError('required')">Channel-Name ist
+                                erforderlich.</mat-error>
+                            <mat-error *ngIf="editChannelForm.get('channel')?.hasError('minlength')">Minimale Länge:
+                                2.</mat-error>
+                            <mat-error *ngIf="editChannelForm.get('channel')?.hasError('channelNameTaken')">Channel
+                                existiert schon, bitte wähle einen anderen Namen.</mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="description-container" [class.edit-container-style]="editChannelDescription">
+                    <div class="description-container-header">
+                        <h4>Beschreibung</h4>
+                        <button type="button" (click)="toggleChannelDescriptionEdit(channel.channelId)" *ngIf="isCreator">
+                            {{ editChannelDescription ? 'Speichern' : 'Bearbeiten' }}
+                        </button>
+                    </div>
+                    <div class="description-container-input-container">
+                        <span *ngIf="!editChannelDescription">
+                            {{ channel.description }}
+                        </span>
+                        <mat-form-field appearance="outline" class="description-input" *ngIf="editChannelDescription">
+                            <input formControlName="description" matInput placeholder="Dein Text hier">
+                        </mat-form-field>
+                    </div>
+                    <div class="description-container-divider"></div>
+                    <div class="creator-container" *ngIf="creator$ | async as user">
+                        <div class="creator-container-header">
+                            <h4>Erstellt von</h4>
+                        </div>
+                        <button (click)="openProfileDialog(user.uid)">
+                            {{ user.name }}
+                        </button>
+                    </div>
+                </div>
+                <div class="channel-info-btn-container">
+                    <button type="button" *ngIf="!isCreator" (click)="leaveChannel(channel.channelId)">
+                        Channel verlassen
+                    </button>
+                    <button type="button" *ngIf="isCreator" (click)="deleteChannel(channel.channelId)">
+                        Channel löschen
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

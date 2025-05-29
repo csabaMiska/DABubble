@@ -1,0 +1,27 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.channel-card-container {
+    @include dFlex($jc: start);
+    width: max-content;
+    max-height: 58px;
+    height: 100%;
+    padding: 8px 24px 8px 24px;
+
+    .channel-card-content {
+        @include dFlex($jc: start, $ai: center);
+        gap: 8px;
+        font-size: 17px;
+        font-weight: 400;
+    }
+
+    &:hover {
+        cursor: pointer;
+        background-color: $bgcolor;
+        border-radius: 30px;
+
+        .channel-card-content {
+            color: $purple-3;
+        }
+    }
+}

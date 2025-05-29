@@ -1,0 +1,61 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.add-user-input-container {
+    width: 100%;
+    @include dFlex($fd: column, $ai: start, $jc: flex-start);
+    gap: 20px;
+
+    .add-user-dialog-input-container {
+        min-height: 50px;
+        max-height: 250px;
+        width: 100%;
+        max-width: 100%;
+        overflow-y: auto;
+        padding: 10px 15px 10px 15px;
+        border: 1px solid $light-purple-lines;
+        border-radius: 30px;
+        @include dFlex($fd: column, $jc: start, $ai: start);
+        gap: 8px;
+
+        &:hover {
+            cursor: text;
+            border: 1px solid $purple-3;
+        }
+
+        .user-tags-container {
+            width: 100%;
+            max-width: 100%;
+            min-height: 50px;
+            max-height: 200px;
+            @include dFlex($jc: start, $ai: center);
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 0 15px;
+            overflow-y: auto;
+        }
+
+        .editable-div {
+            @include dFlex($jc: start, $ai: center);
+            width: 100%;
+            outline: none;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            font-family: "Nunito";
+            font-size: 18px;
+            font-weight: 400;
+            padding: 0 15px;
+
+            &:empty::before {
+                content: attr(placeholder);
+                color: $text-gray;
+            }
+        }
+    }
+}
+
+.user-tag {
+    display: inline-block;
+    user-select: none;
+}

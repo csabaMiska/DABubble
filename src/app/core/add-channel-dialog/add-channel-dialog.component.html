@@ -1,0 +1,45 @@
+<section class="add-channel-dialog-container">
+    <div class="add-channel-dialog-input-content">
+        <div class="add-channel-dialog-header-container">
+            <div class="add-channel-dialog-title-container">
+                <h3>Channel hinzufügen</h3>
+                <button (click)="closeAddChannelDialog()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+            <div class="add-channel-dialog-header-text-container">
+                <span>Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein #marketing
+                    zum Beispiel.</span>
+            </div>
+        </div>
+        <div class="add-channel-dialog-input-container">
+            <form class="form-container" [formGroup]="addChannelForm" (ngSubmit)="addChannel()">
+                <div class="input-container">
+                    <span>Channel-Name</span>
+                    <mat-form-field appearance="outline" class="add-channel-input">
+                        <input formControlName="channel" matInput placeholder="z.B. #marketing" appChannelNameValidator
+                            required>
+                        <span class="matPrefix" matPrefix>#</span>
+                        <mat-error *ngIf="addChannelForm.get('channel')?.hasError('required')">Channel-Name ist
+                            erforderlich.</mat-error>
+                        <mat-error *ngIf="addChannelForm.get('channel')?.hasError('minlength')">Minimale Länge:
+                            2.</mat-error>
+                        <mat-error *ngIf="addChannelForm.get('channel')?.hasError('channelNameTaken')">Channel existiert schon, bitte wähle einen anderen Namen.</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="input-container">
+                    <span>Beschreibung<p>(optional)</p></span>
+                    <div class="form-container">
+                        <mat-form-field appearance="outline" class="add-channel-input">
+                            <input formControlName="description" matInput placeholder="Dein Text hier">
+                        </mat-form-field>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="add-channel-dialog-button-container">
+            <button type="button" (click)="addChannel()" [disabled]="addChannelForm.invalid"
+                [class.button-disabled]="addChannelForm.invalid">Erstellen</button>
+        </div>
+    </div>
+</section>

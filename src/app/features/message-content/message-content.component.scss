@@ -1,0 +1,149 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.hover-overlay-menu-container {
+    width: 100%;
+    height: 50px;
+    @include dFlex($jc: end, $fd: row);
+    padding: 0 45px 0 45px;
+    margin-top: -45px;
+}
+
+.message-content {
+    width: 100%;
+    height: fit-content;
+    @include dFlex($jc: end, $fd: row, $ai: start);
+    padding: 19px 0 10px 0;
+    margin-top: 25px;
+    background-color: $white;
+
+    &:hover {
+        cursor: pointer;
+
+        .chat-bubble-reverse-desing {
+            background-color: $white !important;
+        }
+    }
+}
+
+.message-content-user-img {
+    width: fit-content;
+    height: 100%;
+    min-height: 141px;
+    margin: 0 45px 0 30px;
+    @include dFlex($ai: start);
+
+    img {
+        width: 70px;
+        height: 70px;
+        border-radius: 180px;
+    }
+}
+
+.message-content-user-content {
+    width: 100%;
+    @include dFlex($fd: column, $ai: start);
+
+    .message-content-user-name {
+        width: 100%;
+        @include dFlex($jc: end, $fd: row);
+        gap: 20px;
+        margin-bottom: 8px;
+
+        .message-timestamp {
+            font-weight: 400;
+            font-size: 14px;
+            color: $text-gray;
+        }
+
+        .message-user-name {
+            font-weight: 700;
+            font-size: 18px;
+            color: black;
+        }
+    }
+
+
+    .message-content-user-message {
+        width: 100%;
+        @include dFlex($jc: end, $fd: row);
+        margin-bottom: 8px;
+
+        .message-bubble {
+            width: fit-content;
+            max-width: 1588px;
+            height: fit-content;
+            margin: 0 0 0 45px;
+            padding: 15px;
+            border-radius: 30px 0 30px 30px;
+            background-color: $purple-2;
+            font-weight: 400;
+            font-size: 18px;
+            color: $white;
+            text-align: right;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+        }
+    }
+
+    .message-content-message-reaction-container {
+        width: 100%;
+        @include dFlex($jc: end, $fd: row);
+        gap: 10px;
+
+        .reacted-emojis-container {
+            @include dFlex($jc: end, $fd: row);
+            gap: 10px;
+
+            .reacted-emoji {
+                width: 64px;
+                height: 34px;
+                border-radius: 20px;
+                border: 1px solid $light-purple-lines;
+                padding: 5px 10px 5px 10px;
+                background-color: $white;
+                @include dFlex();
+                gap: 10px;
+
+                &:hover {
+                    cursor: pointer;
+                    border: 2px solid $light-purple-lines;
+                }
+            }
+        }
+
+        .add-reaction-container {
+            @include dFlex();
+            height: 100%;
+
+            button {
+                @include iconBtnStyle($tc: black);
+            }
+        }
+    }
+}
+
+.emoji-picker {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.chat-bubble-reverse-positioning {
+    justify-content: start !important;
+    flex-direction: row-reverse !important;
+}
+
+.chat-bubble-reverse-desing {
+    border-radius: 0 20px 20px 20px !important;
+    background-color: $bgcolor !important;
+    color: black !important;
+    margin: 0 45px 0 0 !important;
+}
+
+.avatar-reverse-design {
+    margin: 0 30px 0 45px !important;
+}

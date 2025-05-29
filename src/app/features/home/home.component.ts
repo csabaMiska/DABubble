@@ -11,6 +11,9 @@ import { CommonModule } from '@angular/common';
 import { DashboardService } from '../../shared/services/dashboard/dashboard.service';
 import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
 import { DirectMessagesUserListComponent } from './direct-messages-user-list/direct-messages-user-list.component';
+import { ChannelsListComponent } from './channels-list/channels-list.component';
+import { WorkspaceComponent } from './workspace/workspace.component';
+import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
 
 @Component({
   selector: 'app-home',
@@ -24,6 +27,8 @@ import { DirectMessagesUserListComponent } from './direct-messages-user-list/dir
     MatRadioModule,
     MatIconModule,
     DirectMessagesUserListComponent,
+    ChannelsListComponent,
+    WorkspaceComponent
   ],
   providers: [
     {
@@ -38,13 +43,16 @@ import { DirectMessagesUserListComponent } from './direct-messages-user-list/dir
 export class HomeComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   private dashboardService = inject(DashboardService);
-  private windowWidthDirective = inject(WindowWidthDirective);
- 
+  private firebaseUserService = inject(FirebaseUserService);
 
   sideNavIsOpen: boolean = true;
   toggleButtonText: 'schließen' | 'öffnen' = 'schließen';
 
   ngOnInit() {
+   this.checkSideNavPosition();
+  }
+
+  checkSideNavPosition() {
     this.dashboardService.sideNavIsOpen$.subscribe(isOpen => {
       this.sideNavIsOpen = isOpen;
     });
@@ -60,15 +68,6 @@ export class HomeComponent implements OnInit {
       this.toggleButtonText = 'schließen';
     } else {
       this.toggleButtonText = 'öffnen';
-    }
-  }
-
-  openChannel() {
-    this.dashboardService.openChannel();
-    this.dashboardService.closeNewMessage();
-    this.dashboardService.closeThread();
-    if (this.windowWidthDirective.mobilViewOn) {
-      this.dashboardService.toggleSideNav();
     }
   }
 }

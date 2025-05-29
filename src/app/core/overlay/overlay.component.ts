@@ -1,9 +1,11 @@
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { overlayInAnimation } from '../../shared/animations/overlay-in-animation';
 import { overlayOutAnimation } from '../../shared/animations/overlay-out-animation';
+import { OverlayService } from '../../shared/services/overlay/overlay.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-overlay',
@@ -40,8 +42,30 @@ import { overlayOutAnimation } from '../../shared/animations/overlay-out-animati
   ],
 
 })
-export class OverlayComponent {
-  @Input() textOverlay!: string;
-  @Input() iconOverlay!: boolean;
-  @Input() showOverlay!: boolean;
+export class OverlayComponent implements OnInit {
+  private overlayService = inject(OverlayService);
+
+  showOverlay: boolean = false;
+  textOverlay: string = '';
+  showIconOverlay: boolean = false;
+  iconOverlay: string = '';
+
+  private sub = Subscription.EMPTY;
+
+  ngOnInit() {
+    this.sub = this.overlayService.overlayMessage$.subscribe((message) => {
+      if (message) {
+        this.textOverlay = message.text;
+        this.showIconOverlay = message.showIcon ?? false;
+        this.iconOverlay = message.icon;
+        this.showOverlay = true;
+      } else {
+        this.showOverlay = false;
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
+  }
 }

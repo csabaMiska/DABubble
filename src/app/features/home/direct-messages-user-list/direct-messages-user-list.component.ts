@@ -8,7 +8,9 @@ import { Observable } from 'rxjs';
 import { User } from '../../../shared/interface/user.model';
 import { DashboardService } from '../../../shared/services/dashboard/dashboard.service';
 import { WindowWidthDirective } from '../../../shared/directives/window-width/window-width.directive';
-import { ChatService } from '../../../shared/services/firebase/chat/chat.service';
+import { MessageService } from '../../../shared/services/message/message.service';
+import { UserCardComponent } from '../../../core/user-card/user-card.component';
+import { ChannelService } from '../../../shared/services/firebase/channel/channel.service';
 
 @Component({
   selector: 'app-direct-messages-user-list',
@@ -17,7 +19,8 @@ import { ChatService } from '../../../shared/services/firebase/chat/chat.service
     CommonModule,
     MatExpansionModule,
     MatIconModule,
-    MatBadgeModule
+    MatBadgeModule,
+    UserCardComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './direct-messages-user-list.component.html',
@@ -27,7 +30,9 @@ export class DirectMessagesUserListComponent implements OnInit {
   private firebaseUserService = inject(FirebaseUserService);
   private dashboardService = inject(DashboardService);
   private windowWidthDirective = inject(WindowWidthDirective);
-  private chatService = inject(ChatService);
+  private messageService = inject(MessageService);
+  private channelService = inject(ChannelService);
+
   readonly panelOpenState = signal(false);
   hidden = false;
   users$!: Observable<User[]>;
@@ -40,15 +45,16 @@ export class DirectMessagesUserListComponent implements OnInit {
     this.hidden = !this.hidden;
   }
 
-  openDirectChat(uid: string) {
-    this.chatService.setReceiverUid(uid);
+  openDirectChat(uid: string, type: string) {
+    this.channelService.setUserIdOrChannelId(uid);
+    this.messageService.setMessageInfoId(uid, type);
     this.openChatContainer();
   }
 
   openChatContainer() {
-    this.dashboardService.openNewMessage();
-    this.dashboardService.closeChannel();
-    this.dashboardService.closeThread();
+    this.dashboardService.openChatWindow();
+    this.dashboardService.closeChannelWindow();
+    this.dashboardService.closeAnswerWindow();
     if (this.windowWidthDirective.mobilViewOn) {
       this.dashboardService.toggleSideNav();
     }

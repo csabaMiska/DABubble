@@ -1,0 +1,12 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.channel-container {
+    width: 100%;
+    height: fit-content;
+
+    .channel-content-container {
+        width: 100%;
+        height: fit-content;
+    }
+}

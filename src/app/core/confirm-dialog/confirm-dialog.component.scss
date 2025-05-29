@@ -1,0 +1,45 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.confirm-dialog-content {
+    width: 100%;
+    max-width: 710px;
+    height: 100vh;
+    max-height: 279px;
+    background-color: $white;
+    @include dFlex($fd: column);
+    padding: 40px;
+    gap: 20px;
+
+    .confirm-dialog-text-container {
+        flex-grow: 1;
+        @include dFlex($fd: column, $jc: flex-start);
+
+        .confirm-dialog-header {
+            width: 100%;
+            @include dFlex($jc: flex-start);
+        }
+
+        span {
+            font-size: 18px;
+        }
+    }
+
+    .confirm-dialog-btns-container {
+        width: 100%;
+        @include dFlex($jc: flex-end);
+        gap: 32px;
+
+        .secondaryBtn {
+            @include secondaryBtnStyle($w: 125px, $h: 49px);
+        }
+
+        .primaryBtn {
+            @include primaryBtnStyle($w: 125px, $h: 49px);
+        }
+    }
+}
+
+::ng-deep .mat-mdc-dialog-surface {
+    border-radius: 30px 30px 30px 30px !important;
+}

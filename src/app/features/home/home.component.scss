@@ -20,7 +20,7 @@
     padding-bottom: 25px;
 
     @media (max-width: 800px) {
-       padding-right: 20px;
+        padding-right: 20px;
     }
 }
 
@@ -38,7 +38,25 @@ mat-sidenav {
     height: 100%;
     background-color: $white;
     border-radius: 30px;
-    @include dFlex($ai: center, $fd: column, $jc: start);
+    @include dFlex($ai: start, $fd: column, $jc: start);
+
+    .expansion-panel-container {
+        width: 100%;
+        flex-grow: 1;
+        @include dFlex($ai: start, $fd: column, $jc: start);
+        margin-bottom: 24px;
+        background-color: $white;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        .expansion-panel {
+            width: 100%;
+            padding-left: 12px;
+        }
+    }
 }
 
 ::ng-deep .mat-drawer-content {
@@ -108,7 +126,7 @@ mat-sidenav {
     }
 }
 
-.expansion-panel {
+app-workspace {
     width: 100%;
     padding-left: 12px;
 }

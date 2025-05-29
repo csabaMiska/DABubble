@@ -2,70 +2,24 @@
 @use '@angular/material' as mat;
 
 .expansion-panel {
-    border: none !important;
-    box-shadow: none !important;
-    width: 100% !important;
+    @include expansionPanelStyle();
 
-    @include mat.expansion-overrides((container-shape: 0,
-            container-background-color: transparent,
-            header-text-size: 20px,
-            header-text-font: "Nunito",
-            header-indicator-display: none,
-            header-hover-state-layer-color: transparent,
-            header-collapsed-state-height: 40px,
-            header-expanded-state-height: 40px,
-            container-text-size: 18px,
-            container-text-font: "Nunito"
-        ));
+    .expansion-panel-header {
+        @include dFlex($jc: start, $ai: center);
 
-    .expansion-panel-icon {
-        margin: 0 12px 0 12px;
-    }
-}
-
-.expansion-panel-user-container {
-    width: max-content;
-    max-height: 58px;
-    height: 100%;
-    gap: 15px;
-    @include dFlex();
-    padding: 8px 24px 8px 24px;
-    margin-top: 13px !important;
-    margin-left: 13px !important;
-
-    .expansion-panel-user-img-container {
-        width: 50px;
-        height: 50px;
-        @include dFlex($jc: end, $ai: end);
-
-        .expansion-panel-user-img {
-            width: 100%;
-            height: 100%;
-            border-radius: 180px;
+        &:hover {
+            cursor: pointer;
+            color: $purple-3;
         }
 
-        .expansion-panel-user-status {
-            width: 14px;
-            height: 14px;
-            border: 2px solid $bgcolor;
-            border-radius: 80px;
-            position: absolute;
+        .expansion-panel-icon {
+            margin: 0 12px 0 12px;
         }
     }
 
-    .expansion-panel-user-name {
-        font-weight: 400;
-        font-size: 18px;
-    }
-
-    .badge-container {
-        width: 8px !important;
-        height: 8px !important;
-    }
-
-    &:hover {
-        cursor: pointer;
-        background-color: $bgcolor;
-        border-radius: 30px;
+    .expansion-panel-content {
+        @include dFlex($fd: column, $ai: start);
+        margin: 13px 0 0 13px !important;
+        gap: 13px;
     }
 }

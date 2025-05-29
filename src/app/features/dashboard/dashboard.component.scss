@@ -11,13 +11,13 @@
         gap: 20px;
         overflow-x: hidden;
 
-        .app-channel {
+        .app-channel-window {
             height: 100%;
             max-width: 100%;
             flex-grow: 1;
         }
 
-        .app-thread {
+        .app-answer-window {
             height: 100%;
             max-width: 100%;
             flex-grow: 0.56;
@@ -27,7 +27,7 @@
             }
         }
 
-        .app-new-message {
+        .app-chat-window {
             height: 100%;
             max-width: 100%;
             flex-grow: 1;

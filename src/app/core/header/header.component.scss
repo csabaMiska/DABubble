@@ -66,11 +66,15 @@
 }
 
 .header-input-container {
-  @include dFlex();
-  width: 100%;
-
-  app-header-search-bar {
+    @include dFlex();
     width: 100%;
+    padding: 0 140px 0 118px;
+
+    app-header-search-bar {
+        width: 100%;
+        max-width: 989px;
+        @include dFlex();
+
 
     @media (max-width: 1140px) {
       display: none;
@@ -129,13 +133,6 @@
       width: 14px;
       height: 14px;
     }
-  }
-}
-
-::ng-deep .mat-mdc-dialog-surface {
-  @media (max-width: 800px) {
-    border-bottom-left-radius: 0px !important;
-    border-top-right-radius: 30px !important;
   }
 }
 

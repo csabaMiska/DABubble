@@ -1,30 +1,14 @@
-<form class="search-input-container">
-    <mat-form-field class="input-container" appearance="fill">
-        <input type="text" matInput placeholder="Devspace duchsuchen" [(ngModel)]="searchTerm" (input)="onSearch()"
-            name="search">
-        <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
-</form>
-
-<div *ngIf="filteredUsers.length > 0 && searchTerm.includes('@')" class="search-suggestions-list">
-    <div *ngFor="let user of filteredUsers" (click)="onSelectUser(user)" class="search-suggestions-list-item">
-        <div class="search-suggestions-list-item-img-container">
-            <div class="search-suggestions-list-user-online-status" [ngClass]="user.status"></div>
-            <img class="search-suggestions-list-item-img" src="assets/img/profile-images/profile-{{ user.img }}.png"
-                alt="logo">
-        </div>
-        <span class="search-suggestions-list-item-text">
-            {{ user.firstName }} {{ user.lastName }}
-        </span>
-    </div>
-</div>
-
-
-<div *ngIf="filteredChannels.length > 0 && searchTerm.includes('#')" class="search-suggestions-list">
-    <div *ngFor="let channel of filteredChannels" (click)="onSelectChannel(channel)"
-        class="search-suggestions-list-item">
-        <div class="search-suggestions-list-item-text">
-            #{{ channel.channelName }}
-        </div>
-    </div>
-</div>
+<section class="search-input-container">
+        <input [(ngModel)]="searchTerm"  class="search-input" placeholder="Devspace durchsuchen"
+        (input)="onSearchChange()">
+        <button class="search-input-button">
+            <mat-icon>search</mat-icon>
+        </button>
+        <app-object-picker 
+            *ngIf="objectSelectorIsOpen" 
+            [ngStyle]="calculateObjectSelectorPosition(inputRects)"
+            [contents]="filteredObjects"
+            [isLoading]="isLoading"  
+            (selectedObject)="selectedObject($event.object, $event.objectType)">
+        </app-object-picker>
+</section>

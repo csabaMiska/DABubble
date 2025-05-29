@@ -1,0 +1,24 @@
+<section class="answer-container">
+    <div class="answer-content">
+        <div class="original-message" *ngIf="(messageWithUserData$ | async) as message">
+            <app-message-content [message]="message" [sortedReactions]="sortedReactionsToMessage"
+                [viewContext]="viewContext" [isOriginalMessage]="true"></app-message-content>
+            <div class="answer-counter-container" *ngIf="messageAnswers$ | async as answers">
+                <span class="answer-counter" *ngIf="answers.length <= 0">Kein Antwort</span>
+                <span class="answer-counter" *ngIf="answers.length > 0">{{ answers.length }} Antworten</span>
+                <div class="answer-counter-design-element"></div>
+            </div>
+        </div>
+        <div class="answers-container" *ngIf="messageAnswers$ | async as answers">
+            <div class="answers-content" *ngFor="let answer of answers; trackBy: trackByMessageId">
+                <div [id]="'message-' + answer.messageId">
+                    <app-message-content *ngIf="!answerEditMode[answer.messageId]" [message]="answer"
+                        [sortedReactions]="sortedReactionsToAnswers" [viewContext]="viewContext"
+                        [isOriginalMessage]="false"></app-message-content>
+                    <app-message-edit *ngIf="answerEditMode[answer.messageId]" [message]="answer"
+                        (updateMessage)="updateAnswer({ messageId: $event.messageId, message: $event.content })"></app-message-edit>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

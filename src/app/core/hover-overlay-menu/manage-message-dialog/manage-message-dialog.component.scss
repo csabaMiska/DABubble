@@ -1,0 +1,22 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.manage-message-dialog-content {
+    @include dFlex($fd: column);
+    padding: 10px 20px 10px 20px;
+    background-color: $white;
+    position: relative;
+    top: 0;
+    bottom: 0;  
+    left: 0;
+    right: 0;
+
+    button {
+        @include dialogBtnStyle($w: 268px, $h: 53px);
+    }
+}
+
+::ng-deep .mat-mdc-dialog-surface {
+    border-radius: 0 30px 30px 30px !important;
+    box-shadow: 0px 6px 14px 0px rgba(0, 0, 0, 0.2) !important;
+}

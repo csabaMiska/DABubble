@@ -15,28 +15,24 @@ $rosa: rgba(237, 30, 121, 1);
 $blue: rgba(19, 129, 255, 1);
 
 :root {
-    $vh: 100%
+  $vh: 100%
 }
 
 .full-height {
-    height: calc(var(--vh, 1vh) * 100);
+  height: calc(var(--vh, 1vh) * 100);
 }
 
-$theme: mat.define-theme(
-  (
-    color: (
-      theme-type: light,
-      primary: mat.$magenta-palette,
-    ),
-  )
-);
+$theme: mat.define-theme((color: (theme-type: light,
+        primary: mat.$magenta-palette,
+      ),
+    ));
 
 html {
   @include mat.core-theme($theme);
   @include mat.all-component-themes($theme);
 }
 
-body {
+body, html {
   height: 100%;
   margin: 0;
   font-family: "Nunito";
@@ -53,6 +49,12 @@ h1 {
   @media (max-width: 1400px) {
     font-size: 24px;
   }
+}
+
+h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: $black;
 }
 
 //User status Colors
@@ -72,6 +74,22 @@ h1 {
   background-color: yellow;
 }
 
+//Buttons standard
+button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-family: "Nunito";
+}
+
+//Primary Button disabled
+.button-disabled {
+  background-color: $text-gray !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+//Box Sizing
 *,
 *::before,
 *::after {

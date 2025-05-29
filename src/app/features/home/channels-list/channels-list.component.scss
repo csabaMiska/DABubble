@@ -1,0 +1,55 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.expansion-panel {
+    @include expansionPanelStyle();
+
+    .expansion-panel-header-container {
+        width: 100%;
+        @include dFlex($jc: space-between, $ai: center);
+
+        .expansion-panel-header-content {
+            @include dFlex($jc: start, $ai: center);
+
+            &:hover {
+                cursor: pointer;
+                color: $purple-3;
+            }
+
+            .expansion-panel-icon {
+                margin: 0 12px 0 12px;
+            }
+        }
+
+        .add-channel-button {
+            @include iconBtnStyle($tc: $black);
+        }
+    }
+
+    .expansion-panel-content {
+        @include dFlex($fd: column, $ai: start);
+        margin: 13px 0 0 13px !important;
+        gap: 13px;
+
+        .expansion-panel-add-channel-container {
+            margin-top: 12px;
+            padding: 0 0 0 24px;
+
+            button {
+                @include dFlex();
+                gap: 10px;
+                border: none;
+                background-color: transparent;
+                padding: 0;
+                font-family: "Nunito";
+                font-size: 18px;
+                font-weight: 400;
+
+                &:hover {
+                    cursor: pointer;
+                    color: $purple-3;
+                }
+            }
+        }
+    }
+}

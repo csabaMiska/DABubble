@@ -1,11 +1,8 @@
 import {
   Component,
   ChangeDetectionStrategy,
-  signal,
   inject,
   ChangeDetectorRef,
-  OnChanges,
-  SimpleChanges,
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSharedModule } from '../../shared/material-module/mat-shared.module';
@@ -13,6 +10,7 @@ import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebas
 import { Router } from '@angular/router';
 import { OverlayComponent } from '../../core/overlay/overlay.component';
 import { CommonModule } from '@angular/common';
+import { OverlayService } from '../../shared/services/overlay/overlay.service';
 
 @Component({
   selector: 'app-password-reset',
@@ -20,27 +18,22 @@ import { CommonModule } from '@angular/common';
   templateUrl: './password-reset.component.html',
   styleUrls: ['./password-reset.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatSharedModule, ReactiveFormsModule, OverlayComponent, CommonModule],
+  imports: [MatSharedModule, ReactiveFormsModule, CommonModule],
 })
-export class PasswordResetComponent implements OnChanges {
+export class PasswordResetComponent {
   private fb = inject(FormBuilder);
   private firebaseAuthService = inject(FirebaseAuthService);
+  private overlayService = inject(OverlayService);
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
+
   emailFormReset: FormGroup;
   resetError: string | null = null;
-  showOverlay: boolean = false;
-  textOverlay: string = '';
-  iconOvarlay: boolean = false;
 
   constructor() {
     this.emailFormReset = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
     });
-  }
-
-  ngOnChanges(): void {
-    this.showOverlay;
   }
 
   resetPassword(): void {
@@ -74,15 +67,7 @@ export class PasswordResetComponent implements OnChanges {
   }
 
   showOverlayAfterSubmit() {
-    if (!this.showOverlay) {
-      this.showOverlay = true;
-      this.textOverlay = 'E-Mail gesendet';
-      this.iconOvarlay = true;
-      setTimeout(() => {
-        this.showOverlay = false;
-        this.cdr.markForCheck();
-      }, 1800);
-    }
+    this.overlayService.showOverlay('E-Mail gesendet!', true, 'forward_to_inbox');
   }
 
   navigateToSignIn(): void {

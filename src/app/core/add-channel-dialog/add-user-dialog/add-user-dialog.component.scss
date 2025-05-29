@@ -1,0 +1,52 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.add-user-dialog-container {
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    background-color: $white;
+    @include dFlex($fd: column, $jc: flex-start)
+}
+
+.add-user-dialog-header-container {
+    width: 100%;
+    margin-bottom: 27px;
+    @include dFlex($jc: space-between);
+
+    h3 {
+        margin-block-start: 0;
+        margin-block-end: 0;
+    }
+
+    button {
+        @include iconBtnStyle($tc: $black);
+    }
+}
+
+.add-user-dialog-content {
+    width: 100%;
+    margin-bottom: 20px;
+    @include dFlex($fd: column, $ai: start, $jc: flex-start);
+    gap: 20px;
+
+    .radio-group {
+        width: 100%;
+        @include dFlex($fd: column, $jc: flex-start, $ai: flex-start);
+        gap: 20px;
+    }
+
+    app-add-user-input {
+        width: 100%;
+        height: fit-content;
+    }
+}
+
+.add-user-dialog-button-container {
+    width: 100%;
+    @include dFlex($jc: flex-end);
+
+    button {
+        @include primaryBtnStyle($w: 125px, $h: 48px);
+    }
+}

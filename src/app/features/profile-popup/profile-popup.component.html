@@ -7,7 +7,12 @@
     </button>
   </div>
   <div class="profile-popup-image">
-    <img src="{{ user.avatar }}" alt="Avatar">
+    <img src="{{ selectedAvatar }}" alt="Avatar">
+    <div *ngIf="showEditUserForm && !chooseNewAvatar" class="edit-avatar-overlay">
+      <div class="edit-avatar-icon" (click)="enableAvatarSelection()">
+        <mat-icon>edit</mat-icon>
+      </div>
+    </div>
   </div>
 
   <section *ngIf="!showEditUserForm" class="profile-popup-info-box">
@@ -20,6 +25,7 @@
       <span class="profile-popup-text">{{ user.status }}</span>
     </div>
   </section>
+
   <section *ngIf="!showEditUserForm" class="profile-popup-contact-info">
     <div class="profile-popup-contact-mail">
       <mat-icon>mail_outline</mat-icon>
@@ -30,7 +36,7 @@
     </div>
   </section>
 
-  <section *ngIf="showEditUserForm" class="profile-popup-edit-user-form-section">
+  <section *ngIf="showEditUserForm && !chooseNewAvatar" class="profile-popup-edit-user-form-section">
     <div class="profile-popup-contact-info">
       <div class="profile-popup-contact-mail">
         <svg width="25" height="25" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,7 +50,7 @@
     <div class="profile-popup-edit-user-form-container">
       <form [formGroup]="editUserForm" (ngSubmit)="updateUserData()"  class="profile-popup-edit-user-form">
         <mat-form-field appearance="outline" class="form-field">
-          <input formControlName="name" matInput placeholder="{{ user.name }}">
+          <input formControlName="name" matInput>
           <mat-error *ngIf="editUserForm.get('name')?.hasError('required')">Name ist erforderlich.</mat-error>
           <mat-error *ngIf="editUserForm.get('name')?.hasError('minlength')">Minimale Länge: 2.</mat-error>
         </mat-form-field>
@@ -57,6 +63,25 @@
           </button>
         </div>
       </form>
+    </div>
+  </section>
+
+  <section *ngIf="showEditUserForm && chooseNewAvatar" class="profile-popup-edit-avatar">
+    <div class="choose-container-text-container">
+      <span class="choose-container-text">Aus der Liste Wählen</span>
+    </div>
+    <div class="choose-images-container">
+      <div *ngFor="let avatar of avatarsList" (click)="selectYourAvatar(avatar)" class="choose-image-container">
+        <img class="choose-image" src="{{ avatar }}" alt="">
+      </div>
+    </div>
+    <div class="profile-popup-btn-container">
+      <button type="button" class="profile-popup-edit-user-cancel-btn" (click)="enableAvatarSelection()">
+        Abbrechen
+      </button>
+      <button type="submit" class="profile-popup-edit-user-save-btn" (click)="updateUserAvatar()">
+        Speichern
+      </button>
     </div>
   </section>
 

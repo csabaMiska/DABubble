@@ -38,7 +38,7 @@ export class SignUpComponent implements OnInit {
   private firebaseAuthService = inject(FirebaseAuthService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
-  public avatarsListService = inject(AvatarsListService)
+  public avatarsListService = inject(AvatarsListService);
   private firebaseUserService = inject(FirebaseUserService);
   private overlayService = inject(OverlayService);
 

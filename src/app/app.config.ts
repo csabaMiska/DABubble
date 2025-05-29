@@ -1,4 +1,8 @@
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import {
+  ApplicationConfig,
+  importProvidersFrom,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { provideAnalytics, getAnalytics } from '@angular/fire/analytics';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
@@ -10,7 +14,6 @@ import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { environment } from './firebase.config';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { LayoutModule } from '@angular/cdk/layout';
-
 
 export const appConfig: ApplicationConfig = {
   providers: [

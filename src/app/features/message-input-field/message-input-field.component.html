@@ -2,15 +2,19 @@
     (emojiSelected)="handleEmojiSelection($event)" class="emoji-picker"></app-emoji-picker>
 
 <app-object-picker #objectPickerRef *ngIf="objectSelectorIsOpen" [contents]="loadedUsers" [isLoading]="isLoadingUsers"
-    [ngStyle]="pickerPosition" class="object-picker"></app-object-picker>
+    [ngStyle]="pickerPosition" class="object-picker" (selectedObject)="addMentionToMessage($event.object, $event.objectType)"></app-object-picker>
 
 <section class="new-message-input-container">
     <form class="new-message-input-content" (ngSubmit)="getCurrentMessage()">
         <div class="new-message-input-field">
-            <textarea type="text" [(ngModel)]="messageContent" (keydown.enter)="handleEnter($event)"
+            <div class="new-message-editable" contenteditable="true" (input)="onInput($event)"
+                (keydown.enter)="handleEnter($event)" (click)="closePickers()"
+                [attr.data-placeholder]="placeholderText + ' ' + messageReceiver" #messageEditor>
+            </div>
+            <!-- <textarea type="text" [(ngModel)]="messageContent" (keydown.enter)="handleEnter($event)"
                 (click)="closePickers()" placeholder="{{ placeholderText }} {{ messageReceiver }}" rows="4"
                 #messageTextarea>
-        </textarea>
+        </textarea> -->
         </div>
         <div class="new-message-icons-container">
             <div class="new-message-prefix-icons">

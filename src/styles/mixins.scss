@@ -10,6 +10,15 @@
     flex-direction: $fd;
 }
 
+// Mentions - styling
+@mixin mentionStyle($font-color, $bg-color) {
+    background-color: $bg-color;
+    color: $font-color;
+    padding: 2px 4px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
 // Butttons - styling
 @mixin primaryBtnStyle($w, $h) {
     gap: 10px;

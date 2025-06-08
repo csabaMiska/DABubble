@@ -28,8 +28,29 @@
             width: 100%;
             flex-grow: 1;
 
-            textarea {
-                @include textareaStyle($max-height: 65px);
+            .new-message-editable {
+                position: relative;
+                height: 100%;
+                padding: 8px;
+                border: none;
+                border-radius: 8px;
+                background: white;
+                outline: none;
+                font-size: 18px;
+            }
+
+            .new-message-editable::before {
+                content: attr(data-placeholder);
+                color: $text-gray;
+                position: absolute;
+                top: 8px;
+                left: 8px;
+                pointer-events: none;
+                opacity: 1;
+            }
+
+            .new-message-editable:not(:empty)::before {
+                content: '';
             }
         }
 
@@ -73,6 +94,13 @@
 
 .object-picker {
     position: fixed;
+    z-index: 500;
+}
+
+::ng-deep .mention {
+    @include mentionStyle($font-color: $white, $bg-color: $purple-2);
+    color: $white;
+    background-color: $purple-2;
 }
 
 .btn-disabled {

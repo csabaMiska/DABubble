@@ -29,7 +29,7 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
   @Input() content!: User | Channel;
   @Output() messageSent = new EventEmitter<string>();
 
-  @ViewChild('messageTextarea') messageTextarea!: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('messageEditor') messageEditor!: ElementRef<HTMLDivElement>;
   private elementRef = inject(ElementRef);
   private channelService = inject(ChannelService);
   private firebaseUserService = inject(FirebaseUserService);
@@ -45,6 +45,8 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
   showEmojiPicker: { [key: string]: boolean } = {};
   buttonRects: { [key: string]: DOMRect } = {};
   pickerBtnRects: DOMRect = {} as DOMRect;
+  pickerPosition = { bottom: '0', left: '0' };
+  savedRange: Range | null = null;
 
   ngOnInit(): void {
     this.messageContent = '';
@@ -59,6 +61,10 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
       this.focusTextarea();
       this.messageContent = '';
     }
+  }
+
+  onInput(event: Event): void {
+    this.messageContent = this.messageEditor.nativeElement.innerText;
   }
 
   setMessageReceiver(): void {
@@ -86,8 +92,8 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
 
   focusTextarea() {
     setTimeout(() => {
-      if (this.messageTextarea) {
-        this.messageTextarea.nativeElement.focus();
+      if (this.messageEditor) {
+        this.messageEditor.nativeElement.focus();
       }
     });
   }
@@ -104,8 +110,7 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
     if (this.messageContent.trim().length > 0) {
       this.messageSent.emit(this.messageContent);
       this.messageContent = '';
-    } else {
-      return;
+      this.messageEditor.nativeElement.innerHTML = '';
     }
   }
 
@@ -121,7 +126,7 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
 
   @HostListener('document:click', ['$event'])
   onbodyClick(event: MouseEvent) {
-    const clickedTextarea = this.messageTextarea?.nativeElement?.contains(event.target as Node);
+    const clickedTextarea = this.messageEditor?.nativeElement?.contains(event.target as Node);
 
     if (!this.elementRef.nativeElement.contains(event.target) && !clickedTextarea) {
       this.closeEmojiPickers();
@@ -144,17 +149,53 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
     this.pickerBtnRects = {} as DOMRect;
   }
 
+  @HostListener('mouseup')
+  @HostListener('keyup')
+  saveSelection() {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      const range = sel.getRangeAt(0);
+      if (this.messageEditor.nativeElement.contains(range.startContainer)) {
+        this.savedRange = range;
+      }
+    }
+  }
+
   handleEmojiSelection(selectedEmoji: Emoji) {
     const emoji = selectedEmoji?.unicode || selectedEmoji.unicode;
-    const textarea = this.messageTextarea.nativeElement;
 
-    insertTextIntoField(textarea, emoji);
-
-    this.messageContent = textarea.value;
+    this.insertHtmlAtCursor(emoji);
+    this.messageContent = this.messageEditor.nativeElement.innerText;
     this.closeEmojiPickers();
   }
 
-  public pickerPosition = { bottom: '0', left: '0' };
+  insertHtmlAtCursor(html: string) {
+    const range = this.savedRange;
+    if (!range) return;
+
+    const el = document.createElement('div');
+    el.innerHTML = html;
+    const frag = document.createDocumentFragment();
+    let node: ChildNode | null, lastNode: ChildNode | null = null;
+
+    while ((node = el.firstChild)) {
+      lastNode = frag.appendChild(node);
+    }
+
+    range.deleteContents();
+    range.insertNode(frag);
+
+    if (lastNode) {
+      const newRange = document.createRange();
+      newRange.setStartAfter(lastNode);
+      newRange.collapse(true);
+
+      const sel = window.getSelection();
+      sel?.removeAllRanges();
+      sel?.addRange(newRange);
+      this.savedRange = newRange;
+    }
+  }
 
   calculateObjectSelectorPosition(buttonRect: DOMRect) {
     if (!buttonRect) return {};
@@ -219,5 +260,43 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
     ).subscribe(users => {
       this.loadedUsers = users;
     });
+  }
+
+  addMentionToMessage(object: any, objectType: string) {
+    if (objectType === 'user') {
+      this.insertMention(object, '@');
+    }
+    this.closeObjectSelector();
+  }
+
+  insertMention(object: any, symbol: string) {
+    const editor = this.messageEditor.nativeElement;
+    const space = document.createTextNode('\u00A0');
+    const span = document.createElement('span');
+    const rawText = object.name || object.title || '';
+    const objectid = object.uid || object.channelId || '';
+
+    span.className = 'mention';
+    span.textContent = `${symbol}${rawText.toLowerCase().replace(/\s+/g, '')}`;
+    span.setAttribute('contenteditable', 'false');
+    span.setAttribute('data-mention-id', objectid);
+
+    editor.appendChild(span);
+    editor.appendChild(space);
+
+    const range = document.createRange();
+    range.setStartAfter(space);
+    range.collapse(true);
+
+    const sel = window.getSelection();
+    sel?.removeAllRanges();
+    sel?.addRange(range);
+
+
+    this.updateMessageContentFromEditor();
+  }
+
+  updateMessageContentFromEditor() {
+    this.messageContent = this.messageEditor.nativeElement.innerText || '';
   }
 }

@@ -39,7 +39,6 @@ export class MessageContentComponent implements OnInit {
   private messageService = inject(MessageService);
   private emojiService = inject(EmojiService);
   private answerService = inject(AnswerService);
-  private messageContentElement!: HTMLElement;
 
   isSender: boolean = false;
 

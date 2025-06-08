@@ -3,7 +3,7 @@ import { DashboardService } from '../../shared/services/dashboard/dashboard.serv
 import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
 import { MessageInputFieldComponent } from '../message-input-field/message-input-field.component';
 import { MatIconModule } from '@angular/material/icon';
-import { combineLatest, filter, Observable, of, switchMap, take } from 'rxjs';
+import { combineLatest, filter, Observable, tap, take } from 'rxjs';
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
 import { CommonModule } from '@angular/common';
 import { AnswerService } from '../../shared/services/firebase/answer/answer.service';
@@ -48,19 +48,26 @@ export class AnswerWindowComponent implements OnInit {
   messageInfos$!: Observable<any>;
   messageInfoType: 'User' | 'Channel' | null = null;
   chatIsLoading!: boolean;
+  currentContent!: User | Channel;
 
   ngOnInit(): void {
     this.messageService.messageInfoId$.subscribe(messageInfo => {
       if (messageInfo?.messegeType === 'User') {
         this.messageInfoType = 'User';
         this.messageInfos$ = this.firebaseUserService.getUserRealTime(messageInfo.messageId).pipe(
-          filter((user): user is User => user !== undefined)
+          filter((user): user is User => user !== undefined),
+          tap(user => {
+            this.currentContent = user;
+          })
         );
       }
       else if (messageInfo?.messegeType === 'Channel') {
         this.messageInfoType = 'Channel';
         this.messageInfos$ = this.channelService.getChannelById(messageInfo.messageId).pipe(
-          filter((channel): channel is Channel => channel !== undefined)
+          filter((channel): channel is Channel => channel !== undefined),
+          tap(channel => {
+            this.currentContent = channel;
+          })
         );
       }
     });
@@ -102,7 +109,7 @@ export class AnswerWindowComponent implements OnInit {
       this.answerService.addAnswer(chatIdOrChannelId, messageId, messageFrom, newAnswer);
       setTimeout(() => {
         this.scrollService.scrollToBottom(this.scrollContainerRef);
-    }, 100);
+      }, 100);
     } else {
       console.error('Invalid answer data', newAnswer);
     }

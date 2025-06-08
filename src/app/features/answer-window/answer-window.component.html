@@ -23,6 +23,6 @@
                 <mat-spinner></mat-spinner>
             </div>
         </div>
-        <app-message-input-field (messageSent)="onMessageReceived($event)"></app-message-input-field>
+        <app-message-input-field (messageSent)="onMessageReceived($event)" [content]="currentContent"></app-message-input-field>
     </div>
 </section>

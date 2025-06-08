@@ -92,10 +92,10 @@ export class ChannelWindowComponent implements OnInit {
         switchMap((channalId) => {
           if (channalId) {
             return this.channelService.getChannelMessages(channalId).pipe(
-            tap(() => {
-              this.chatIsLoading = false;
-            })
-          );
+              tap(() => {
+                this.chatIsLoading = false;
+              })
+            );
           } else {
             this.chatIsLoading = false;
             return of([]);
@@ -126,7 +126,7 @@ export class ChannelWindowComponent implements OnInit {
           this.channelService.addMessageToChannel(channalId, newMessage);
           setTimeout(() => {
             this.scrollService.scrollToBottom(this.scrollContainerRef);
-        }, 100);
+          }, 100);
         } else {
           console.error('User or  channelId is undefined');
         }
@@ -146,7 +146,7 @@ export class ChannelWindowComponent implements OnInit {
       maxWidth: '872px',
       height: '100vh',
       maxHeight: '616px',
-      data:{ channelId },
+      data: { channelId },
     });
   }
 
@@ -163,7 +163,7 @@ export class ChannelWindowComponent implements OnInit {
       maxWidth: '415px',
       height: 'fit-content',
       maxHeight: '630px',
-      data:{ channelId, addUsersMode },
+      data: { channelId, addUsersMode },
     });
   }
 }

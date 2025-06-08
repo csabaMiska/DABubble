@@ -2,12 +2,10 @@
 @use '@angular/material' as mat;
 
 .object-picker-container {
-    position: absolute;
     background: white;
     width: fit-content;
     min-width: 300px;
     max-width: 600px;
-    max-height: fit-content;
     max-height: 600px;
     overflow-y: auto;
     overflow-x: hidden;

@@ -17,6 +17,7 @@ import { ChannelService } from '../../shared/services/firebase/channel/channel.s
 import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ScrollService } from '../../shared/services/scroll-service/scroll-service';
+import { MessageData } from '../../shared/interface/message-data.model';
 
 @Component({
   selector: 'app-chat-window',
@@ -85,11 +86,11 @@ export class ChatWindowComponent implements OnInit {
   }
 
 
-  onMessageReceived(message: string) {
-    this.addMessage(message);
+  onMessageReceived(messageData: MessageData) {
+    this.addMessage(messageData);
   }
 
-  addMessage(message: string): void {
+  addMessage(messageData: MessageData): void {
     combineLatest([
       this.firebaseAuthService.getCurrentUser(),
       this.channelService.userIdOrChannelId$
@@ -102,7 +103,7 @@ export class ChatWindowComponent implements OnInit {
             senderId: user.uid,
             receiverId,
             timestamp: new Date().toISOString(),
-            content: message,
+            content: messageData,
           };
           this.chatService.sendMessage(user.uid, receiverId, newMessage);
           setTimeout(() => {

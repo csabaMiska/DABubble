@@ -1,4 +1,5 @@
 import { Reaction } from "../interface/reaction.model";
+import { MessageData } from "./message-data.model";
 
 export interface Message {
     messageFrom: string;
@@ -6,7 +7,7 @@ export interface Message {
     senderId: string;
     isSender: boolean;
     receiverId: string;
-    content: string;
+    content: MessageData;
     timestamp: string;
     lastAnswerTimestamp: string;
     answers: { [answerID: string]: Message};

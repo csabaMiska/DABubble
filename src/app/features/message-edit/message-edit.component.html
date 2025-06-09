@@ -1,15 +1,22 @@
+<app-emoji-picker *ngIf="showEmojiPicker[inputEmojiPickerId]" [buttonRect]="buttonRects[inputEmojiPickerId]"
+    (emojiSelected)="handleEmojiSelection($event)" class="emoji-picker"></app-emoji-picker>
+
+<app-object-picker #objectPickerRef *ngIf="objectSelectorIsOpen" [contents]="loadedObjects" [isLoading]="isLoading"
+    [ngStyle]="pickerPosition" class="object-picker"
+    (selectedObject)="addMentionToMessage($event.object, $event.objectType)"></app-object-picker>
+
 <section class="message-edit-container">
     <div class="message-edit-input-content">
         <div class="message-edit-field">
-            <textarea type="text" [(ngModel)]="messageContent" rows="4" #editTextarea>
-        </textarea>
+            <div class="editable-message" contenteditable="true" #editableDiv (input)="onEditInput()"
+                (keyup)="onKeyup($event)" (click)="closePickers()"></div>
         </div>
         <div class="message-edit-icons-container">
             <div class="message-edit-prefix-icons">
-                <button class="icon-btn">
+                <button class="icon-btn" (click)="openEmojiPicker($event, inputEmojiPickerId)">
                     <mat-icon>sentiment_satisfied</mat-icon>
                 </button>
-                <button class="icon-btn">
+                <button class="icon-btn" (click)="openUserSelector($event)">
                     <mat-icon>alternate_email</mat-icon>
                 </button>
             </div>
@@ -17,11 +24,12 @@
                 <button class="secondary-btn" (click)="cancelEdit(message.messageId)">
                     Abbrechen
                 </button>
-                <button class="primary-btn" (click)="saveMessage(message.messageId)">
+                <button class="primary-btn" [disabled]="!messageContent || !messageContent.trim()"
+                    [ngClass]="{'btn-disabled': !messageContent || !messageContent.trim()}"
+                    (click)="saveMessage(message.messageId)">
                     Speichern
                 </button>
             </div>
         </div>
     </div>
 </section>
-

@@ -130,7 +130,7 @@ export class SearchService {
       }),
       map(results =>
         results
-          .filter(res => res.isInChannel && res.message.content?.toLowerCase().includes(lowerTerm))
+          .filter(res => res.isInChannel && res.message.content.text?.toLowerCase().includes(lowerTerm))
           .map(res => ({
             type: 'channel-message',
             data: res.message
@@ -157,7 +157,7 @@ export class SearchService {
             return (
               isChat &&
               this.isUserInChat(chatId, currentUserUid) &&
-              message.content?.toLowerCase().includes(lowerTerm)
+              message.content.text?.toLowerCase().includes(lowerTerm)
             );
           })
           .map(message => ({
@@ -198,7 +198,7 @@ export class SearchService {
 
           return this.isUserInChannel(channelId, currentUserUid).pipe(
             map(isInChannel => {
-              if (isInChannel && answer.content?.toLowerCase().includes(lowerTerm)) {
+              if (isInChannel && answer.content.text?.toLowerCase().includes(lowerTerm)) {
                 return {
                   type: 'channel-answer',
                   data: answer
@@ -234,7 +234,7 @@ export class SearchService {
             return (
               isChat &&
               this.isUserInChat(chatId, currentUserUid) &&
-              answer.content?.toLowerCase().includes(lowerTerm)
+              answer.content.text?.toLowerCase().includes(lowerTerm)
             );
           })
           .map(answer => ({

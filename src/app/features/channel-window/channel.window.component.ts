@@ -17,6 +17,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ChannelInfoDialogComponent } from './channel-info-dialog/channel-info-dialog.component';
 import { ChannelUsersListDialogComponent } from './channel-users-list-dialog/channel-users-list-dialog.component';
 import { ScrollService } from '../../shared/services/scroll-service/scroll-service';
+import { MessageData } from '../../shared/interface/message-data.model';
 
 @Component({
   selector: 'app-channel-window',
@@ -104,11 +105,11 @@ export class ChannelWindowComponent implements OnInit {
       );
   }
 
-  onMessageReceived(message: string) {
-    this.addMessage(message);
+  onMessageReceived(messageData: MessageData) {
+    this.addMessage(messageData);
   }
 
-  addMessage(message: string) {
+  addMessage(messageData: MessageData) {
     combineLatest([
       this.firebaseAuthService.getCurrentUser(),
       this.channelService.userIdOrChannelId$
@@ -121,7 +122,7 @@ export class ChannelWindowComponent implements OnInit {
             senderId: user.uid,
             receiverId: channalId,
             timestamp: new Date().toISOString(),
-            content: message,
+            content: messageData,
           };
           this.channelService.addMessageToChannel(channalId, newMessage);
           setTimeout(() => {

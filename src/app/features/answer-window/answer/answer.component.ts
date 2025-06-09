@@ -11,6 +11,9 @@ import { EmojiService } from '../../../shared/services/emoji/emoji-service/emoji
 import { MessageEditComponent } from '../../message-edit/message-edit.component';
 import { MessageService } from '../../../shared/services/message/message.service';
 import { ScrollService } from '../../../shared/services/scroll-service/scroll-service';
+import { MessageData } from '../../../shared/interface/message-data.model';
+import { User } from '../../../shared/interface/user.model';
+import { Channel } from '../../../shared/interface/channal.model';
 
 @Component({
   selector: 'app-answer',
@@ -33,6 +36,7 @@ export class AnswerComponent implements OnInit {
   private scrollService = inject(ScrollService);
 
   @Input() scrollContainer!: ElementRef<HTMLDivElement>;
+  @Input() content!: User | Channel;
 
   messageWithUserData$!: Observable<Message & { senderData?: any }>;
   messageAnswers$!: Observable<Array<Message & { senderData?: any }>>;
@@ -164,7 +168,7 @@ export class AnswerComponent implements OnInit {
     });
   }
 
-  updateAnswer(event: { messageId: string; message: string }) {
+  updateAnswer(event: { messageId: string; messageData: MessageData }) {
     combineLatest([
       this.firebaseAuthService.getCurrentUser(),
       this.answerService.messageAnswares$
@@ -177,7 +181,7 @@ export class AnswerComponent implements OnInit {
             answerInfo.messageId,
             event.messageId,
             answerInfo.messageFrom,
-            { content: event.message });
+            { content: event.messageData });
         } else {
           console.error('AnswerId is undefined');
         }

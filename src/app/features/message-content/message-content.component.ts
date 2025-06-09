@@ -12,6 +12,7 @@ import { MessageService } from '../../shared/services/message/message.service';
 import { EmojiService } from '../../shared/services/emoji/emoji-service/emoji-service';
 import { AnswerService } from '../../shared/services/firebase/answer/answer.service';
 import { ChannelService } from '../../shared/services/firebase/channel/channel.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-message-content',
@@ -39,6 +40,7 @@ export class MessageContentComponent implements OnInit {
   private messageService = inject(MessageService);
   private emojiService = inject(EmojiService);
   private answerService = inject(AnswerService);
+  private sanitizer = inject(DomSanitizer);
 
   isSender: boolean = false;
 
@@ -165,7 +167,7 @@ export class MessageContentComponent implements OnInit {
               if (messageFrom === 'chats') {
                 chatIdOrChannelId = this.chatService.getChatId(senderUid, emojiReceiver);
               } else if (messageFrom === 'channels') {
-                chatIdOrChannelId = emojiReceiver; 
+                chatIdOrChannelId = emojiReceiver;
               }
               return this.emojiService.updateUserReaction(chatIdOrChannelId, senderUid, messageId, messageFrom, selectedEmoji);
             } else {
@@ -201,5 +203,32 @@ export class MessageContentComponent implements OnInit {
 
   handleMessageHover(isHovered: boolean, messageId: string) {
     this.messageService.setMessageIsHoveredId(isHovered ? `${this.viewContext}-${messageId}` : null);
+  }
+
+  get renderedMessage(): SafeHtml {
+    const { text, mentions } = this.message.content;
+    let result = text;
+
+    mentions?.forEach((mention) => {
+      const regex = new RegExp(`\\${mention.symbol}${mention.label}(?!\\w)`, 'g');
+      const html = `<span class="rendered-mention" data-id="${mention.id}" data-symbol="${mention.symbol}">${mention.symbol}${mention.label}</span>`;
+      result = result.replace(regex, html);
+    });
+
+    return this.sanitizer.bypassSecurityTrustHtml(result);
+  }
+
+  handleMentionClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.classList.contains('rendered-mention')) return;
+
+    const id = target.dataset['id'];
+    const symbol = target.dataset['symbol'];
+
+    if (symbol === '@') {
+      console.log(`Mention clicked: ${id}`);
+    } else if (symbol === '#') {
+      console.log(`Channel mention clicked: ${id}`);
+    }
   }
 }

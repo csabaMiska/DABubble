@@ -11,7 +11,7 @@
         </div>
         <div #scrollContainer  class="chat-window-chat-container">
             <div class="chat-window-chat-content" *ngIf="chatData$ | async as messages">
-                <app-chat class="app-chat" [scrollContainer]="scrollContainerRef" *ngIf="messages.length > 0"></app-chat>
+                <app-chat class="app-chat" [scrollContainer]="scrollContainerRef" [content]="user" *ngIf="messages.length > 0"></app-chat>
                 <app-message-info *ngIf="messages.length === 0"></app-message-info>
             </div>
             <div class="channel-window-message-loading" *ngIf="chatIsLoading">

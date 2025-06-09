@@ -17,6 +17,7 @@ import { User } from '../../shared/interface/user.model';
 import { Channel } from '../../shared/interface/channal.model';
 import { ScrollService } from '../../shared/services/scroll-service/scroll-service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MessageData } from '../../shared/interface/message-data.model';
 
 @Component({
   selector: 'app-answer-window',
@@ -73,7 +74,7 @@ export class AnswerWindowComponent implements OnInit {
     });
   }
 
-  onMessageReceived(answer: string) {
+  onMessageReceived(messageData: MessageData) {
     combineLatest([
       this.firebaseAuthService.getCurrentUser(),
       this.channelService.userIdOrChannelId$,
@@ -88,22 +89,22 @@ export class AnswerWindowComponent implements OnInit {
           const channelId = originalMessage.chatIdOrChannelId;
           const chatId = this.chatService.getChatId(senderId, receiverId);
           if (messageFrom === 'chats') {
-            this.addAnswer(chatId, messageId, messageFrom, answer, senderId);
+            this.addAnswer(chatId, messageId, messageFrom, messageData, senderId);
             this.chatService.updateMessage(senderId, receiverId, messageId, { lastAnswerTimestamp: new Date().toISOString() });
           } else if (messageFrom === 'channels') {
-            this.addAnswer(channelId, messageId, messageFrom, answer, senderId);
+            this.addAnswer(channelId, messageId, messageFrom, messageData, senderId);
             this.channelService.updateMessage(channelId, messageId, { lastAnswerTimestamp: new Date().toISOString() });
           }
         }
       });
   }
 
-  addAnswer(chatIdOrChannelId: string, messageId: string, messageFrom: string, answer: string, senderId: string): void {
+  addAnswer(chatIdOrChannelId: string, messageId: string, messageFrom: string, messageData: MessageData, senderId: string): void {
     const newAnswer: Partial<Message> = {
       senderId: senderId,
       receiverId: messageId,
       timestamp: new Date().toISOString(),
-      content: answer,
+      content: messageData,
     };
     if (newAnswer.senderId && newAnswer.receiverId && newAnswer.content) {
       this.answerService.addAnswer(chatIdOrChannelId, messageId, messageFrom, newAnswer);

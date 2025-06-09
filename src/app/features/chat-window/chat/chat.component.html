@@ -5,8 +5,8 @@
                 [timestamp]="message.timestamp"></app-message-timestamp>
             <app-message-content *ngIf="!messageEditMode[message.messageId]" [message]="message"
                 [sortedReactions]="sortedReactions" [messageAnswers]="messageAnswers"></app-message-content>
-            <app-message-edit *ngIf="messageEditMode[message.messageId]" [message]="message"
-                (updateMessage)="updateMessage({ messageId: $event.messageId, message: $event.content })"></app-message-edit>
+            <app-message-edit *ngIf="messageEditMode[message.messageId]" [message]="message" [content]="content"
+                (updateMessage)="updateMessage({ messageId: $event.messageId, messageData: $event.messageData })"></app-message-edit>
         </div>
     </div>
 </section>

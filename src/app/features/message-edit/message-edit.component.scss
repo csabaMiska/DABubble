@@ -33,9 +33,31 @@
             width: 100%;
             height: 100%;
 
-            textarea {
-                @include textareaStyle($max-height: fit-content);
-                min-height: 65px;
+            .editable-message {
+                position: relative;
+                height: 100%;
+                max-height: 63px;
+                padding: 8px;
+                border: none;
+                // border-radius: 8px;
+                background: white;
+                outline: none;
+                font-size: 18px;
+                overflow-y: auto;
+            }
+
+            .editable-message::before {
+                content: attr(data-placeholder);
+                color: $text-gray;
+                position: absolute;
+                top: 8px;
+                left: 8px;
+                pointer-events: none;
+                opacity: 1;
+            }
+
+            .editable-message:not(:empty)::before {
+                content: '';
             }
         }
 
@@ -66,5 +88,24 @@
                 }
             }
         }
+    }
+}
+
+.emoji-picker {
+    position: absolute;
+    z-index: 500;
+}
+
+.object-picker {
+    position: fixed;
+    z-index: 500;
+}
+
+.btn-disabled {
+    color: $text-gray !important;
+
+    &:hover {
+        cursor: not-allowed !important;
+        transform: none !important;
     }
 }

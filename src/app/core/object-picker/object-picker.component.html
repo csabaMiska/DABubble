@@ -22,28 +22,28 @@
         <div *ngIf="content.type === 'channel-message'" (click)="selectObject(content.data, content.type)">
             <span class="obiject-picker-element-header">#{{ channelTitles.get(content.data.receiverId) || '...'  }}/messages/</span>
             <div class="object-picker-text">
-                {{ content.data.content }}
+                {{ content.data.content.text }}
             </div>
         </div>
 
         <div *ngIf="content.type === 'channel-answer'" (click)="selectObject(content.data, content.type)">
             <span class="obiject-picker-element-header">#{{ channelTitles.get(answerFromMap.get(content.data.messageId) || '') || '...' }}/messages/answers/</span>
             <div class="object-picker-text">
-                {{ content.data.content }}
+                {{ content.data.content.text }}
             </div>
         </div>
 
         <div *ngIf="content.type === 'chat-message'" (click)="selectObject(content.data, content.type)">
             <span class="obiject-picker-element-header">&#64;{{ userNames.get(content.data.receiverId) || '...'  }}/messages/</span>
             <div class="object-picker-text">
-                {{ content.data.content }}
+                {{ content.data.content.text }}
             </div>
         </div>
 
         <div *ngIf="content.type === 'chat-answer'" (click)="selectObject(content.data, content.type)">
             <span class="obiject-picker-element-header">&#64;{{ userNames.get(answerFromMap.get(content.data.messageId) || '') || '...' }}/messages/answers/</span>
             <div class="object-picker-text">
-                {{ content.data.content }}
+                {{ content.data.content.text }}
             </div>
         </div>
     </div>

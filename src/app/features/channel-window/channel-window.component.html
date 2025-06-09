@@ -22,7 +22,7 @@
         </div>
         <div #scrollContainer class="channel-window-message-container">
             <div class="channel-window-message-content" *ngIf="chatData$ | async as messages">
-                <app-channel class="app-chat" [scrollContainer]="scrollContainerRef" *ngIf="messages.length > 0"></app-channel>
+                <app-channel class="app-chat" [scrollContainer]="scrollContainerRef" [content]="channel" *ngIf="messages.length > 0"></app-channel>
                 <app-message-info *ngIf="messages.length === 0"></app-message-info>
             </div>
             <div class="channel-window-message-loading" *ngIf="chatIsLoading">

@@ -14,7 +14,6 @@ import { FirebaseUserService } from '../../shared/services/firebase/user/firebas
 import { map, filter, take, switchMap, of } from 'rxjs';
 import { SearchService } from '../../shared/services/firebase/search/search.service';
 import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
-import { MentionService } from '../../shared/services/mention-service/mention-service';
 
 @Component({
   selector: 'app-message-input-field',
@@ -39,7 +38,6 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
   private firebaseUserService = inject(FirebaseUserService);
   private firebaseAuthService = inject(FirebaseAuthService);
   private searchService = inject(SearchService);
-  private mentionService = inject(MentionService);
 
   messageReceiver!: string;
   messageContent: string = '';
@@ -297,11 +295,39 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
 
   addMentionToMessage(object: any, objectType: string) {
     if (objectType === 'user') {
-      this.mentionService.insertMention(object, '@', this.mentionMatch, this.messageEditor);
+      this.insertMention(object, '@');
     } else if (objectType === 'channel') {
-      this.mentionService.insertMention(object, '#', this.mentionMatch, this.messageEditor);
+      this.insertMention(object, '#');
     }
     this.closeObjectSelector();
+  }
+
+  insertMention(object: any, symbol: string) {
+    this.deleteMentionQuery();
+
+    const editor = this.messageEditor.nativeElement;
+    const space = document.createTextNode('\u00A0');
+    const span = document.createElement('span');
+    const rawText = object.name || object.title || '';
+    const objectid = object.uid || object.channelId || '';
+
+    span.className = 'mention';
+    span.textContent = `${symbol}${rawText.toLowerCase().replace(/\s+/g, '')}`;
+    span.setAttribute('contenteditable', 'false');
+    span.setAttribute('data-mention-id', objectid);
+
+    editor.appendChild(span);
+    editor.appendChild(space);
+
+    const range = document.createRange();
+    range.setStartAfter(space);
+    range.collapse(true);
+
+    const sel = window.getSelection();
+    sel?.removeAllRanges();
+    sel?.addRange(range);
+
+
     this.updateMessageContentFromEditor();
     this.mentionMatch = null;
   }
@@ -358,4 +384,46 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
       this.isLoading = false;
     });
   }
+
+  deleteMentionQuery() {
+    const sel = window.getSelection();
+    if (!sel || !this.mentionMatch) return;
+
+    const editor = this.messageEditor.nativeElement;
+    const matchStr = this.mentionMatch;
+
+    const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT, null);
+    let found = false;
+
+    while (walker.nextNode()) {
+      const node = walker.currentNode as Text;
+      const text = node.textContent || '';
+      const regex = new RegExp(`(^|\\s)${this.escapeRegExp(matchStr)}(?=\\s|$)`);
+      const match = text.match(regex);
+
+      if (match) {
+        const index = match.index || 0;
+
+        const startIndex = index + match[1].length;
+        const before = text.slice(0, startIndex);
+        const after = text.slice(startIndex + matchStr.length);
+
+        node.textContent = before + after;
+
+        const range = document.createRange();
+        range.setStart(node, before.length);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        found = true;
+        break;
+      }
+    }
+  }
+
+  escapeRegExp(string: string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
 }

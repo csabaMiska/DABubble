@@ -147,3 +147,12 @@
 .avatar-reverse-design {
     margin: 0 30px 0 45px !important;
 }
+
+::ng-deep .rendered-mention {
+    @include mentionStyle($font-color: $white, $bg-color: $purple-3);
+
+    &:hover {
+        background-color: $white!important;
+        color: $purple-3 !important;
+    }
+}

@@ -101,8 +101,6 @@
 
 ::ng-deep .mention {
     @include mentionStyle($font-color: $white, $bg-color: $purple-2);
-    color: $white;
-    background-color: $purple-2;
 }
 
 .btn-disabled {

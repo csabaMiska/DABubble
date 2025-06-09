@@ -13,6 +13,9 @@ import { EmojiService } from '../../../shared/services/emoji/emoji-service/emoji
 import { AnswerService } from '../../../shared/services/firebase/answer/answer.service';
 import { ScrollService } from '../../../shared/services/scroll-service/scroll-service';
 import { set } from 'firebase/database';
+import { MessageData } from '../../../shared/interface/message-data.model';
+import { User } from '../../../shared/interface/user.model';
+import { Channel } from '../../../shared/interface/channal.model';
 
 @Component({
   selector: 'app-channel',
@@ -36,6 +39,7 @@ export class ChannelComponent implements OnInit {
   private scrollService = inject(ScrollService);
 
   @Input() scrollContainer!: ElementRef<HTMLDivElement>;
+  @Input() content!: User | Channel;
 
   messagesWithUserData$!: Observable<Array<Message & { senderData?: any }>>;
   messagesWithUserDataArray: Array<Message & { senderData?: any }> = [];
@@ -184,12 +188,12 @@ export class ChannelComponent implements OnInit {
     });
   }
 
-  updateMessage(event: { messageId: string; message: string }) {
+  updateMessage(event: { messageId: string; messageData: MessageData }) {
     this.channelService.userIdOrChannelId$
       .pipe(take(1))
       .subscribe((channalId) => {
         if (channalId) {
-          this.channelService.updateMessage(channalId, event.messageId, { content: event.message });
+          this.channelService.updateMessage(channalId, event.messageId, { content: event.messageData });
         } else {
           console.error('User or receiver ID is undefined');
         }

@@ -17,7 +17,7 @@
         </div>
         <div #scrollContainer class="answer-window-message-container">
             <div class="answer-window-message-content">
-                <app-answer [scrollContainer]="scrollContainerRef"></app-answer>
+                <app-answer [scrollContainer]="scrollContainerRef" [content]="currentContent"></app-answer>
             </div>
             <div class="channel-window-message-loading" *ngIf="chatIsLoading">
                 <mat-spinner></mat-spinner>

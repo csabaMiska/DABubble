@@ -14,6 +14,9 @@ import { EmojiService } from '../../../shared/services/emoji/emoji-service/emoji
 import { AnswerService } from '../../../shared/services/firebase/answer/answer.service';
 import { ChannelService } from '../../../shared/services/firebase/channel/channel.service';
 import { ScrollService } from '../../../shared/services/scroll-service/scroll-service';
+import { MessageData } from '../../../shared/interface/message-data.model';
+import { User } from '../../../shared/interface/user.model';
+import { Channel } from '../../../shared/interface/channal.model';
 
 
 @Component({
@@ -40,6 +43,7 @@ export class ChatComponent implements OnInit {
   private scrollService = inject(ScrollService);
 
   @Input() scrollContainer!: ElementRef<HTMLDivElement>;
+  @Input() content!: User | Channel;
 
   messagesWithUserData$!: Observable<Array<Message & { senderData?: any }>>;
   messagesWithUserDataArray: Array<Message & { senderData?: any }> = [];
@@ -185,7 +189,7 @@ export class ChatComponent implements OnInit {
     return new Date(timestamp);
   }
 
-  updateMessage(event: { messageId: string; message: string }) {
+  updateMessage(event: { messageId: string; messageData: MessageData }) {
     combineLatest([
       this.firebaseAuthService.getCurrentUser(),
       this.channelService.userIdOrChannelId$
@@ -193,7 +197,7 @@ export class ChatComponent implements OnInit {
       .pipe(take(1))
       .subscribe(([user, receiverId]) => {
         if (user && receiverId) {
-          this.chatService.updateMessage(user.uid, receiverId, event.messageId, { content: event.message });
+          this.chatService.updateMessage(user.uid, receiverId, event.messageId, { content: event.messageData });
         } else {
           console.error('User or receiver ID is undefined');
         }

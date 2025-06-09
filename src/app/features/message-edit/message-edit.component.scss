@@ -102,10 +102,12 @@
 }
 
 .btn-disabled {
-    color: $text-gray !important;
+    color: $white !important;
+    background-color: $text-gray !important;
 
     &:hover {
         cursor: not-allowed !important;
+        background-color: $text-gray !important;
         transform: none !important;
     }
 }

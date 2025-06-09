@@ -9,7 +9,7 @@
     <div class="message-edit-input-content">
         <div class="message-edit-field">
             <div class="editable-message" contenteditable="true" #editableDiv (input)="onEditInput()"
-                (keyup)="onKeyup($event)" (click)="closePickers()"></div>
+                (keyup)="onKeyup($event)" (click)="closePickers()" [attr.data-placeholder]="'Bitte gib eine Nachricht ein, du kannst keine leere senden.'"></div>
         </div>
         <div class="message-edit-icons-container">
             <div class="message-edit-prefix-icons">

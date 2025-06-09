@@ -71,6 +71,12 @@ export class MessageEditComponent implements OnChanges, AfterViewInit {
   }
 
   onEditInput() {
+    const el = this.editableDiv.nativeElement;
+
+    if (el.innerText.trim() === '') {
+      el.innerHTML = '';
+    }
+    
     this.messageContent = this.editableDiv.nativeElement.innerText;
   }
 
@@ -127,7 +133,7 @@ export class MessageEditComponent implements OnChanges, AfterViewInit {
         mentions
       };
 
-      this.updateMessage.emit({messageId: messageID, messageData});
+      this.updateMessage.emit({ messageId: messageID, messageData });
 
       this.messageContent = '';
       editorEl.innerHTML = '';

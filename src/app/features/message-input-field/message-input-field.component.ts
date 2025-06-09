@@ -6,11 +6,12 @@ import { Channel } from '../../shared/interface/channal.model';
 import { EmojiPickerComponent } from '../../core/emoji-picker/emoji-picker.component';
 import { Emoji } from '../../shared/interface/emoji.model';
 import { CommonModule } from '@angular/common';
-import { insertTextIntoField } from 'text-field-edit';
 import { ObjectPickerComponent } from '../../core/object-picker/object-picker.component';
 import { ChannelService } from '../../shared/services/firebase/channel/channel.service';
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
-import { map, filter, max } from 'rxjs';
+import { map, filter, take, switchMap, of } from 'rxjs';
+import { SearchService } from '../../shared/services/firebase/search/search.service';
+import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
 
 @Component({
   selector: 'app-message-input-field',
@@ -33,20 +34,23 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
   private elementRef = inject(ElementRef);
   private channelService = inject(ChannelService);
   private firebaseUserService = inject(FirebaseUserService);
+  private firebaseAuthService = inject(FirebaseAuthService);
+  private searchService = inject(SearchService);
 
   messageReceiver!: string;
   messageContent: string = '';
   placeholderText: string = '';
   inputEmojiPickerId!: string;
   objectSelectorIsOpen: boolean = false;
-  loadedUsers: any[] = [];
-  isLoadingUsers!: boolean;
+  loadedObjects: any[] = [];
+  isLoading!: boolean;
 
   showEmojiPicker: { [key: string]: boolean } = {};
   buttonRects: { [key: string]: DOMRect } = {};
   pickerBtnRects: DOMRect = {} as DOMRect;
   pickerPosition = { bottom: '0', left: '0' };
   savedRange: Range | null = null;
+  mentionMatch: string | null = null;
 
   ngOnInit(): void {
     this.messageContent = '';
@@ -203,8 +207,6 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
     const bottom = window.innerHeight - buttonRect.top;
     const left = buttonRect.left + 40;
 
-    console.log('Object selector position:', { buttonRect, bottom, left });
-
     this.pickerPosition = {
       bottom: `${bottom}px`,
       left: `${left}px`
@@ -222,14 +224,14 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
   }
 
   loadUsersForObjectPicker() {
-    this.isLoadingUsers = true;
+    this.isLoading = true;
     if (this.content.type === 'User') {
       const receiverUid = (this.content as User).uid || '';
       this.loadChatUser(receiverUid);
-      this.isLoadingUsers = false;
+      this.isLoading = false;
     } else if (this.content.type === 'Channel') {
       this.loadChannelMembers();
-      this.isLoadingUsers = false;
+      this.isLoading = false;
     }
   }
 
@@ -244,7 +246,7 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
         return result;
       })
     ).subscribe(result => {
-      this.loadedUsers = [result];
+      this.loadedObjects = [result];
     });
   }
 
@@ -258,18 +260,22 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
         }));
       })
     ).subscribe(users => {
-      this.loadedUsers = users;
+      this.loadedObjects = users;
     });
   }
 
   addMentionToMessage(object: any, objectType: string) {
     if (objectType === 'user') {
       this.insertMention(object, '@');
+    } else if (objectType === 'channel') {
+      this.insertMention(object, '#');
     }
     this.closeObjectSelector();
   }
 
   insertMention(object: any, symbol: string) {
+    this.deleteMentionQuery();
+
     const editor = this.messageEditor.nativeElement;
     const space = document.createTextNode('\u00A0');
     const span = document.createElement('span');
@@ -294,9 +300,91 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
 
 
     this.updateMessageContentFromEditor();
+    this.mentionMatch = null;
   }
 
   updateMessageContentFromEditor() {
     this.messageContent = this.messageEditor.nativeElement.innerText || '';
+  }
+
+  onKeyup(event: KeyboardEvent): void {
+    const selection = window.getSelection();
+    if (!selection || !selection.focusNode) return;
+
+    const textBeforeCursor = selection.focusNode.textContent?.substring(0, selection.focusOffset) || '';
+    const match = textBeforeCursor.match(/([@#])(\w*)$/);
+
+    if (!match) {
+      this.objectSelectorIsOpen = false;
+      this.loadedObjects = [];
+      this.mentionMatch = null;
+      return;
+    }
+
+    const symbol = match[1];
+    const query = match[2];
+    this.mentionMatch = match[0];
+
+    const inputElement = this.messageEditor.nativeElement;
+    this.pickerBtnRects = inputElement.getBoundingClientRect();
+    this.calculateObjectSelectorPosition(this.pickerBtnRects)
+
+    this.isLoading = true;
+    this.objectSelectorIsOpen = true;
+
+    this.firebaseAuthService.getCurrentUser().pipe(
+      take(1),
+      switchMap(user => {
+        if (!user) return of([]);
+        const currentUserUid = user.uid;
+
+        if (symbol === '@') {
+          return this.searchService.searchUser('@' + query).pipe(
+            map(results => results.map(r => ({ ...r, symbol: '@' })))
+          );
+        } else if (symbol === '#') {
+          return this.searchService.searchChannel('#' + query, currentUserUid).pipe(
+            map(results => results.map(r => ({ ...r, symbol: '#' })))
+          );
+        }
+
+        return of([]);
+      })
+    ).subscribe(results => {
+      this.loadedObjects = results;
+      this.isLoading = false;
+    });
+  }
+
+  deleteMentionQuery() {
+    const sel = window.getSelection();
+    if (!sel || !this.mentionMatch) return;
+
+    const editor = this.messageEditor.nativeElement;
+    const matchStr = this.mentionMatch;
+
+    const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT, null);
+    let found = false;
+
+    while (walker.nextNode()) {
+      const node = walker.currentNode as Text;
+      const text = node.textContent || '';
+      const index = text.lastIndexOf(matchStr);
+
+      if (index !== -1) {
+        const before = text.slice(0, index);
+        const after = text.slice(index + matchStr.length);
+        node.textContent = before + after;
+
+        const range = document.createRange();
+        range.setStart(node, before.length);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        found = true;
+        break;
+      }
+    }
   }
 }

@@ -1,13 +1,13 @@
 <app-emoji-picker *ngIf="showEmojiPicker[inputEmojiPickerId]" [buttonRect]="buttonRects[inputEmojiPickerId]"
     (emojiSelected)="handleEmojiSelection($event)" class="emoji-picker"></app-emoji-picker>
 
-<app-object-picker #objectPickerRef *ngIf="objectSelectorIsOpen" [contents]="loadedUsers" [isLoading]="isLoadingUsers"
+<app-object-picker #objectPickerRef *ngIf="objectSelectorIsOpen" [contents]="loadedObjects" [isLoading]="isLoading"
     [ngStyle]="pickerPosition" class="object-picker" (selectedObject)="addMentionToMessage($event.object, $event.objectType)"></app-object-picker>
 
 <section class="new-message-input-container">
     <form class="new-message-input-content" (ngSubmit)="getCurrentMessage()">
         <div class="new-message-input-field">
-            <div class="new-message-editable" contenteditable="true" (input)="onInput($event)"
+            <div class="new-message-editable" contenteditable="true" (input)="onInput($event)" (keyup)="onKeyup($event)"
                 (keydown.enter)="handleEnter($event)" (click)="closePickers()"
                 [attr.data-placeholder]="placeholderText + ' ' + messageReceiver" #messageEditor>
             </div>

@@ -1,0 +1,27 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.status-menu {
+    @include dFlex($fd: column);
+    width: 282px;
+    height: 287px;
+    gap: 15px;
+    background-color: $white;
+
+    button {
+        @include dialogBtnStyle($w: 222px, $h: 53px);
+
+        .btn-container {
+            @include dFlex($jc: start);
+            width: 120px;
+            gap: 24px;
+
+            .status-icon {
+                width: 20px;
+                height: 20px;
+                border: 2px solid $bgcolor;
+                border-radius: 80px;
+            }
+        }
+    }
+}

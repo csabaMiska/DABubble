@@ -1,0 +1,23 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.workspace-container {
+    width: 100%;
+    height: fit-content;
+    padding: 32px 24px 24px 24px;
+    
+    .workspace-content {
+        width: 100%;
+        height: fit-content;
+        @include dFlex($jc: space-between, $ai: center);
+
+        .workspace-logo-container {
+            @include dFlex($jc: start, $ai: center);
+            gap: 15px;
+        }
+
+        .workspace-add-button {
+            @include iconBtnStyle($tc: $black);
+        }
+    }
+}

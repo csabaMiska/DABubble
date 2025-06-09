@@ -1,0 +1,214 @@
+@use 'styles.scss' as style;
+@forward 'styles.scss';
+@use '@angular/material' as mat;
+
+// Objects - positioning
+@mixin dFlex($d: flex, $jc: center, $ai: center, $fd: row) {
+    display: $d;
+    justify-content: $jc;
+    align-items: $ai;
+    flex-direction: $fd;
+}
+
+// Mentions - styling
+@mixin mentionStyle($font-color, $bg-color) {
+    background-color: $bg-color;
+    color: $font-color;
+    padding: 2px 4px;
+    border-radius: 16px;
+    white-space: nowrap;
+}
+
+// Butttons - styling
+@mixin primaryBtnStyle($w, $h) {
+    gap: 10px;
+    background-color: style.$purple-1;
+    color: style.$white;
+    font-family: "Nunito";
+    font-weight: 700;
+    font-size: 18px;
+    border: none;
+    width: $w;
+    height: $h;
+    border-radius: 50px;
+    transition: transform 0.2s ease-in-out;
+
+    &:hover {
+        cursor: pointer;
+        transform: scale(1.03);
+        background-color: style.$purple-2;
+    }
+}
+
+@mixin secondaryBtnStyle($w, $h) {
+    gap: 10px;
+    background-color: style.$white;
+    color: style.$purple-3;
+    font-family: "Nunito";
+    font-weight: 700;
+    font-size: 18px;
+    border: 1px solid style.$purple-2;
+    width: $w;
+    height: $h;
+    border-radius: 50px;
+    transition: transform 0.2s ease-in-out;
+
+    &:hover {
+        cursor: pointer;
+        transform: scale(1.03);
+        background-color: style.$purple-3;
+        color: style.$white;
+    }
+}
+
+@mixin thirdBtnStyle($fs) {
+    color: style.$purple-3;
+    font-size: $fs;
+    font-weight: 600;
+
+    &:hover {
+        font-weight: 800;
+        transform: scale(1.05);
+    }
+}
+
+@mixin dialogBtnStyle($w, $h) {
+    border: none;
+    background-color: style.$white;
+    width: $w;
+    height: $h;
+    color: style.$black;
+    font-size: 18px;
+    font-weight: 400;
+    @include dFlex();
+
+    &:hover {
+        cursor: pointer;
+        color: style.$purple-3;
+        background-color: style.$bgcolor;
+        border-radius: 100px;
+    }
+}
+
+@mixin iconBtnStyle($tc) {
+    height: 40px;
+    width: 40px;
+    @include dFlex();
+    border-radius: 50px;
+    border: none;
+    background-color: style.$white;
+    color: $tc;
+    font-size: 20px;
+
+    &:hover {
+        cursor: pointer;
+        background-color: style.$bgcolor;
+        color: style.$purple-1;
+    }
+}
+
+//Inpits - styling
+@mixin primaryInputStyle($b-radius) {
+    @include mat.form-field-overrides((outlined-container-shape: $b-radius,
+            outlined-outline-color: style.$light-purple-lines,
+            outlined-focus-outline-color: style.$purple-2,
+            outlined-hover-outline-color: style.$purple-2,
+            outlined-input-text-placeholder-color: style.$text-gray,
+            container-text-size: 18px,
+            container-text-font: "Nunito",
+        ));
+
+    //Class benötigt für die mat-errors zu anzeigen einfach in SCC Datei implementieren.
+    // ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    //     display: flex;
+    //   }
+}
+
+@mixin textareaStyle($max-height) {
+    width: 100%;
+    height: 100%;
+    max-height: $max-height;
+    border-radius: 0;
+    border: none;
+    font-family: "Nunito";
+    font-size: 18px;
+    background-color: style.$white;
+    resize: none;
+
+    &:hover {
+        border: none;
+        outline: none;
+    }
+
+    &:focus {
+        border: none;
+        outline: none;
+    }
+
+    // Classes benötigt für die Komplette textarea Styling mit Icons oder Buttons in der textarea.
+    // .textarea-icons-container {
+    //     width: 100%;
+    //     height: fit-content;
+    //     @include dFlex($jc: space-between);
+    //     margin-top: -50px;
+
+    //     .new-message-prefix-icons {
+    //         @include dFlex();
+    //         gap: 10px;
+
+    //         button {
+    //            @include iconBtnStyle($tc: $text-gray); 
+    //         }
+    //     }
+    // }
+}
+
+@mixin editableDivStyle($min-height, $max-height) {
+    min-height: $min-height;
+    max-height: $max-height;
+    width: 100%;
+    max-width: 100%;
+    padding: 10px 15px 10px 15px;
+    border: 1px solid style.$light-purple-lines;
+    border-radius: 30px;
+    outline: none;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    font-family: "Nunito";
+    font-size: 18px;
+    font-weight: 400;
+
+    &:empty::before {
+        content: attr(placeholder);
+        color: style.$text-gray;
+    }
+
+    &:hover {
+        cursor: text;
+        border: 1px solid style.$purple-3;
+    }
+
+    &:focus {
+        outline: 2px solid style.$purple-3;
+    }
+}
+
+//Expansion Panel - styling
+@mixin expansionPanelStyle() {
+    border: none !important;
+    box-shadow: none !important;
+    width: 100% !important;
+
+    @include mat.expansion-overrides((container-shape: 0,
+            container-background-color: transparent,
+            header-text-size: 20px,
+            header-text-font: "Nunito",
+            header-indicator-display: none,
+            header-hover-state-layer-color: transparent,
+            header-collapsed-state-height: 40px,
+            header-expanded-state-height: 40px,
+            container-text-size: 18px,
+            container-text-font: "Nunito"
+        ));
+}

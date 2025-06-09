@@ -1,0 +1,28 @@
+<section class="answer-window-container" *ngIf="messageInfos$ | async as messageInfo">
+    <div class="answer-window-content">
+        <div class="answer-window-header-container">
+            <ng-container class="message-info-content" [ngSwitch]="messageInfoType">
+                <div class="answer-window-title-container" *ngSwitchCase="'User'">
+                    <h3>Thread</h3>
+                    <span># {{ messageInfo.name }}</span>
+                </div>
+                <div class="answer-window-title-container" *ngSwitchCase="'Channel'">
+                    <h3>Thread</h3>
+                    <span># {{ messageInfo.title }}</span>
+                </div>
+                <button (click)="closeAnswerWindow(messageInfoType)">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </ng-container>
+        </div>
+        <div #scrollContainer class="answer-window-message-container">
+            <div class="answer-window-message-content">
+                <app-answer [scrollContainer]="scrollContainerRef" [content]="currentContent"></app-answer>
+            </div>
+            <div class="channel-window-message-loading" *ngIf="chatIsLoading">
+                <mat-spinner></mat-spinner>
+            </div>
+        </div>
+        <app-message-input-field (messageSent)="onMessageReceived($event)" [content]="currentContent"></app-message-input-field>
+    </div>
+</section>

@@ -1,0 +1,25 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.timestamp-container {
+    width: 100%;
+    height: fit-content;
+    @include dFlex();
+    margin-bottom: 20px;
+    margin-top: 20px;
+    padding: 0 35px 0 35px;
+
+    .timestamp {
+        width: fit-content;
+        padding: 5px 15px 5px 15px;
+        font-size: 18px;
+        font-weight: 400;
+        border-radius: 30px;
+        border: 1px solid $light-purple-lines;
+    }
+
+    .line-style {
+        flex-grow: 1;
+        border-bottom: 1px solid $light-purple-lines;
+    }
+}

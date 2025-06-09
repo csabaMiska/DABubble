@@ -1,0 +1,127 @@
+import { Component, inject, OnInit } from '@angular/core';
+import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { MatIcon } from '@angular/material/icon';
+import { FirebaseAuthService } from '../../../shared/services/firebase/auth/firebase.auth.service';
+import { Router } from '@angular/router';
+import { FirebaseUserService } from '../../../shared/services/firebase/user/firebase.user.service';
+import { Observable, of, switchMap, take } from 'rxjs';
+import { StatusDialogComponent } from '../status-dialog/status-dialog.component';
+import { User } from '../../../shared/interface/user.model';
+import { CommonModule } from '@angular/common';
+import { StatusBottomSheetComponent } from '../status-bottom-sheet/status-bottom-sheet.component';
+import { ProfilePopupComponent } from '../../../features/profile-popup/profile-popup.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+
+@Component({
+  selector: 'app-profile-bottom-sheet',
+  standalone: true,
+  imports: [
+    MatIcon,
+    CommonModule
+  ],
+  templateUrl: './profile-bottom-sheet.component.html',
+  styleUrl: './profile-bottom-sheet.component.scss'
+})
+export class ProfileBottomSheetComponent implements OnInit {
+  readonly bottomSheet = inject(MatBottomSheet);
+  readonly dialog = inject(MatDialog);
+  private bottomSheetRef = inject<MatBottomSheetRef<ProfileBottomSheetComponent>>(MatBottomSheetRef);
+  private statusBottomSheetRef?: MatBottomSheetRef<StatusBottomSheetComponent>;
+  private profilePopupDialogRef?: MatDialogRef<ProfilePopupComponent>;
+  private firebaseAuthService = inject(FirebaseAuthService);
+  private firebaseUserService = inject(FirebaseUserService);
+  private router = inject(Router);
+  user$!: Observable<User | undefined>;
+  isButtonClicked: boolean = false;
+
+  ngOnInit(): void {
+    this.user$ = this.firebaseAuthService.getCurrentUser().pipe(
+      switchMap(user => {
+        if (user) {
+          return this.firebaseUserService.getUserRealTime(user.uid);
+        }
+        return [];
+      })
+    );
+  }
+
+  openLink(event: MouseEvent): void {
+    this.bottomSheetRef.dismiss();
+    event.preventDefault();
+  }
+
+  openStatusDialog(): void {
+    this.isButtonClicked = true;
+    this.statusBottomSheetRef = this.bottomSheet.open(StatusBottomSheetComponent)
+
+    this.statusBottomSheetRef.afterDismissed().subscribe(() => {
+      this.isButtonClicked = false;
+    });
+  }
+
+  openProfileDialog() {
+    this.bottomSheetRef.dismiss();
+    this.profilePopupDialogRef = this.dialog.open(ProfilePopupComponent, {
+      autoFocus: false,
+      hasBackdrop: false
+    });
+  }
+
+  logOut() {
+    this.firebaseAuthService.getCurrentUser().subscribe((user) => {
+      if (user) {
+        if (user.isAnonymous) {
+          this.deleteGuestUserData(user.uid);
+          this.deleteGustUserAuth(user);
+        } else {
+          this.logOutNormaAndGoogleUser(user.uid);
+        }
+      }
+    });
+  }
+
+  deleteGuestUserData(uid: string) {
+    this.firebaseUserService.deleteUser(uid);
+    this.firebaseAuthService.logout().subscribe({
+      next: () => {
+        this.navigateSignIn();
+      },
+      error: (error) => {
+        console.error('Logout error:', error);
+      }
+    });
+  }
+
+  deleteGustUserAuth(user: any) {
+    this.firebaseAuthService.deleteAnonymusUser(user).subscribe({
+      next() {
+        console.log('Gast user has been deleted.')
+      },
+      error(error) {
+        console.error(error)
+      },
+    });
+  }
+
+  logOutNormaAndGoogleUser(uid: string) {
+    this.firebaseUserService.updateUser(uid, { status: 'offline' }).subscribe({
+      next: () => {
+        this.firebaseAuthService.logout().subscribe({
+          next: () => {
+            this.navigateSignIn();
+          },
+          error: (error) => {
+            console.error('Logout error:', error);
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error updating status:', error);
+      }
+    });
+  }
+
+  navigateSignIn(): void {
+    this.router.navigate(['sign-in']);
+  }
+}

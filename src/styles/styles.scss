@@ -1,0 +1,97 @@
+@use "fonts.scss" as font;
+@use "@angular/material" as mat;
+@include mat.core();
+
+$white: rgba(255, 255, 255, 1);
+$bgcolor: rgb(237, 238, 254);
+$light-purple-lines: rgba(173, 176, 217, 1);
+$black: rgba(0, 0, 0, 1);
+$text-gray: rgba(104, 104, 104, 1);
+$purple-1: rgba(68, 77, 242, 1);
+$purple-2: rgba(121, 126, 243, 1);
+$purple-3: rgba(83, 90, 241, 1);
+$green: rgba(146, 200, 62, 1);
+$rosa: rgba(237, 30, 121, 1);
+$blue: rgba(19, 129, 255, 1);
+
+:root {
+  $vh: 100%
+}
+
+.full-height {
+  height: calc(var(--vh, 1vh) * 100);
+}
+
+$theme: mat.define-theme((color: (theme-type: light,
+        primary: mat.$magenta-palette,
+      ),
+    ));
+
+html {
+  @include mat.core-theme($theme);
+  @include mat.all-component-themes($theme);
+}
+
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: "Nunito";
+  background-color: $bgcolor;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+h1 {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  font-size: 32px;
+
+  @media (max-width: 1400px) {
+    font-size: 24px;
+  }
+}
+
+h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: $black;
+}
+
+//User status Colors
+.online {
+  background-color: $green;
+}
+
+.offline {
+  background-color: $text-gray;
+}
+
+.busy {
+  background-color: red;
+}
+
+.away {
+  background-color: yellow;
+}
+
+//Buttons standard
+button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-family: "Nunito";
+}
+
+//Primary Button disabled
+.button-disabled {
+  background-color: $text-gray !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+//Box Sizing
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}

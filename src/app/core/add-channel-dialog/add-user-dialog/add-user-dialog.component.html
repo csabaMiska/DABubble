@@ -1,0 +1,24 @@
+<section class="add-user-dialog-container">
+    <div class="add-user-dialog-header-container">
+        <h3>Leute hinzufügen</h3>
+        <button (click)="closeAddUserDialog()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div class="add-user-dialog-content">
+        <mat-radio-group class="radio-group" [(ngModel)]="selectedRadioValue" (change)="onRadioChange($event)">
+            <mat-radio-button value="1">Alle Mitglieder von {{ channelTitle }} hinzufügen</mat-radio-button>
+            <mat-radio-button value="2">Bestimmte Leute hinzufügen</mat-radio-button>
+        </mat-radio-group>
+        <app-add-user-input 
+            *ngIf="showAddUsersInput" 
+            [creatorUid]="creatorUid" 
+            [channelId]="channelId"
+            [channelNowCreated]="true"></app-add-user-input>
+    </div>
+    <div class="add-user-dialog-button-container">
+        <button [disabled]="showAddUsersInput && selectedUsers.length <= 0"
+            [class.button-disabled]="showAddUsersInput && selectedUsers.length <= 0"
+            (click)="addUsersToChannel()">Erstellen</button>
+    </div>
+</section>

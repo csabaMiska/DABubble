@@ -1,0 +1,18 @@
+<section class="hover-overlay-menu-container" [ngClass]="{'hover-overlay-menu-container-reverse-style' : message.isSender}">
+    <button class="last-used-emojis-container" *ngFor="let lastSelectedEmoji of (userData$ | async)?.lastUsedEmojis"
+        (click)="handleEmojiSelection(lastSelectedEmoji.emoji, message.messageId, message.messageFrom)">
+        <span>{{ lastSelectedEmoji.emoji.unicode }}</span>
+    </button>
+    <button (click)="openCloseEmojiPicker($event, message.messageId)">
+        <mat-icon>add_reaction</mat-icon>
+    </button>
+    <button *ngIf="viewContext !== 'answer'" (click)="addAnswerToMessage(message.senderId, message.receiverId, message.messageId, message.messageFrom)">
+        <mat-icon>comment</mat-icon>
+    </button>
+    <button *ngIf="(viewContext !== 'answer' || !isOriginalMessage) && message.isSender" (click)="openManageMessageDialog($event, message.messageId)">
+        <mat-icon>more_vert</mat-icon>
+    </button>
+</section>
+
+<app-emoji-picker *ngIf="showEmojiPicker[message.messageId]" [buttonRect]="buttonRects[message.messageId]" class="emoji-picker"
+    (click)="closeAllPickers()" (emojiSelected)="handleEmojiSelection($event, message.messageId, message.messageFrom)"></app-emoji-picker>

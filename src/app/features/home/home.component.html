@@ -1,0 +1,25 @@
+<app-header (toggleSidenav)="toggleSidenav()"></app-header>
+<mat-sidenav-container class="sidenav_container" [hasBackdrop]="false">
+    <mat-sidenav #sidenav [mode]="'side'" [position]="'start'" [opened]="sideNavIsOpen">
+        <div class="sidenav-content">
+            <app-workspace></app-workspace>
+            <div class="expansion-panel-container">
+                <app-channels-list class="expansion-panel"></app-channels-list>
+                <app-direct-messages-user-list class="expansion-panel"></app-direct-messages-user-list>
+            </div>
+        </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <router-outlet name="pageContentOutlet"></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+
+<div class="toogle-sidenav-container">
+    <div class="toggle-sidenav-button" (click)="toggleSidenav()">
+        Workspace-Menü 
+        {{ toggleButtonText }}
+        <div *ngIf="sideNavIsOpen" class="toggle-sidenav-button-icon hide-icon"></div>
+        <div *ngIf="!sideNavIsOpen" class="toggle-sidenav-button-icon show-icon"></div>
+    </div>
+</div>

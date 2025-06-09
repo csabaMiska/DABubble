@@ -1,0 +1,26 @@
+<section class="confirm-dialog-content">
+    <div class="confirm-dialog-text-container">
+            <div class="confirm-dialog-header" *ngIf="confirmType === 'deleteMessage'">
+                <h3>Nachricht löschen</h3>
+                <span>Bist du sicher, dass du diese Nachricht löschen möchtest?</span>
+            </div>
+            <div *ngIf="channel$ | async as channel">
+                <div class="confirm-dialog-header" *ngIf="confirmType === 'deleteChannel'">
+                    <h3>Channel löschen</h3>
+                    <span>Bist du sicher, dass du diese {{ channel.title }} löschen möchtest?</span>
+                </div>
+                <div class="confirm-dialog-header" *ngIf="confirmType === 'leaveChannel'">
+                    <h3>Channel verlassen</h3>
+                    <span>Bist du sicher, dass du diese {{ channel.title }} verlassen möchtest?</span>
+                </div>
+            </div>
+        </div>
+    <div class="confirm-dialog-btns-container">
+        <button class="secondaryBtn" (click)="cancelConfirmation()">
+            Abbrechen
+        </button>
+        <button class="primaryBtn" (click)="confirm(messageIdOrChannelId)">
+            {{confirmType === 'leaveChannel' ? 'Verlassen' : 'Löschen'}}
+        </button>
+    </div>
+</section>

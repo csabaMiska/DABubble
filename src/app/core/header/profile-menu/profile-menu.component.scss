@@ -1,0 +1,37 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+.profile-menu {
+    @include dFlex($fd: column);
+    width: 282px;
+    height: 234px;
+    gap: 15px;
+    background-color: $white;
+
+    button {
+       @include dialogBtnStyle($w: 222px, $h: 53px);
+
+        .btn-container {
+            @include dFlex($jc: start);
+            width: 120px;
+            gap: 24px;
+
+            .status-icon {
+                width: 20px;
+                height: 20px;
+                border: 2px solid $bgcolor;
+                border-radius: 80px;
+            }
+
+            .status-text::first-letter {
+                text-transform: uppercase;
+            }
+        }
+    }
+}
+
+.is-clicked {
+    color: $purple-3 !important;
+    background-color: $bgcolor !important;
+    border-radius: 100px !important;
+}

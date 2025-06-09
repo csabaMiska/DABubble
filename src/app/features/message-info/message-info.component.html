@@ -1,0 +1,25 @@
+<section class="message-info-container" *ngIf="messageInfos$ | async as messageInfo">
+    <ng-container class="message-info-content" [ngSwitch]="messageInfoType">
+        <div class="message-info-chat" *ngSwitchCase="'User'">
+            <div class="message-info-avatat-container">
+                <img [src]="messageInfo?.avatar" alt="Avatar">
+                <h3>{{ messageInfo?.name }}</h3>
+            </div>
+            <div class="message-info-text-container">
+                <div class="message-info-text-content">
+                    <span>Diese Unterhaltung findet nur zwischen</span>
+                    <button>&#64;{{ messageInfo?.name }}</button>
+                    <span>und dir statt.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="message-info-channel-container" *ngSwitchCase="'Channel'">
+            <div class="message-info-channel-content">
+                <h3><mat-icon>numbers</mat-icon> {{ messageInfo?.title }}</h3>
+                <span>Du hast diesen Channel heute erstellt. Das ist der Anfang des Channels 
+                    <p><mat-icon>numbers</mat-icon> {{ messageInfo?.title }}</p></span>
+            </div>
+        </div>
+    </ng-container>
+</section>

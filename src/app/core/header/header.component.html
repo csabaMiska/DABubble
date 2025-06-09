@@ -1,0 +1,24 @@
+<section class="header-container">
+    <div class="header-content">
+        <div *ngIf="!workSpaceLogoIsVisible" class="header-logo-container">
+            <img class="header-logo" src="assets/img/logos/logo.png" alt="logo">
+            <h1 class="header-title">DABubble</h1>
+        </div>
+        <div *ngIf="workSpaceLogoIsVisible" class="workspace-logo-container" (click)="handleSidenavToggle()">
+            <mat-icon class="workspace-icon">keyboard_arrow_left</mat-icon>
+            <img class="workspace-logo" src="assets/img/logos/workspace-logo.png" alt="logo">
+            <h1 class="header-title workspace-title">Devspace</h1>
+        </div>
+        <div class="header-input-container">
+            <app-header-search-bar></app-header-search-bar>
+        </div>
+        <div class="header-profile-container" *ngIf="user$ | async as user" (click)="toogleMenus()">
+            <h1 class="header-profile-name">{{ user.name }}</h1>
+            <div class="header-profile-img-container">
+                <div class="header-user-online-status" [ngClass]="user.status"></div>
+                <img class="header-profile-img" [src]="user.avatar" alt="logo">
+            </div>
+            <mat-icon>{{ menuIcon }}</mat-icon>
+        </div>
+    </div>
+</section>

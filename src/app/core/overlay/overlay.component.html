@@ -1,0 +1,7 @@
+<section class="overlay-container">
+    <div *ngIf="showOverlay" @slideInAnimation (@slideInAnimation.done)="!showOverlay"
+        class="overlay-content-container">
+        <mat-icon *ngIf="showIconOverlay">{{ iconOverlay }}</mat-icon>
+        <span>{{ textOverlay }}</span>
+    </div>
+</section>

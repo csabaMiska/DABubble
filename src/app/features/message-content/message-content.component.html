@@ -1,11 +1,12 @@
 <section class="message-content" [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }"
-[ngStyle]="{ 'background-color': hoveredMessageId === viewContext + '-' + message.messageId ? 'rgb(237, 238, 254)' : 'rgba(255, 255, 255, 1)'}"
+    [ngStyle]="{ 'background-color': hoveredMessageId === viewContext + '-' + message.messageId ? 'rgb(237, 238, 254)' : 'rgba(255, 255, 255, 1)'}"
     (mouseenter)="handleMessageHover(true, message.messageId)"
     (mouseleave)="handleMessageHover(false, message.messageId)">
     <div class="message-content-user-content">
         <div class="hover-overlay-menu-container" [ngClass]="{'chat-bubble-reverse-positioning': message.isSender }">
-            <app-hover-overlay-menu class="hover-overlay-menu" *ngIf="hoveredMessageId === viewContext + '-' + message.messageId"
-                [message]="message" [viewContext]="viewContext" [isOriginalMessage]="isOriginalMessage"
+            <app-hover-overlay-menu class="hover-overlay-menu"
+                *ngIf="hoveredMessageId === viewContext + '-' + message.messageId" [message]="message"
+                [viewContext]="viewContext" [isOriginalMessage]="isOriginalMessage"
                 (emojiSelected)="emitedEmojiSelected($event.emoji, $event.messageId, $event.messageFrom)"></app-hover-overlay-menu>
         </div>
         <div class="message-content-user-name" [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
@@ -13,8 +14,9 @@
             <span class="message-user-name">{{ message.senderData.name }}</span>
         </div>
         <div class="message-content-user-message" [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
-            <span class="message-bubble" [ngClass]="{'chat-bubble-reverse-desing': !message.isSender }">{{
-                message.content }}</span>
+            <span class="message-bubble" [ngClass]="{'chat-bubble-reverse-desing': !message.isSender }"
+                [innerHTML]="renderedMessage" (click)="handleMentionClick($event)">
+            </span>
         </div>
         <div class="message-content-answers-info-container" *ngIf="messageAnswers[message.messageId]?.length > 0"
             [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">

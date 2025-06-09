@@ -3,6 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { User } from '../../shared/interface/user.model';
 import { Channel } from '../../shared/interface/channal.model';
+import { MessageData } from '../../shared/interface/message-data.model';
+import { Mention } from '../../shared/interface/mention.model';
 import { EmojiPickerComponent } from '../../core/emoji-picker/emoji-picker.component';
 import { Emoji } from '../../shared/interface/emoji.model';
 import { CommonModule } from '@angular/common';
@@ -12,6 +14,7 @@ import { FirebaseUserService } from '../../shared/services/firebase/user/firebas
 import { map, filter, take, switchMap, of } from 'rxjs';
 import { SearchService } from '../../shared/services/firebase/search/search.service';
 import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
+import { MentionService } from '../../shared/services/mention-service/mention-service';
 
 @Component({
   selector: 'app-message-input-field',
@@ -28,7 +31,7 @@ import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebas
 })
 export class MessageInputFieldComponent implements OnInit, OnChanges {
   @Input() content!: User | Channel;
-  @Output() messageSent = new EventEmitter<string>();
+  @Output() messageSent = new EventEmitter<MessageData>();
 
   @ViewChild('messageEditor') messageEditor!: ElementRef<HTMLDivElement>;
   private elementRef = inject(ElementRef);
@@ -36,6 +39,7 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
   private firebaseUserService = inject(FirebaseUserService);
   private firebaseAuthService = inject(FirebaseAuthService);
   private searchService = inject(SearchService);
+  private mentionService = inject(MentionService);
 
   messageReceiver!: string;
   messageContent: string = '';
@@ -111,10 +115,37 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
   }
 
   getCurrentMessage() {
-    if (this.messageContent.trim().length > 0) {
-      this.messageSent.emit(this.messageContent);
+    const editorEl = this.messageEditor.nativeElement as HTMLElement;
+    const html = editorEl.innerHTML.trim();
+
+    if (!html) return;
+
+    const clone = editorEl.cloneNode(true) as HTMLElement;
+    const spans = clone.querySelectorAll('span.mention');
+    const mentions: Mention[] = [];
+
+    spans.forEach((span) => {
+      const content = span.textContent || '';
+      const symbol = content[0] as '@' | '#';
+      const label = content.substring(1);
+      const id = span.getAttribute('data-mention-id') || '';
+
+      mentions.push({ symbol, label, id });
+      span.replaceWith(document.createTextNode(content));
+    });
+
+    const text = clone.textContent?.trim() || '';
+
+    if (text.length > 0) {
+      const messageData: MessageData = {
+        text,
+        mentions
+      };
+
+      this.messageSent.emit(messageData);
+
       this.messageContent = '';
-      this.messageEditor.nativeElement.innerHTML = '';
+      editorEl.innerHTML = '';
     }
   }
 
@@ -266,39 +297,11 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
 
   addMentionToMessage(object: any, objectType: string) {
     if (objectType === 'user') {
-      this.insertMention(object, '@');
+      this.mentionService.insertMention(object, '@', this.mentionMatch, this.messageEditor);
     } else if (objectType === 'channel') {
-      this.insertMention(object, '#');
+      this.mentionService.insertMention(object, '#', this.mentionMatch, this.messageEditor);
     }
     this.closeObjectSelector();
-  }
-
-  insertMention(object: any, symbol: string) {
-    this.deleteMentionQuery();
-
-    const editor = this.messageEditor.nativeElement;
-    const space = document.createTextNode('\u00A0');
-    const span = document.createElement('span');
-    const rawText = object.name || object.title || '';
-    const objectid = object.uid || object.channelId || '';
-
-    span.className = 'mention';
-    span.textContent = `${symbol}${rawText.toLowerCase().replace(/\s+/g, '')}`;
-    span.setAttribute('contenteditable', 'false');
-    span.setAttribute('data-mention-id', objectid);
-
-    editor.appendChild(span);
-    editor.appendChild(space);
-
-    const range = document.createRange();
-    range.setStartAfter(space);
-    range.collapse(true);
-
-    const sel = window.getSelection();
-    sel?.removeAllRanges();
-    sel?.addRange(range);
-
-
     this.updateMessageContentFromEditor();
     this.mentionMatch = null;
   }
@@ -354,37 +357,5 @@ export class MessageInputFieldComponent implements OnInit, OnChanges {
       this.loadedObjects = results;
       this.isLoading = false;
     });
-  }
-
-  deleteMentionQuery() {
-    const sel = window.getSelection();
-    if (!sel || !this.mentionMatch) return;
-
-    const editor = this.messageEditor.nativeElement;
-    const matchStr = this.mentionMatch;
-
-    const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT, null);
-    let found = false;
-
-    while (walker.nextNode()) {
-      const node = walker.currentNode as Text;
-      const text = node.textContent || '';
-      const index = text.lastIndexOf(matchStr);
-
-      if (index !== -1) {
-        const before = text.slice(0, index);
-        const after = text.slice(index + matchStr.length);
-        node.textContent = before + after;
-
-        const range = document.createRange();
-        range.setStart(node, before.length);
-        range.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(range);
-
-        found = true;
-        break;
-      }
-    }
   }
 }

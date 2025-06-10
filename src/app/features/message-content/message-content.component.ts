@@ -13,6 +13,7 @@ import { EmojiService } from '../../shared/services/emoji/emoji-service/emoji-se
 import { AnswerService } from '../../shared/services/firebase/answer/answer.service';
 import { ChannelService } from '../../shared/services/firebase/channel/channel.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
 
 @Component({
   selector: 'app-message-content',
@@ -22,6 +23,9 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
     HoverOverlayMenuComponent,
     EmojiPickerComponent,
     MatIconModule
+  ],
+  providers: [
+    WindowWidthDirective
   ],
   templateUrl: './message-content.component.html',
   styleUrl: './message-content.component.scss'
@@ -41,12 +45,25 @@ export class MessageContentComponent implements OnInit {
   private emojiService = inject(EmojiService);
   private answerService = inject(AnswerService);
   private sanitizer = inject(DomSanitizer);
+  private windowWidthDirective = inject(WindowWidthDirective);
 
   isSender: boolean = false;
 
   showEmojiPicker: { [key: string]: boolean } = {};
   buttonRects: { [key: string]: DOMRect } = {};
   hoveredMessageId: string | null = null;
+  expandedReactions: { [messageId: string]: boolean } = {};
+  displayedEmojisCount: number;
+
+  constructor() {
+    if (this.windowWidthDirective.mobilViewOn) {
+      this.displayedEmojisCount = 7;
+    } else if (this.windowWidthDirective.tabletViewOn) {
+      this.displayedEmojisCount = 12;
+    } else {
+      this.displayedEmojisCount = 20;
+    }
+  }
 
   ngOnInit(): void {
     this.messageService.messageIsHoveredId$.subscribe(id => {

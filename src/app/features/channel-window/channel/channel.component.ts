@@ -16,6 +16,7 @@ import { set } from 'firebase/database';
 import { MessageData } from '../../../shared/interface/message-data.model';
 import { User } from '../../../shared/interface/user.model';
 import { Channel } from '../../../shared/interface/channal.model';
+import { Reaction } from '../../../shared/interface/reaction.model';
 
 @Component({
   selector: 'app-channel',
@@ -43,7 +44,7 @@ export class ChannelComponent implements OnInit {
 
   messagesWithUserData$!: Observable<Array<Message & { senderData?: any }>>;
   messagesWithUserDataArray: Array<Message & { senderData?: any }> = [];
-  sortedReactions: { [key: string]: any } = {};
+  sortedReactions: { [key: string]: Reaction } = {};
   messageAnswers: { [key: string]: any } = {};
   messageEditMode: { [key: string]: boolean } = {};
   viewContext: 'message' | 'answer' = 'message';
@@ -145,7 +146,7 @@ export class ChannelComponent implements OnInit {
       this.channelService.userIdOrChannelId$
     ]).subscribe(([messages, channalId]) => {
       if (!messages || messages.length === 0) return;
-      const reactionsMap: { [key: string]: any } = {};
+      const reactionsMap: { [key: string]: Reaction } = {};
 
       messages.forEach(message => {
         const messageId = message.messageId;

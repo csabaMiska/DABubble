@@ -38,6 +38,13 @@
                             <span>{{ reaction.emoji?.unicode }}</span>
                             <span>{{ reaction.counter }}</span>
                         </div>
+
+                        <div class="emoji-tooltip">
+                            <ng-container *ngIf="reactionUsernamesMap[reaction.emoji.unicode]; else loading">
+                                {{ reactionUsernamesMap[reaction.emoji.unicode].join(', ') }}
+                            </ng-container>
+                            <ng-template #loading>Betöltés...</ng-template>
+                        </div>
                     </div>
 
                     <div class="reacted-emojis-container"

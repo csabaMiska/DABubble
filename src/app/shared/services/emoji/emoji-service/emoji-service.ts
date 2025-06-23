@@ -37,7 +37,8 @@ export class EmojiService {
       ? Object.keys(reactions)
         .map(key => ({
           emoji: reactions[key].emoji,
-          counter: reactions[key].counter
+          counter: reactions[key].counter,
+          users: reactions[key].users || [] 
         }))
         .sort((b, a) => b.counter - a.counter)
       : [];

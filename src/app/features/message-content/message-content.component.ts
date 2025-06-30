@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener, inject, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { Message } from '../../shared/interface/message.model';
 import { HoverOverlayMenuComponent } from '../../core/hover-overlay-menu/hover-overlay-menu.component';
 import { EmojiPickerComponent } from '../../core/emoji-picker/emoji-picker.component';
 import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
-import { of, switchMap, take } from 'rxjs';
+import { of, Subscription, switchMap, take } from 'rxjs';
 import { ChatService } from '../../shared/services/firebase/chat/chat.service';
 import { Emoji } from '../../shared/interface/emoji.model';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,6 +13,9 @@ import { EmojiService } from '../../shared/services/emoji/emoji-service/emoji-se
 import { AnswerService } from '../../shared/services/firebase/answer/answer.service';
 import { ChannelService } from '../../shared/services/firebase/channel/channel.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { WindowWidthDirective } from '../../shared/directives/window-width/window-width.directive';
+import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
+import { Reaction } from '../../shared/interface/reaction.model';
 
 @Component({
   selector: 'app-message-content',
@@ -23,10 +26,13 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
     EmojiPickerComponent,
     MatIconModule
   ],
+  providers: [
+    WindowWidthDirective
+  ],
   templateUrl: './message-content.component.html',
   styleUrl: './message-content.component.scss'
 })
-export class MessageContentComponent implements OnInit {
+export class MessageContentComponent implements OnInit, OnDestroy {
   @Input() message!: Message & { senderData?: any };
   @Input() sortedReactions: { [key: string]: any } = {};
   @Input() messageAnswers: { [key: string]: any } = {};
@@ -34,6 +40,7 @@ export class MessageContentComponent implements OnInit {
   @Input() isOriginalMessage: boolean = false;
 
   private firebaseAuthService = inject(FirebaseAuthService);
+  private firebaseUserService = inject(FirebaseUserService);
   private chatService = inject(ChatService);
   private channelService = inject(ChannelService);
   private elementRef = inject(ElementRef);
@@ -41,16 +48,47 @@ export class MessageContentComponent implements OnInit {
   private emojiService = inject(EmojiService);
   private answerService = inject(AnswerService);
   private sanitizer = inject(DomSanitizer);
+  private windowWidthDirective = inject(WindowWidthDirective);
 
   isSender: boolean = false;
 
   showEmojiPicker: { [key: string]: boolean } = {};
   buttonRects: { [key: string]: DOMRect } = {};
   hoveredMessageId: string | null = null;
+  hoveredReaction: string | null = null;
+  reactionSub?: Subscription;
+  expandedReactions: { [messageId: string]: boolean } = {};
+  reactionUsernamesMap: { [emojiUnicode: string]: string[] } = {};
+  displayedEmojisCount: number;
+
+  constructor() {
+    if (this.windowWidthDirective.mobilViewOn) {
+      this.displayedEmojisCount = 7;
+    } else if (this.windowWidthDirective.tabletViewOn) {
+      this.displayedEmojisCount = 12;
+    } else {
+      this.displayedEmojisCount = 20;
+    }
+  }
 
   ngOnInit(): void {
+    this.reactionSub = this.emojiService.reactions$.subscribe(reactions => {
+      const messageReactions = reactions[this.message.messageId] || [];
+      messageReactions.forEach((reaction: Reaction) => this.loadUsernamesForReaction(reaction));
+    });
+
     this.messageService.messageIsHoveredId$.subscribe(id => {
       this.hoveredMessageId = id;
+    });
+  }
+
+  ngOnDestroy() {
+    this.reactionSub?.unsubscribe();
+  }
+
+  loadUsernamesForReaction(reaction: any) {
+    this.firebaseUserService.getUserNamesByIds(reaction.users).subscribe(nameMap => {
+      this.reactionUsernamesMap[reaction.emoji.unicode] = Object.values(nameMap);
     });
   }
 
@@ -199,6 +237,14 @@ export class MessageContentComponent implements OnInit {
     ).subscribe({
       error: (error) => console.error(error)
     });
+  }
+
+  onEmojiMouseEnter(unicode: string) {
+    this.hoveredReaction = unicode;
+  }
+
+  onEmojiMouseLeave() {
+    this.hoveredReaction = null;
   }
 
   handleMessageHover(isHovered: boolean, messageId: string) {

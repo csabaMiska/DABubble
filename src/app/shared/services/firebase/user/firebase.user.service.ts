@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, getDoc, onSnapshot } from '@angular/fire/firestore';
-import { BehaviorSubject, from, map, Observable, shareReplay } from 'rxjs';
+import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, getDoc, onSnapshot, docData } from '@angular/fire/firestore';
+import { BehaviorSubject, catchError, combineLatest, from, map, Observable, of, shareReplay } from 'rxjs';
 import { User } from '../../../interface/user.model';
 import { FirebaseAuthService } from '../auth/firebase.auth.service';
 
@@ -54,6 +54,24 @@ export class FirebaseUserService {
       return () => unsubscribe();
     });
   }
+
+  getUserNamesByIds(uids: string[]): Observable<{ [uid: string]: string }> {
+    if (!uids || uids.length === 0) {
+      return of({});
+    }
+
+    const userObservables = uids.map(uid =>
+      this.getUserRealTime(uid).pipe(
+        catchError(() => of(undefined)),
+        map(user => ({ [uid]: user?.name || '' }))
+      )
+    );
+
+    return combineLatest(userObservables).pipe(
+      map(usersArray => Object.assign({}, ...usersArray))
+    );
+  }
+
 
   getUsers(): Observable<User[]> {
     onSnapshot(this.collectionUsersRef,

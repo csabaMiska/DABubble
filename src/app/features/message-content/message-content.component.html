@@ -28,14 +28,46 @@
         <div class="message-content-message-reaction-container"
             [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }"
             *ngIf="sortedReactions[message.messageId]?.length > 0">
-            <div class="reacted-emojis-container" *ngFor="let reaction of sortedReactions[message.messageId]"
-                [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
-                <div class="reacted-emoji"
-                    (click)="handleEmojiClick(reaction.emoji, message.messageId, message.messageFrom)">
-                    <span>{{ reaction.emoji?.unicode }}</span>
-                    <span>{{ reaction.counter }}</span>
+            <ng-container *ngIf="sortedReactions[message.messageId] as reactions">
+                <div class="emoji-wrap-container">
+                    <div class="reacted-emojis-container"
+                        *ngFor="let reaction of reactions.slice(0, expandedReactions[message.messageId] ? reactions.length : displayedEmojisCount)"
+                        [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
+                        <div class="reacted-emoji"
+                            (click)="handleEmojiClick(reaction.emoji, message.messageId, message.messageFrom)"
+                            (mouseenter)="onEmojiMouseEnter(reaction.emoji.unicode)" 
+                            (mouseleave)="onEmojiMouseLeave()">
+                            <span>{{ reaction.emoji?.unicode }}</span>
+                            <span>{{ reaction.counter }}</span>
+                        </div>
+
+                        <div class="emoji-tooltip" *ngIf="hoveredReaction === reaction.emoji.unicode">
+                            <ng-container *ngIf="reactionUsernamesMap[reaction.emoji.unicode]; else loading">
+                                {{ reactionUsernamesMap[reaction.emoji.unicode].join(', ') }}
+                            </ng-container>
+                            <ng-template #loading>Betöltés...</ng-template>
+                        </div>
+                    </div>
+
+                    <div class="reacted-emojis-container"
+                        *ngIf="reactions.length > displayedEmojisCount && !expandedReactions[message.messageId]"
+                        [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
+                        <div class="reacted-emoji mehr-button" (click)="expandedReactions[message.messageId] = true">
+                            <span>+{{ reactions.length - displayedEmojisCount }}</span>
+                            <span>Mehr</span>
+                        </div>
+                    </div>
+
+                    <div class="reacted-emojis-container"
+                        *ngIf="reactions.length > displayedEmojisCount && expandedReactions[message.messageId]"
+                        [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
+                        <div class="reacted-emoji mehr-button" (click)="expandedReactions[message.messageId] = false">
+                            <span>&#x25B2;</span>
+                            <span>Weniger</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </ng-container>
             <div class="add-reaction-container">
                 <button>
                     <mat-icon (click)="openCloseEmojiPicker($event, message.messageId)">add_reaction</mat-icon>

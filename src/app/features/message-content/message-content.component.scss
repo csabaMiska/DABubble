@@ -89,26 +89,33 @@
 
     .message-content-message-reaction-container {
         width: 100%;
-        @include dFlex($jc: end, $fd: row);
+        @include dFlex($jc: end, $fd: row, $ai: start);
         gap: 10px;
 
-        .reacted-emojis-container {
-            @include dFlex($jc: end, $fd: row);
+        .emoji-wrap-container {
+            @include dFlex($ai: start);
+            flex-wrap: wrap;
             gap: 10px;
 
-            .reacted-emoji {
-                width: 64px;
-                height: 34px;
-                border-radius: 20px;
-                border: 1px solid $light-purple-lines;
-                padding: 5px 10px 5px 10px;
-                background-color: $white;
-                @include dFlex();
+            .reacted-emojis-container {
+                @include dFlex($jc: end, $fd: row);
                 gap: 10px;
+                position: relative;
 
-                &:hover {
-                    cursor: pointer;
-                    border: 2px solid $light-purple-lines;
+                .reacted-emoji {
+                    width: 64px;
+                    height: 34px;
+                    border-radius: 20px;
+                    border: 1px solid $light-purple-lines;
+                    padding: 5px 10px 5px 10px;
+                    background-color: $white;
+                    @include dFlex();
+                    gap: 10px;
+
+                    &:hover {
+                        cursor: pointer;
+                        border: 2px solid $light-purple-lines;
+                    }
                 }
             }
         }
@@ -152,7 +159,20 @@
     @include mentionStyle($font-color: $white, $bg-color: $purple-3);
 
     &:hover {
-        background-color: $white!important;
+        background-color: $white !important;
         color: $purple-3 !important;
     }
+}
+
+.emoji-tooltip {
+  position: absolute;
+  background-color: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 10;
+  top: -30px;
+  left: 0;
+  white-space: nowrap;
 }

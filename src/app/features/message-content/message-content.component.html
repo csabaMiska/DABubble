@@ -34,12 +34,14 @@
                         *ngFor="let reaction of reactions.slice(0, expandedReactions[message.messageId] ? reactions.length : displayedEmojisCount)"
                         [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
                         <div class="reacted-emoji"
-                            (click)="handleEmojiClick(reaction.emoji, message.messageId, message.messageFrom)">
+                            (click)="handleEmojiClick(reaction.emoji, message.messageId, message.messageFrom)"
+                            (mouseenter)="onEmojiMouseEnter(reaction.emoji.unicode)" 
+                            (mouseleave)="onEmojiMouseLeave()">
                             <span>{{ reaction.emoji?.unicode }}</span>
                             <span>{{ reaction.counter }}</span>
                         </div>
 
-                        <div class="emoji-tooltip">
+                        <div class="emoji-tooltip" *ngIf="hoveredReaction === reaction.emoji.unicode">
                             <ng-container *ngIf="reactionUsernamesMap[reaction.emoji.unicode]; else loading">
                                 {{ reactionUsernamesMap[reaction.emoji.unicode].join(', ') }}
                             </ng-container>
@@ -57,7 +59,7 @@
                     </div>
 
                     <div class="reacted-emojis-container"
-                        *ngIf="reactions.length > 20 && expandedReactions[message.messageId]"
+                        *ngIf="reactions.length > displayedEmojisCount && expandedReactions[message.messageId]"
                         [ngClass]="{'chat-bubble-reverse-positioning': !message.isSender }">
                         <div class="reacted-emoji mehr-button" (click)="expandedReactions[message.messageId] = false">
                             <span>&#x25B2;</span>

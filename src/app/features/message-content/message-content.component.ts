@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener, inject, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { Message } from '../../shared/interface/message.model';
 import { HoverOverlayMenuComponent } from '../../core/hover-overlay-menu/hover-overlay-menu.component';
 import { EmojiPickerComponent } from '../../core/emoji-picker/emoji-picker.component';
 import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
-import { of, switchMap, take } from 'rxjs';
+import { of, Subscription, switchMap, take } from 'rxjs';
 import { ChatService } from '../../shared/services/firebase/chat/chat.service';
 import { Emoji } from '../../shared/interface/emoji.model';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,7 +32,7 @@ import { Reaction } from '../../shared/interface/reaction.model';
   templateUrl: './message-content.component.html',
   styleUrl: './message-content.component.scss'
 })
-export class MessageContentComponent implements OnInit, OnChanges {
+export class MessageContentComponent implements OnInit, OnDestroy {
   @Input() message!: Message & { senderData?: any };
   @Input() sortedReactions: { [key: string]: any } = {};
   @Input() messageAnswers: { [key: string]: any } = {};
@@ -55,6 +55,8 @@ export class MessageContentComponent implements OnInit, OnChanges {
   showEmojiPicker: { [key: string]: boolean } = {};
   buttonRects: { [key: string]: DOMRect } = {};
   hoveredMessageId: string | null = null;
+  hoveredReaction: string | null = null;
+  reactionSub?: Subscription;
   expandedReactions: { [messageId: string]: boolean } = {};
   reactionUsernamesMap: { [emojiUnicode: string]: string[] } = {};
   displayedEmojisCount: number;
@@ -70,21 +72,24 @@ export class MessageContentComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.reactionSub = this.emojiService.reactions$.subscribe(reactions => {
+      const messageReactions = reactions[this.message.messageId] || [];
+      messageReactions.forEach((reaction: Reaction) => this.loadUsernamesForReaction(reaction));
+    });
+
     this.messageService.messageIsHoveredId$.subscribe(id => {
       this.hoveredMessageId = id;
     });
   }
 
-  ngOnChanges() {
-    const reactions = this.sortedReactions[this.message.messageId] || [];
-    reactions.forEach((reaction: Reaction) => this.loadUsernamesForReaction(reaction));
+  ngOnDestroy() {
+    this.reactionSub?.unsubscribe();
   }
 
   loadUsernamesForReaction(reaction: any) {
     this.firebaseUserService.getUserNamesByIds(reaction.users).subscribe(nameMap => {
-    this.reactionUsernamesMap[reaction.emoji.unicode] = Object.values(nameMap);
-    console.log(`Usernames for reaction ${reaction.emoji.unicode}:`, this.reactionUsernamesMap[reaction.emoji.unicode]);
-  });
+      this.reactionUsernamesMap[reaction.emoji.unicode] = Object.values(nameMap);
+    });
   }
 
   getCurrentUserUid() {
@@ -232,6 +237,14 @@ export class MessageContentComponent implements OnInit, OnChanges {
     ).subscribe({
       error: (error) => console.error(error)
     });
+  }
+
+  onEmojiMouseEnter(unicode: string) {
+    this.hoveredReaction = unicode;
+  }
+
+  onEmojiMouseLeave() {
+    this.hoveredReaction = null;
   }
 
   handleMessageHover(isHovered: boolean, messageId: string) {

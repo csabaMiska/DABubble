@@ -32,7 +32,8 @@ html {
   @include mat.all-component-themes($theme);
 }
 
-body, html {
+body,
+html {
   height: 100%;
   margin: 0;
   font-family: "Nunito";
@@ -55,6 +56,13 @@ h3 {
   font-size: 24px;
   font-weight: 700;
   color: $black;
+}
+
+//Headline
+.headline {
+  color: $purple-1;
+  font-weight: 700;
+  font-size: 46px;
 }
 
 //User status Colors

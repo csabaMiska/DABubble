@@ -1,47 +1,54 @@
-<div class="background-login">
-    <section>
-        <h1>Anmeldung</h1>
-        <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
-        <form [formGroup]="loginForm" (ngSubmit)="login()">
-            <mat-form-field style="width: 100%" floatLabel="always">
-                <input matInput type="email" formControlName="email" placeholder="Gib deine E-Mail ein"
+<section class="login-content-container">
+    <div class="login-content">
+        <span class="headline">Anmeldung</span>
+        <span class="headline-subtext">Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit
+            verwendest.</span>
+        <form class="form-container" [formGroup]="loginForm" (ngSubmit)="login()">
+            <mat-form-field class="login-input" appearance="outline">
+                <input matInput type="email" formControlName="email" placeholder="beispielname@email.com"
                     pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required />
-                <mat-icon matPrefix>mail</mat-icon>
+                <mat-icon class="matPrefix" matPrefix fontSet="material-icons-outlined">mail</mat-icon>
                 <mat-error *ngIf="loginForm.get('email')?.errors?.['required']">E-Mail ist erforderlich!</mat-error>
                 <mat-error *ngIf="loginForm.get('email')?.errors?.['email']">Ungültiges E-Mail-Format.</mat-error>
                 <mat-error *ngIf="loginForm.get('email')?.hasError('customError')"></mat-error>
             </mat-form-field>
-            <mat-form-field style="width: 100%" floatLabel="always">
-                <button mat-icon-button matPrefix type="button" (click)="clickEvent($event)"
-                    [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide()">
-                    <mat-icon>{{hide() ? 'lock' : 'lock_open'}}</mat-icon>
-                </button>
-                <input class="mat-input" matInput type="password" formControlName="password" required placeholder="Gib dein Passwort ein"
-                    [type]="hide() ? 'password' : 'text'" />
-                <mat-error *ngIf="loginForm.get('password')?.errors?.['required']">Passwort ist erforderlich!</mat-error>
+            <mat-form-field class="login-input" appearance="outline">
+                <input class="mat-input" matInput type="password" formControlName="password" required
+                    placeholder="Passwort" [type]="hide() ? 'password' : 'text'" />
+                <mat-icon class="matPrefix loch-btn" matPrefix type="button" fontSet="material-icons-outlined"
+                    (click)="clickEvent($event)" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide()">
+                    {{hide() ? 'lock' : 'lock_open'}}
+                </mat-icon>
+                <mat-error *ngIf="loginForm.get('password')?.errors?.['required']">Passwort ist
+                    erforderlich!</mat-error>
                 <mat-error *ngIf="loginForm.get('password')?.hasError('customError')">{{ loginError }}</mat-error>
             </mat-form-field>
-            <div class="new-password-container">
-                <button type="button" class="login-new-password" (click)="navigateTo('pass-reset')">
+
+            <div class="login-forgot-password-container">
+                <button class="login-forgot-password-btn" type="button" (click)="navigateTo('pass-reset')">
                     Passwort vergessen?
                 </button>
             </div>
-            <div class="login-other-contain">
+
+            <div class="login-seperator-container">
                 <div class="login-seperator"></div>
-                <p>ODER</p>
+                <span class="login-seperator-text">ODER</span>
                 <div class="login-seperator"></div>
             </div>
-            <div class="google-button-containter-login">
+
+            <div class="login-google-btn-container">
                 <button type="button" class="google-button" (click)="logInWithGoogle()">
                     <img src="assets/img/login-img/Google.png" alt="">
                     Anmelden mit Google
                 </button>
             </div>
-            <div class="login-button-bottom">
-                <button type="submit" [disabled]="!(loginForm.get('email')?.valid && loginForm.get('password')?.value)">Anmelden</button>
-                <button type="button" (click)="logInAnonymous()">Gäste Login</button>
-                <button type="button" (click)="navigateTo('sign-up')">Sign Up Test Btn</button>
+
+            <div class="login-btns-container">
+                <button class="login-btn" type="submit"
+                    [disabled]="!(loginForm.get('email')?.valid && loginForm.get('password')?.value)">Anmelden</button>
+                <button class="guest-login-btn" type="button" (click)="logInAnonymous()">Gäste Login</button>
+                <!-- <button type="button" (click)="navigateTo('sign-up')">Sign Up Test Btn</button> -->
             </div>
         </form>
-    </section>
-</div>
+    </div>
+</section>

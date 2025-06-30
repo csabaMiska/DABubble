@@ -108,6 +108,23 @@
 }
 
 //Inpits - styling
+@mixin loginInputStyle($b-radius) {
+    @include mat.form-field-overrides((outlined-container-shape: $b-radius,
+            outlined-outline-color: style.$light-purple-lines,
+            outlined-focus-outline-color: style.$purple-2,
+            outlined-hover-outline-color: style.$purple-2,
+            outlined-input-text-placeholder-color: style.$text-gray,
+            container-text-size: 18px,
+            container-text-weight: 500,
+            container-text-font: "Nunito",
+        ));
+
+    ::ng-deep .mat-mdc-text-field-wrapper {
+        background-color: style.$bgcolor;
+        border-radius: $b-radius;
+    }
+}
+
 @mixin primaryInputStyle($b-radius) {
     @include mat.form-field-overrides((outlined-container-shape: $b-radius,
             outlined-outline-color: style.$light-purple-lines,

@@ -47,7 +47,7 @@
                 <button class="login-btn" type="submit"
                     [disabled]="!(loginForm.get('email')?.valid && loginForm.get('password')?.value)">Anmelden</button>
                 <button class="guest-login-btn" type="button" (click)="logInAnonymous()">Gäste Login</button>
-                <!-- <button type="button" (click)="navigateTo('sign-up')">Sign Up Test Btn</button> -->
+                <button type="button" (click)="navigateTo('sign-up')">Sign Up Test Btn</button>
             </div>
         </form>
     </div>

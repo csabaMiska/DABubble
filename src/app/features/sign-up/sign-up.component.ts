@@ -48,7 +48,7 @@ export class SignUpComponent implements OnInit {
   avatarsList: Array<string> = this.avatarsListService.avatarsList;
   formContainerSwitch: boolean = false;
   selectedAvatar: string = 'assets/img/profile-images/profile-0.png';
-  userName: string = ''; 
+  userName: string = '';
 
   constructor() {
     this.signUpFormCard = this.fb.group({
@@ -97,7 +97,7 @@ export class SignUpComponent implements OnInit {
     }
   }
 
-  addUser(uid: string, email: string, name:string) {
+  addUser(uid: string, email: string, name: string) {
     const newUser: Partial<User> = {
       type: 'User',
       uid: uid,
@@ -123,5 +123,12 @@ export class SignUpComponent implements OnInit {
 
   navigateBackToForm(): void {
     this.formContainerSwitch = !this.formContainerSwitch;
+  }
+
+  get isDisabled(): boolean {
+    return !!this.signUpFormCard.get('name')?.invalid ||
+      !!this.signUpFormCard.get('email')?.invalid ||
+      !!this.signUpFormCard.get('password')?.invalid ||
+      !!this.signUpFormCard.get('acceptTerms')?.invalid;
   }
 }

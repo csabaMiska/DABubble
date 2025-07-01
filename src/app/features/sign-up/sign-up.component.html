@@ -1,58 +1,53 @@
-<div class="password-reset-wrapper">
-  <mat-card class="password-reset-card" appearance="outlined">
-    <mat-card-actions class="top-actions-desktop">
-      <button *ngIf="!formContainerSwitch" class="arrow-back-btn" mat-icon-button (click)="navigateToSignIn()">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-      <button *ngIf="formContainerSwitch" class="arrow-back-btn" mat-icon-button (click)="navigateBackToForm()">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-    </mat-card-actions>
+<section class="sign-up-content-container">
+  <div class="sign-up-content">
+    <div class="sign-up-header-container">
+      <div class="sign-up-header-btn-container">
+        <button class="arrow-back-btn" (click)="formContainerSwitch ? navigateBackToForm() : navigateToSignIn()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+      </div>
+      <div class="sign-up-header-title-container">
+        <h1 class="headline">
+          {{ formContainerSwitch ? 'Wähle deine Avatar' : 'Konto erstellen' }}
+        </h1>
+      </div>
+    </div>
+    <div class="sign-up-header-subtitle-container" *ngIf="!formContainerSwitch">
+      <span class="headline-subtext">
+        Mit deinem Namen und deiner E-Mail-Adresse hast du dein neues DABubble-Konto.
+      </span>
+    </div>
 
-    <mat-card-header>
-      <mat-card-title>
-        <h1 *ngIf="!formContainerSwitch" class="card-title-desktop">Konto erstellen</h1>
-        <h1 *ngIf="formContainerSwitch" class="card-title-desktop">Wähle deine Avatar</h1>
-      </mat-card-title>
-    </mat-card-header>
-
-    <mat-card-content>
-      <form [formGroup]="signUpFormCard" (ngSubmit)="signUp()">
-        <div *ngIf="!formContainerSwitch" class="form-container">
-          <!-- FORMFIELD NAME LASTNAME -->
-          <mat-form-field style="width: 100%" floatLabel="always">
-            <mat-icon matPrefix>perm_identity</mat-icon>
+    <div class="sign-up-form-container">
+      <form class="sign-up-form-content" [formGroup]="signUpFormCard" (ngSubmit)="signUp()">
+        <div *ngIf="!formContainerSwitch" class="sign-up-form">
+          <mat-form-field class="sign-up-input" appearance="outline">
+            <mat-icon class="matPrefix" matPrefix fontSet="material-icons-outlined">perm_identity</mat-icon>
             <input class="mat-input" type="text" matInput formControlName="name" placeholder="Name und Nachname">
             <mat-error *ngIf="signUpFormCard.get('name')?.errors?.['required']">Name ist erforderlich.</mat-error>
             <mat-error *ngIf="signUpFormCard.get('name')?.errors?.['minlength']">Minimale Länge: 2.</mat-error>
           </mat-form-field>
-
-          <!-- FORMFIELD EMAIL -->
-          <mat-form-field style="width: 100%" floatLabel="always">
-            <mat-icon matPrefix>email</mat-icon>
+          <mat-form-field class="sign-up-input" appearance="outline">
+            <mat-icon class="matPrefix" matPrefix fontSet="material-icons-outlined">email</mat-icon>
             <input class="mat-input" type="email" matInput formControlName="email" placeholder="beispielname@email.de">
             <mat-error *ngIf="signUpFormCard.get('email')?.errors?.['required']">Email ist erforderlich.</mat-error>
             <mat-error *ngIf="signUpFormCard.get('email')?.errors?.['email']">Ungültiges E-Mail-Format.</mat-error>
           </mat-form-field>
-
-          <!-- FORMFIELD PASSWORD -->
-          <mat-form-field style="width: 100%; height: fit-content;" floatLabel="always">
+          <mat-form-field class="sign-up-input" appearance="outline">
             <input class="mat-input" type="password" matInput formControlName="password" placeholder="Neues Passwort"
               [type]="hide() ? 'password' : 'text'" required>
-            <button mat-icon-button matPrefix (click)="clickEvent($event)" type="button"
-              [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide()">
-              <mat-icon>{{hide() ? 'lock' : 'lock_open'}}</mat-icon>
-            </button>
+            <mat-icon class="matPrefix loch-btn" matPrefix type="button" fontSet="material-icons-outlined"
+              (click)="clickEvent($event)" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide()">
+              {{hide() ? 'lock' : 'lock_open'}}
+            </mat-icon>
             <mat-error *ngIf="signUpFormCard.get('password')?.errors?.['pattern']">Das Passwort muss Klein- und
               Großbuchstaben, Zahlen und Sonderzeichen enthalten.</mat-error>
             <mat-error *ngIf="signUpFormCard.get('password')?.errors?.['required']">Password ist
               erforderlich.</mat-error>
             <mat-error *ngIf="signUpFormCard.get('password')?.errors?.['minlength']">Minimale Länge: 8.</mat-error>
           </mat-form-field>
-
-          <!-- FORMFIELD CHECKBOX -->
-          <div style="margin-top: 12px;">
-            <mat-checkbox formControlName="acceptTerms" class="checkbox">
+          <div class="checkbox-container">
+            <mat-checkbox class="checkbox" formControlName="acceptTerms">
               <mat-label class="label-check-box">Ich stimme der<a class="link-check-box" href="#"
                   target="_blank">Datenschutzerklärung</a>zu.</mat-label>
             </mat-checkbox>
@@ -79,14 +74,12 @@
         </div>
 
         <div class="form-btn-container">
-          <button type="submit" class="confirm-password-btn" mat-button [disabled]="signUpFormCard.get('name')?.invalid 
-                || signUpFormCard.get('email')?.invalid 
-                || signUpFormCard.get('password')?.invalid 
-                || signUpFormCard.get('acceptTerms')?.invalid">
-            Weiter
+          <button type="submit" class="form-btn" mat-button [disabled]="isDisabled"
+            [ngClass]="{ 'button-disabled': isDisabled }">
+            {{ formContainerSwitch ? 'Wählen' : 'Weiter' }}
           </button>
         </div>
       </form>
-    </mat-card-content>
-  </mat-card>
-</div>
+    </div>
+  </div>
+</section>

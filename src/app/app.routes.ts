@@ -12,7 +12,6 @@ import { AuthActionHandlerComponent } from './features/auth-action-handler/auth-
 import { AuthGuard } from './auth.guard';
 
 export const routes: Routes = [
-  // Komponenten welche ohne Registration sehbar sind
   { path: 'sign-in', component: LogInComponent },
   { path: 'sign-up', component: SignUpComponent },
   { path: 'pass-reset', component: PasswordResetComponent },
@@ -21,8 +20,6 @@ export const routes: Routes = [
   { path: 'verify-email', component: VerifyEmailComponent},
   { path: 'impressum', component: ImpressumComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
-  
-  // Komponenten welche nur nach LogIn sehbar sind
   {
     path: 'home',
     component: HomeComponent,
@@ -41,9 +38,6 @@ export const routes: Routes = [
       }
     ],
   },
-
-  // Ohne LogIn der normale <router-outlet> leitet zu LogIn component
   { path: '', redirectTo: 'sign-in', pathMatch: 'full' },
-  // Nicht Konfigurierte Seiten leitet auch zu LogIn component
   { path: '**', redirectTo: 'sign-in' },
 ];

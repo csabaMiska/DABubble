@@ -33,7 +33,6 @@
       .sign-up-header-title-container {
         @include dFlex();
         flex-grow: 1;
-
       }
     }
 
@@ -127,7 +126,8 @@
 
         .choose-container-user {
           @include dFlex($fd: column);
-          margin-bottom: 8px;
+          margin: 56px 0 8px 0;
+          gap: 32px;
 
           .choose-container-user-image {
             max-width: 168px;
@@ -161,7 +161,7 @@
           height: 64px;
           @include dFlex($jc: space-between);
           gap: 12px;
-          margin-bottom: 22px;
+          margin-bottom: 62px;
 
           .choose-image-container {
             width: 64px;

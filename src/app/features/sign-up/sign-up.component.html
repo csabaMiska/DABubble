@@ -20,7 +20,7 @@
 
     <div class="sign-up-form-container">
       <form class="sign-up-form-content" [formGroup]="signUpFormCard" (ngSubmit)="signUp()">
-        <div *ngIf="!formContainerSwitch" class="sign-up-form">
+        <div class="sign-up-form" *ngIf="!formContainerSwitch">
           <mat-form-field class="sign-up-input" appearance="outline">
             <mat-icon class="matPrefix" matPrefix fontSet="material-icons-outlined">perm_identity</mat-icon>
             <input class="mat-input" type="text" matInput formControlName="name" placeholder="Name und Nachname">
@@ -58,7 +58,7 @@
           </div>
         </div>
 
-        <div *ngIf="formContainerSwitch" class="choose-container">
+        <div class="choose-container"  *ngIf="formContainerSwitch">
           <div class="choose-container-user">
             <img class="choose-container-user-image" src="{{ selectedAvatar }}" alt="">
             <span class="choose-container-user-name">{{ userName }}</span>

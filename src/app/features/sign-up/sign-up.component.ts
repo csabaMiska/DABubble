@@ -17,6 +17,8 @@ import { AvatarsListService } from '../../shared/services/avatars-list/avatars-l
 import { User } from "../../shared/interface/user.model";
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
 import { OverlayService } from '../../shared/services/overlay/overlay.service';
+import { AppLogo } from '../../core/landing-page-components/app-logo/app-logo';
+import { PrivacyPolicy } from '../../core/landing-page-components/privacy-policy/privacy-policy';
 
 @Component({
   selector: 'app-sign-up',
@@ -27,7 +29,9 @@ import { OverlayService } from '../../shared/services/overlay/overlay.service';
     MatInputModule,
     MatIconModule,
     MatFormFieldModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    AppLogo,
+    PrivacyPolicy
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sign-up.component.html',
@@ -46,7 +50,7 @@ export class SignUpComponent implements OnInit {
   hide = signal(true);
 
   avatarsList: Array<string> = this.avatarsListService.avatarsList;
-  formContainerSwitch: boolean = true;
+  formContainerSwitch: boolean = false;
   selectedAvatar: string = 'assets/img/profile-images/profile-0.png';
   userName: string = '';
 

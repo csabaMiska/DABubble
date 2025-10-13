@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 import { OverlayComponent } from '../../core/overlay/overlay.component';
 import { CommonModule } from '@angular/common';
 import { OverlayService } from '../../shared/services/overlay/overlay.service';
+import { AppLogo } from '../../core/landing-page-components/app-logo/app-logo';
+import { PrivacyPolicy } from '../../core/landing-page-components/privacy-policy/privacy-policy';
 
 @Component({
   selector: 'app-password-reset',
@@ -18,7 +20,13 @@ import { OverlayService } from '../../shared/services/overlay/overlay.service';
   templateUrl: './password-reset.component.html',
   styleUrls: ['./password-reset.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatSharedModule, ReactiveFormsModule, CommonModule],
+  imports: [
+    MatSharedModule, 
+    ReactiveFormsModule, 
+    CommonModule,
+    AppLogo,
+    PrivacyPolicy
+  ],
 })
 export class PasswordResetComponent {
   private fb = inject(FormBuilder);

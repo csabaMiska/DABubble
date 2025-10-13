@@ -17,10 +17,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FirebaseAuthService } from '../../shared/services/firebase/auth/firebase.auth.service';
 import { OverlayComponent } from '../../core/overlay/overlay.component';
 import { OverlayService } from '../../shared/services/overlay/overlay.service';
+import { AppLogo } from '../../core/landing-page-components/app-logo/app-logo';
+import { PrivacyPolicy } from '../../core/landing-page-components/privacy-policy/privacy-policy';
 
 @Component({
   selector: 'app-password-new',
-  imports: [MatSharedModule, ReactiveFormsModule],
+  imports: [
+    MatSharedModule,
+    ReactiveFormsModule,
+    AppLogo,
+    PrivacyPolicy,
+  ],
   templateUrl: './password-new.component.html',
   styleUrls: ['./password-new.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

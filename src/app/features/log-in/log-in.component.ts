@@ -15,8 +15,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { Observable } from 'rxjs';
 import { FirebaseUserService } from '../../shared/services/firebase/user/firebase.user.service';
 import { User } from '../../shared/interface/user.model';
-
-
+import { AppLogo } from '../../core/landing-page-components/app-logo/app-logo';
+import { AppSignUp } from '../../core/landing-page-components/app-sign-up/app-sign-up';
+import { PrivacyPolicy } from '../../core/landing-page-components/privacy-policy/privacy-policy';
 
 @Component({
   selector: 'app-log-in',
@@ -27,7 +28,10 @@ import { User } from '../../shared/interface/user.model';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    AppLogo,
+    AppSignUp,
+    PrivacyPolicy,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './log-in.component.html',

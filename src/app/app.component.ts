@@ -11,5 +11,7 @@ import { OverlayComponent } from './core/overlay/overlay.component';
 })
 export class AppComponent {
   title = 'DABubble';
-  private viewPortService = inject(ViewportService);
+
+  constructor(private viewportService: ViewportService) {
+  }
 }

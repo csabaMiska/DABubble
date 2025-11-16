@@ -2,21 +2,21 @@
 @use '@angular/material' as mat;
 
 .sign-up-container {
-    width: 100vw;
     @include dFlex();
-    position: absolute;
-    top: 0;
 
     .sign-up-content {
-        width: 100vw;
-        @include dFlex($fd: column, $ai: end);
-        margin: 75px 75px 0 0;
+        @include dFlex($fd: column);
 
         span {
             font-size: 20px;
             font-weight: 400;
             color: $black;
             margin-bottom: 12px;
+
+            @media (max-width: 560px) {
+                font-size: 18px;
+                margin-bottom: 8px;
+            }
         }
 
         button {
@@ -31,6 +31,10 @@
                 cursor: pointer;
                 border: 1px solid $text-gray;
                 color: $purple-1;
+            }
+
+            @media (max-width: 560px) {
+                padding: 5px 7px;
             }
         }
     }

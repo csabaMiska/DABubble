@@ -1,8 +1,8 @@
-<app-logo></app-logo>
-<app-sign-up></app-sign-up>
-<app-privacy-policy></app-privacy-policy>
-
 <section class="login-content-container full-height">
+    <div class="login-header-container">
+        <app-logo class="logo"></app-logo>
+        <app-sign-up class="sign-up-header"></app-sign-up>
+    </div>
     <div class="login-content">
         <span class="headline">Anmeldung</span>
         <span class="headline-subtext">Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit
@@ -53,5 +53,9 @@
                 <button class="guest-login-btn" type="button" (click)="logInAnonymous()">Gäste Login</button>
             </div>
         </form>
+    </div>
+    <div class="login-footer-container">
+        <app-privacy-policy class="privacy"></app-privacy-policy>
+        <app-sign-up class="sign-up-footer"></app-sign-up>
     </div>
 </section>

@@ -2,19 +2,17 @@
 @use '@angular/material' as mat;
 
 .logo-container {
-    width: 100vw;
     @include dFlex();
-    position: absolute;
-    top: 0;
 
     .logo-content {
-        width: 100vw;
-        @include dFlex($jc: start);
-        margin: 75px 0 0 75px;
-
         .logo {
             width: 242.11px;
             height: 70px;
+
+            @media (max-width: 560px) {
+                width: 204px;
+                height: 56px;
+            }
         }
     }
 }

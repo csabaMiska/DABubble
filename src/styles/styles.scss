@@ -63,6 +63,10 @@ h3 {
   color: $purple-1;
   font-weight: 700;
   font-size: 46px;
+
+  @media (max-width: 560px) {
+    font-size: 32px;
+  }
 }
 
 //User status Colors

@@ -2,15 +2,11 @@
 @use '@angular/material' as mat;
 
 .privacy-policy-container {
-    width: 100vw;
     @include dFlex();
-    position: absolute;
-    bottom: 0;
 
     .privacy-policy-content {
         width: 100vw;
         @include dFlex();
-        margin: 0 0 58px 0;
         gap: 16px;
 
         button {

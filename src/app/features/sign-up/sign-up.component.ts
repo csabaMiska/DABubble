@@ -50,9 +50,9 @@ export class SignUpComponent implements OnInit {
   hide = signal(true);
 
   avatarsList: Array<string> = this.avatarsListService.avatarsList;
-  formContainerSwitch: boolean = true;
+  formContainerSwitch: boolean = false;
   selectedAvatar: string = 'assets/img/profile-images/profile-0.png';
-  userName: string = 'Test User';
+  userName: string = '';
   checkboxVisible: boolean = false;
 
   constructor() {

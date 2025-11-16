@@ -1,7 +1,7 @@
-<app-logo></app-logo>
-<app-privacy-policy></app-privacy-policy>
-
-<section class="sign-up-content-container">
+<section class="sign-up-content-container full-height">
+  <div class="sign-up-logo-container">
+    <app-logo class="logo"></app-logo>
+  </div>
   <div class="sign-up-content">
     <div class="sign-up-header-container">
       <div class="sign-up-header-btn-container">
@@ -15,6 +15,7 @@
         </h1>
       </div>
     </div>
+
     <div class="sign-up-header-subtitle-container" *ngIf="!formContainerSwitch">
       <span class="headline-subtext">
         Mit deinem Namen und deiner E-Mail-Adresse hast du dein neues DABubble-Konto.
@@ -43,31 +44,31 @@
               (click)="clickEvent($event)" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide()">
               {{hide() ? 'lock' : 'lock_open'}}
             </mat-icon>
-            <mat-error *ngIf="signUpFormCard.get('password')?.errors?.['pattern']">Das Passwort muss Klein- und
-              Großbuchstaben, Zahlen und Sonderzeichen enthalten.</mat-error>
-            <mat-error *ngIf="signUpFormCard.get('password')?.errors?.['required']">Password ist
-              erforderlich.</mat-error>
-            <mat-error *ngIf="signUpFormCard.get('password')?.errors?.['minlength']">Minimale Länge: 8.</mat-error>
+              <mat-error *ngIf="signUpFormCard.get('password')?.errors?.['pattern']">Das Passwort muss Klein- und
+                Großbuchstaben, Zahlen und Sonderzeichen enthalten.</mat-error>
+              <mat-error *ngIf="signUpFormCard.get('password')?.errors?.['required']">Password ist
+                erforderlich.</mat-error>
+              <mat-error *ngIf="signUpFormCard.get('password')?.errors?.['minlength']">Minimale Länge: 8.</mat-error>
           </mat-form-field>
-          <div class="checkbox-container">
+          <div class="checkbox-container" *ngIf="checkboxVisible">
             <mat-checkbox class="checkbox" formControlName="acceptTerms">
-              <mat-label class="label-check-box">Ich stimme der<a class="link-check-box" href="#"
-                  target="_blank">Datenschutzerklärung</a>zu.</mat-label>
+              <mat-label class="label-check-box"><span class="non-wrap">Ich stimme der</span><a class="link-check-box"
+                  href="#" target="_blank">Datenschutzerklärung</a><span>zu.</span></mat-label>
             </mat-checkbox>
             <mat-error class="checkbox_error"
-              *ngIf="signUpFormCard.get('acceptTerms')?.invalid && signUpFormCard.get('acceptTerms')?.touched">
-              Sie müssen die Datenschutzrichtlinien akzeptieren.
+              *ngIf="signUpFormCard.get('acceptTerms')?.invalid && signUpFormCard.get('acceptTerms')?.touched">Sie
+              müssen die Datenschutzrichtlinien akzeptieren.
             </mat-error>
           </div>
         </div>
 
-        <div class="choose-container"  *ngIf="formContainerSwitch">
+        <div class="choose-container" *ngIf="formContainerSwitch">
           <div class="choose-container-user">
             <img class="choose-container-user-image" src="{{ selectedAvatar }}" alt="">
             <span class="choose-container-user-name">{{ userName }}</span>
           </div>
           <div class="choose-container-text-container">
-            <span class="choose-container-text">Aus der Liste Wählen</span>
+            <span class="choose-container-text">Aus der Liste Wählen:</span>
           </div>
           <div class="choose-images-container">
             <div *ngFor="let avatar of avatarsList" (click)="selectYourAvatar(avatar)" class="choose-image-container">
@@ -84,5 +85,8 @@
         </div>
       </form>
     </div>
+  </div>
+  <div class="sign-up-footer-container">
+    <app-privacy-policy class="privacy"></app-privacy-policy>
   </div>
 </section>

@@ -50,9 +50,10 @@ export class SignUpComponent implements OnInit {
   hide = signal(true);
 
   avatarsList: Array<string> = this.avatarsListService.avatarsList;
-  formContainerSwitch: boolean = false;
+  formContainerSwitch: boolean = true;
   selectedAvatar: string = 'assets/img/profile-images/profile-0.png';
-  userName: string = '';
+  userName: string = 'Test User';
+  checkboxVisible: boolean = false;
 
   constructor() {
     this.signUpFormCard = this.fb.group({
@@ -67,6 +68,19 @@ export class SignUpComponent implements OnInit {
     this.signUpFormCard.get('name')?.valueChanges.subscribe(value => {
       this.userName = value;
     });
+    this.signUpFormCard.valueChanges.subscribe(() => {
+      this.checkMainFieldsValid();
+    });
+
+    this.checkMainFieldsValid();
+  }
+
+  checkMainFieldsValid(): void {
+    const nameValid = this.signUpFormCard.get('name')?.valid;
+    const emailValid = this.signUpFormCard.get('email')?.valid;
+    const passwordValid = this.signUpFormCard.get('password')?.valid;
+
+    this.checkboxVisible = !!(nameValid && emailValid && passwordValid);
   }
 
   clickEvent(event: MouseEvent) {

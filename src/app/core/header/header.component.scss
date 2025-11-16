@@ -22,6 +22,10 @@
   gap: 16px;
   flex-grow: 1;
 
+  @media (max-width: 1140px) {
+    justify-content: start;
+  }
+
   .header-logo {
     @media (max-width: 800px) {
       width: 50px;
@@ -40,6 +44,10 @@
   @include dFlex();
   gap: 16px;
   flex-grow: 1;
+
+  @media (max-width: 1140px) {
+    justify-content: start;
+  }
 
   .workspace-icon {
     margin-right: -16px;
@@ -66,19 +74,19 @@
 }
 
 .header-input-container {
-    @include dFlex();
+  @include dFlex();
+  width: 100%;
+  padding: 0 140px 0 118px;
+
+  @media (max-width: 1140px) {
+    display: none;
+    padding: 0 0 0 0;
+  }
+
+  app-header-search-bar {
     width: 100%;
-    padding: 0 140px 0 118px;
-
-    app-header-search-bar {
-        width: 100%;
-        max-width: 989px;
-        @include dFlex();
-
-
-    @media (max-width: 1140px) {
-      display: none;
-    }
+    max-width: 989px;
+    @include dFlex();
   }
 }
 
@@ -91,6 +99,10 @@
   &:hover {
     cursor: pointer;
     color: $purple-3;
+  }
+
+  @media (max-width: 1140px) {
+    justify-content: end;
   }
 
   .header-profile-name {

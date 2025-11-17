@@ -31,13 +31,13 @@
       width: 50px;
       height: 50px;
     }
-  }
 
-  .header-title {
-    @media (max-width: 450px) {
-      font-size: 20px;
+    @media (max-width: 420px) {
+      width: 40px;
+      height: 40px;
     }
   }
+
 }
 
 .workspace-logo-container {
@@ -57,6 +57,11 @@
     @media (max-width: 800px) {
       width: 50px;
       height: 50px;
+    }
+
+    @media (max-width: 420px) {
+      width: 40px;
+      height: 40px;
     }
   }
 
@@ -126,6 +131,11 @@
   @media (max-width: 800px) {
     width: 50px;
     height: 50px;
+  }
+
+  @media (max-width: 420px) {
+    width: 40px;
+    height: 40px;
   }
 
   .header-profile-img {
